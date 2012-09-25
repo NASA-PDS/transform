@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Copyright 2012, by the California Institute of Technology.
+  ALL RIGHTS RESERVED. United States Government Sponsorship acknowledged.
+  Any commercial use must be negotiated with the Office of Technology Transfer
+  at the California Institute of Technology.
+
+  This software is subject to U. S. export control laws and regulations
+  (22 C.F.R. 120-130 and 15 C.F.R. 730-774). To the extent that the software
+  is subject to U.S. export control laws and regulations, the recipient has
+  the responsibility to obtain export licenses or other export authority as
+  may be required before exporting such information to foreign countries or
+  providing access to foreign nationals.
+
+  $Id$
+-->
+
+<document>
+  <properties>
+    <title>Operation</title>
+    <author email="Michael.Cayanan@jpl.nasa.gov">Paul Ramirez</author>
+    <author email="Sean.Hardman@jpl.nasa.gov">Sean Hardman</author>
+  </properties>
+
+  <body>
+    <section name="Operation">
+      <p>This document describes how to operate the Transform Tool. The following topics can be found in this document:
+      </p>
+
+      <ul>
+        <li><a href="#Tool_Execution">Tool Execution</a></li>
+      </ul>
+
+      <p>Note: The command-line examples in this section have been broken into multiple lines for readability. The commands should be reassembled into a single line prior to execution.
+      </p>
+    </section>
+
+    <section name="Tool Execution">
+      <p>The Transform Tool can be executed in various ways. This section describes how to run the tool, as well as its behaviors and caveats.
+      </p>
+
+      <subsection name="Command-Line Options">
+        <p>The following table describes the command-line options available:
+        </p>
+
+        <table>
+          <tr><th>Command-Line Option</th><th>Description</th></tr>
+          <tr><td>-c, --config</td><td>Specify a configuration file to set the tool behavior.</td></tr>
+          <tr><td>-V, --version</td><td>Display the release number and copyright information.</td></tr>
+          <tr><td>-h, --help</td><td>Display Harvest usage.</td></tr>
+        </table>
+      </subsection>
+
+      <subsection name="Running the Transform Tool">
+        <p>This section demonstrates some of the ways that the tool can be executed using the command-line option flags:
+        </p>
+
+        <ul>
+          <li>TBD</li>
+        </ul>
+
+        <p><b><i>TBD</i></b></p>
+
+        <p>TBD
+        </p>
+
+        <source>
+% transform ...
+        </source>
+
+      </subsection>
+    </section>
+  </body>
+</document>
