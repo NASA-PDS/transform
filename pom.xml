@@ -52,23 +52,29 @@
           <include>transform.properties</include>
         </includes>
       </resource>
+      <resource>
+        <filtering>true</filtering>
+        <targetPath>gov/nasa/pds/transform</targetPath>
+        <directory>src/main/resources/stylesheet</directory>
+        <includes>
+          <include>pvl.xsl</include>
+        </includes>
+      </resource>
     </resources>
     <plugins>
-      <!--
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
         <configuration>
           <archive>
             <manifest>
-              <mainClass>gov.nasa.pds.validate.ValidateLauncher</mainClass>
+              <mainClass>gov.nasa.pds.transform.TransformLauncher</mainClass>
               <addClasspath>true</addClasspath>
               <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
             </manifest>
           </archive>
         </configuration>
       </plugin>
-      -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>buildnumber-maven-plugin</artifactId>
@@ -151,6 +157,77 @@
       <artifactId>log4j</artifactId>
       <version>1.2.14</version>
       <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>gov.nasa.pds</groupId>
+      <artifactId>product-tools</artifactId>
+      <version>3.2.0</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>commons-jelly</groupId>
+          <artifactId>commons-jelly</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>gov.nasa.arc</groupId>
+      <artifactId>pds-utils</artifactId>
+      <version>1.0.1</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>nom.tam.fits</groupId>
+      <artifactId>fits</artifactId>
+      <version>1.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>gov.nasa.pds</groupId>
+      <artifactId>objectAccess</artifactId>
+      <version>0.0.1</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>gov.nasa.arc.pds</groupId>
+      <artifactId>dataModel</artifactId>
+      <version>0.0.1</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-nop</artifactId>
+      <version>1.7.1</version>
+    </dependency>
+    <dependency>
+      <groupId>jpl.mipl.io</groupId>
+      <artifactId>vicario</artifactId>
+      <version>1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.media</groupId>
+      <artifactId>jai_imageio</artifactId>
+      <version>1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.media</groupId>
+      <artifactId>clibwrapper_jiio</artifactId>
+      <version>1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>xalan</groupId>
+      <artifactId>xalan</artifactId>
+      <version>2.7.1</version>
+    </dependency>
+    <dependency>
+      <groupId>saxon</groupId>
+      <artifactId>saxon</artifactId>
+      <version>9.2</version>
     </dependency>
   </dependencies>
 

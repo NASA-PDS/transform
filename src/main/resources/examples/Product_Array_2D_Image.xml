@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="http://pds.jpl.nasa.gov/repository/pds4/examples/dph_examples_3a/dph_example_products/schemas/PDS4_PDS_0300a.sch"?>
+
+<Product_Observational xmlns="http://pds.nasa.gov/pds4/pds/v09"
+    xmlns:pds="http://pds.nasa.gov/pds4/pds/v09"
+    xmlns:dph="http://pds.nasa.gov/pds4/dph/v01"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="">
+       
+    <Identification_Area>
+        <logical_identifier>urn:nasa:pds:example.DPH.sampleProducts:exampleProducts:Array2D_Image.MPFL-M-IMP-2-EDR-V1.0</logical_identifier>
+        <version_id>1.0</version_id>
+        <title>MARS
+        	 PATHFINDER LANDER Experiment</title>
+        <information_model_version>0.3.0.0.a</information_model_version>
+        <product_class>Product_Observational</product_class>
+        <Modification_History>
+            <Modification_Detail>
+                <modification_date>2012-01-10</modification_date>
+                <version_id>1.0</version_id>
+                <description>
+                    extracted metadata from PDS3 catalog and
+                    modified to comply with PDS4 Information Model
+                </description>
+            </Modification_Detail>
+        </Modification_History>
+    </Identification_Area>
+    
+    <Observation_Area>
+        <comment>Observational Intent</comment>
+        <Time_Coordinates>
+            <start_date_time>1997-07-07T23:48:33.442Z</start_date_time>
+            <stop_date_time>1997-07-07T23:48:51.766Z</stop_date_time>
+            <local_mean_solar_time>not applicable</local_mean_solar_time>
+            <local_true_solar_time>not applicable</local_true_solar_time>
+        </Time_Coordinates>
+        <Investigation_Area>
+            <name>MARS_PATHFINDER</name>
+            <type>Mission</type>
+            <Internal_Reference>
+                <lidvid_reference>urn:nasa:pds:investigation.MARS_PATHFINDER::1.0</lidvid_reference>
+                <reference_type>data_to_investigation</reference_type>
+            </Internal_Reference>
+        </Investigation_Area>
+        <Observing_System>
+            <name>Observing System for MPFL+IMP</name>
+            <Observing_System_Component>
+                <name>MPFL</name>
+                <observing_system_component_type>Spacecraft</observing_system_component_type>
+                <description>instrument_host MPFL</description>
+                <Internal_Reference>
+                    <lid_reference>urn:nasa:pds:instrument_host.MPFL</lid_reference>
+                    <reference_type>is_instrument_host</reference_type>
+                </Internal_Reference>
+            </Observing_System_Component>
+            <Observing_System_Component>
+                <name>TT</name>
+                <observing_system_component_type>Instrument</observing_system_component_type>
+                <description>instrument TT</description>
+                <Internal_Reference>
+                    <lid_reference>urn:nasa:pds:instrument.IMP__MPFL</lid_reference>
+                    <reference_type>is_instrument</reference_type>
+                </Internal_Reference>
+            </Observing_System_Component>
+        </Observing_System>       
+        <Target_Identification>
+            <name>MARS</name>
+            <type>planet</type>
+            <description>description of MARS goes here</description>
+            <Internal_Reference>
+                <lidvid_reference>urn:nasa:pds:target.MARS::1.0</lidvid_reference>
+                <reference_type>data_to_target</reference_type>
+            </Internal_Reference>
+        </Target_Identification>
+        
+        <!-- ============================================================ -->
+        <!-- Reference the attributes that were imported from the         -->
+        <!-- local dictionary (using the local namespace (dph)            -->
+        <!-- ============================================================ -->                   
+        <Mission_Area>
+            <dph:spacecraft_clock_start_count>1246943630</dph:spacecraft_clock_start_count>
+            <dph:spacecraft_clock_stop_count>unkown</dph:spacecraft_clock_stop_count>
+        </Mission_Area>
+        <Discipline_Area>
+        </Discipline_Area>
+    </Observation_Area>
+  
+    <Reference_List>
+        <Internal_Reference>
+            <lidvid_reference>urn:nasa:pds:investigation.MPFL::1.0</lidvid_reference>
+            <reference_type>data_to_document</reference_type>
+        </Internal_Reference>
+        <Internal_Reference>
+            <lid_reference>urn:nasa:pds:instrument_host.MPFL</lid_reference>
+            <reference_type>data_to_document</reference_type>
+        </Internal_Reference>
+        <Internal_Reference>
+            <lid_reference>urn:nasa:pds:instrument.IMP__MPFL</lid_reference>
+            <reference_type>data_to_document</reference_type>
+        </Internal_Reference>
+        <Internal_Reference>
+            <lid_reference>urn:nasa:pds:target.MARS</lid_reference>
+            <reference_type>data_to_document</reference_type>
+        </Internal_Reference>
+        <Internal_Reference>
+            <lid_reference>urn:nasa:pds:node.IMG</lid_reference>
+            <reference_type>data_to_document</reference_type>
+        </Internal_Reference>
+    </Reference_List>
+    
+    <File_Area_Observational>
+        <File>
+            <file_name>i943630r.raw</file_name>
+            <local_identifier>i943630r.raw</local_identifier>
+            <creation_date_time>2009-05-04T13:46:30.1158Z</creation_date_time>
+            <file_size unit="byte">126976</file_size>
+            <records>270</records>
+            <md5_checksum>d220dac0d1fe312f3f3b9c824f6ac294</md5_checksum>
+        </File>
+        
+        <Array_2D_Image>
+            <local_identifier>MPFL-M-IMP_IMG_GRAYSCALE</local_identifier>
+            <offset unit="byte">0</offset>
+            <axes>2</axes>
+            <axis_index_order>Last_Index_Fastest</axis_index_order>
+            <encoding_type>Binary</encoding_type>
+
+            <Element_Array>
+                <data_type>UnsignedMSB2</data_type>
+                <unit>data number</unit>
+                <scaling_factor>0</scaling_factor>
+                <value_offset>0</value_offset>
+            </Element_Array>           
+            <Axis_Array>
+                <axis_name>Line</axis_name>
+                <elements>248</elements>
+                <unit>not applicable</unit>
+                <sequence_number>1</sequence_number>
+            </Axis_Array>
+            <Axis_Array>
+                <axis_name>Sample</axis_name>
+                <elements>256</elements>
+                <unit>not applicable</unit>
+                <sequence_number>2</sequence_number>
+            </Axis_Array>
+           
+            <Object_Statistics>
+                <local_identifier>MPFL_M_IMP_STATISTICS</local_identifier>
+                <maximum>4095</maximum>
+                <minimum>145</minimum>
+                <mean>1385.3000</mean>
+                <standard_deviation>538.0290</standard_deviation>
+            </Object_Statistics>
+
+            <Display_2D_Image>
+                <line_display_direction>Up</line_display_direction>
+                <sample_display_direction>Right</sample_display_direction>
+            </Display_2D_Image>
+            
+        </Array_2D_Image>
+    </File_Area_Observational>
+    
+</Product_Observational>

@@ -1,0 +1,65 @@
+PDS_VERSION_ID = PDS3
+/*    Framelet file format, size and location   */                            
+RECORD_TYPE                   = FIXED_LENGTH                                  
+RECORD_BYTES                  = 1024                                          
+FILE_RECORDS                  = 1026                                          
+^IMAGE_HEADER                 = ("FF01.IMG",1)                                
+^IMAGE                        = ("FF01.IMG",3)                                
+/*    Framelet description       */                                           
+DATA_SET_ID                   = 'MGN-V-RDRS-5-MIDR-FULL-RES-V1.0'             
+SPACECRAFT_NAME               = MAGELLAN                                      
+MISSION_PHASE_NAME            = PRIMARY_MISSION                               
+TARGET_NAME                   = VENUS                                         
+IMAGE_ID                      = 'F-MIDR.20S145;1'                             
+INSTRUMENT_NAME               = 'RADAR SYSTEM'                                
+/*    Description of objects contained in the framelet */                     
+OBJECT                        = IMAGE_HEADER                                  
+ TYPE                         = VICAR2                                        
+ BYTES                        = 1024                                          
+ RECORDS                      = 2                                             
+END_OBJECT                                                                    
+OBJECT                        = IMAGE                                         
+ LINES                        = 1024                                          
+ LINE_SAMPLES                 = 1024                                          
+ SAMPLE_TYPE                  = UNSIGNED_INTEGER                              
+ SAMPLE_BITS                  = 8                                             
+ NOTE                         = "                                             
+     DN = INT((MIN(MAX(RV,-20),30) + 20) * 5) + 1,                            
+ where RV = radar crossection/area divided by the                             
+ Muhleman Law and converted to decibels.  Muhleman Law                        
+ multiplicative constant of 0.0118 was used.  (Note: Intention                
+ was to use 0.0188.)"                                                         
+END_OBJECT                                                                    
+                                                                              
+OBJECT                        = IMAGE_MAP_PROJECTION_CATALOG                  
+ ^DATA_SET_MAP_PROJECT_CATALOG = 'DSMAPF.LBL'                                 
+ DATA_SET_ID                  = 'MGN-V-RDRS-5-MIDR-FULL-RES-V1.0'             
+ IMAGE_ID                     = 'F-MIDR.20S145;1'                             
+ MAP_PROJECTION_TYPE          = SINUSOIDAL                                    
+ MAP_RESOLUTION               = 1407.4 <PIXEL/DEG>                            
+ MAP_SCALE                    = 75 <M/PIXEL>                                  
+ MAXIMUM_LATITUDE             = -17.4548                                      
+ MAXIMUM_LONGITUDE            = 142.4009                                      
+ MINIMUM_LATITUDE             = -18.1813                                      
+ MINIMUM_LONGITUDE            = 141.6269                                      
+ X_AXIS_PROJECTION_OFFSET     = -24579                                        
+ Y_AXIS_PROJECTION_OFFSET     = 4096                                          
+ X_AXIS_FRAMELET_OFFSET       = 1                                             
+ Y_AXIS_FRAMELET_OFFSET       = 1                                             
+ A_AXIS_RADIUS                = 6051.92 <KM>                                  
+ B_AXIS_RADIUS                = 6051.92 <KM>                                  
+ C_AXIS_RADIUS                = 6051.92 <KM>                                  
+ FIRST_STANDARD_PARALLEL      = 0.0000                                        
+ SECOND_STANDARD_PARALLEL     = 'N/A'                                         
+ POSITIVE_LONGITUDE_DIRECTION = EAST                                          
+ CENTER_LATITUDE              = 0.0000                                        
+ CENTER_LONGITUDE             = 144.6882                                      
+ REFERENCE_LATITUDE           = 'N/A'                                         
+ REFERENCE_LONGITUDE          = 'N/A'                                         
+ X_AXIS_FIRST_PIXEL           = 1                                             
+ Y_AXIS_FIRST_PIXEL           = 1                                             
+ X_AXIS_LAST_PIXEL            = 1024                                          
+ Y_AXIS_LAST_PIXEL            = 1024                                          
+ MAP_PROJECTION_ROTATION      = 0.0000                                        
+END_OBJECT                                                                    
+END                                                                           

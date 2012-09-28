@@ -48,6 +48,10 @@
       <directory>target/site</directory>
       <outputDirectory>doc</outputDirectory>
     </fileSet>
+    <fileSet>
+      <directory>src/main/resources/examples</directory>
+      <outputDirectory>examples</outputDirectory>
+    </fileSet>
   </fileSets>
 
   <files>
