@@ -9,6 +9,14 @@ http://pds-cm.jpl.nasa.gov/2010/preparation/transform/. If it is not
 accessible, you can execute the "mvn site:run" command and view the 
 documentation locally at http://localhost:8080.
 
+This project depends on the JAR files from the pds4-tools project. Perform 
+the following commands to install those JAR files locally:
+
+% cd ../pds4-tools/superpom
+% cd mvn clean install 
+% cd ../package 
+% mvn clean install 
+
 In order to create a complete distribution package, execute the 
 following commands: 
 

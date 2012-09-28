@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-model href="http://pds.jpl.nasa.gov/repository/pds4/examples/dph_examples_3a/dph_example_products/schemas/PDS4_PDS_0300a.sch"?>
 
-<Product_Observational xmlns="http://pds.nasa.gov/pds4/pds/v09"
-    xmlns:pds="http://pds.nasa.gov/pds4/pds/v09"
+<Product_Observational xmlns="http://pds.nasa.gov/pds4/pds/v03"
+    xmlns:pds="http://pds.nasa.gov/pds4/pds/v03"
     xmlns:dph="http://pds.nasa.gov/pds4/dph/v01"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="">
+    xsi:schemaLocation="http://pds.nasa.gov/pds4/pds/v03 http://pds.jpl.nasa.gov/repository/pds4/examples/dph_examples_3a/dph_example_products/schemas/PDS4_PDS_0300a.xsd
+                        http://pds.nasa.gov/pds4/dph/v01 http://pds.jpl.nasa.gov/repository/pds4/examples/dph_examples_3a/dph_example_products/local_dictionaries/dph_example_dict_0300a.xsd">
        
     <Identification_Area>
         <logical_identifier>urn:nasa:pds:example.DPH.sampleProducts:exampleProducts:Array2D_Image.MPFL-M-IMP-2-EDR-V1.0</logical_identifier>
         <version_id>1.0</version_id>
-        <title>MARS PATHFINDER LANDER Experiment</title>
+        <title>MARS
+        	 PATHFINDER LANDER Experiment</title>
         <information_model_version>0.3.0.0.a</information_model_version>
         <product_class>Product_Observational</product_class>
         <Modification_History>
