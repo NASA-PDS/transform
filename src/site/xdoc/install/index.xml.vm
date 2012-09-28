@@ -90,6 +90,10 @@ or
           <p>This directory contains the dependent jar files for the tool along with the executable jar file (${project.artifactId}-${project.version}.jar) containing the Transform Tool software.
           </p>
         </li>
+        <li><b>examples/</b><br/>
+          <p>This directory contains example PDS3 and PDS4 data products for use with the tool.
+          </p>
+        </li>
       </ul>
     </section>
 
