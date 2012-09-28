@@ -68,7 +68,7 @@
 
         <ul>
           <li>Transform a Single PDS4 Array 2D Image</li>
-          <li>Transform a Single PDS4 Label To Parameter Value Language File</li>
+          <li>Transform a Single PDS4 Label To Parameter Value Language (PVL) File</li>
           <li>Transform a Single 8-Bit PDS3 Image</li>
         </ul>
 
@@ -77,23 +77,23 @@
 
         <p><b><i>Transform a Single PDS4 Array 2D Image</i></b></p>
 
-        <p>The following command demonstrates transforming a PDS4 array 2D image referenced in the associated product label, <i>Product_Array_2D_Image.xml</i>, into a jpeg image file named <i>array2DImage.jpg</i>:
+        <p>The following command demonstrates transforming a PDS4 array 2D image referenced in the associated product label, <i>i943630r.xml</i>, into a jpeg image file named <i>i943630r.jpg</i>:
         </p>
 
         <source>
-% transform ../examples/Product_Array_2D_Image.xml -o array2DImage.jpg -f jpg
+% transform ../examples/i943630r.xml -o i943630r.jpg -f jpg
         </source>
 
         <p>Under the current implementation, for PDS4 data products, the tool only supports the transformation of array 2D images.
         </p>
         
-        <p><b><i>Transform a Single PDS4 Label To Parameter Value Language File</i></b></p>
+        <p><b><i>Transform a Single PDS4 Label To Parameter Value Language (PVL) File</i></b></p>
         
-        <p>The following command demonstrates transforming the PDS4 label, <i>Product_Array_2D_Image.xml</i>, to a Parameter Value Language (PVL) File, <i>Product_Array_2D_Image.pvl</i>:
+        <p>The following command demonstrates transforming a PDS4 label, <i>i943630r.xml</i>, to a PVL file, <i>i943630r.pvl</i>:
         </p>
         
         <source>
-% transform ../examples/Product_Array_2D_Image.xml -o Product_Array_2D_Image.pvl -f pvl
+% transform ../examples/i943630r.xml -o i943630r.pvl -f pvl
         </source>
         
         <p><b><i>Transform a Single 8-Bit PDS3 Image</i></b></p>
@@ -109,7 +109,7 @@
         </p>
         
         <source>
-% transform ../examples/FF01.LBL -o FF01.PNG -f PNG          
+% transform ../examples/FF01.LBL -o FF01.PNG -f PNG
         </source>
       </subsection>
     </section>

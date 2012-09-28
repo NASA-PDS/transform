@@ -23,15 +23,15 @@
   </properties>
 
   <body>
-    <release version="0.1.0" date="09-28-2012" description="This release of the Transform Tool is a component of the integrated release 3.0.0 of the PDS 2010 System. This is an operational release of the system components to date.">
+    <release version="0.1.0" date="09-30-2012" description="This release of the Transform Tool is a component of the integrated release 3.0.0 of the PDS 2010 System. This is an operational release of the system components to date.">
       <action dev="mcayanan" type="add">
-        Initial support for transformations to the following viewable image file formats: RAW, TIFF, JPEG, WBMP, PNM, PNG, JPEG 2000, GIF
+        Initial support for transformations to the following viewable image file formats: RAW, TIFF, JPEG, WBMP, PNM, PNG, JPEG 2000 and GIF.
       </action>
       <action dev="mcayanan" type="add">
         Initial support for transforming a PDS4 array 2D image to one of the supported viewable image files.
       </action>
       <action dev="mcayanan" type="add">
-        Initial support for transforming a PDS4 label to Parameter Value Language (PVL) file.
+        Initial support for transforming a PDS4 label to a Parameter Value Language (PVL) file.
       </action>
       <action dev="mcayanan" type="add">
         Initial support for transforming an 8-bit, PDS3 image to one of the supported viewable image files.
