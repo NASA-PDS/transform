@@ -86,12 +86,12 @@ or
           <p>This directory contains a local web site with the Transform Tool documentation, javadoc, unit test results and other configuration management related information. Just point the desired web browser to the <i>index.html</i> file in this directory.
           </p>
         </li>
-        <li><b>lib/</b><br/>
-          <p>This directory contains the dependent jar files for the tool along with the executable jar file (${project.artifactId}-${project.version}.jar) containing the Transform Tool software.
-          </p>
-        </li>
         <li><b>examples/</b><br/>
           <p>This directory contains example PDS3 and PDS4 data products for use with the tool.
+          </p>
+        </li>
+        <li><b>lib/</b><br/>
+          <p>This directory contains the dependent jar files for the tool along with the executable jar file (${project.artifactId}-${project.version}.jar) containing the Transform Tool software.
           </p>
         </li>
       </ul>
