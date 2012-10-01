@@ -23,6 +23,9 @@
   </properties>
 
   <body>
+    <release version="0.2.0" date="TBD" description="This release of the Transform Tool is a component of the integrated release 3.1.0 of the PDS 2010 System. This is an operational release of the system components to date.">
+    </release>
+
     <release version="0.1.0" date="2012-09-30" description="This release of the Transform Tool is a component of the integrated release 3.0.0 of the PDS 2010 System. This is an operational release of the system components to date.">
       <action dev="mcayanan" type="add">
         Initial support for transformations to the following viewable image file formats: RAW, TIFF, JPEG, WBMP, PNM, PNG, JPEG 2000 and GIF.
