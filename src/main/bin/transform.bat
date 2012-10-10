@@ -32,7 +32,7 @@ set PARENT_DIR=%SCRIPT_DIR%..
 set LIB_DIR=%PARENT_DIR%\lib
 
 :: Check for dependencies.
-if exist "%LIB_DIR%\validate-*.jar" (
+if exist "%LIB_DIR%\transform-*.jar" (
 set TRANSFORM_JAR=%LIB_DIR%\transform-*.jar
 ) else (
 echo Cannot find Transform Tool jar file in %LIB_DIR%
