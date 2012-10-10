@@ -13,7 +13,7 @@
 :: $Id$
 
 :: Batch file that allows easy execution of the Transform Tool
-:: without the need to set the CLASSAPTH or having to type in that long java
+:: without the need to set the CLASSPATH or having to type in that long java
 :: command (java gov.nasa.pds.transform.TransformLauncher ...)
 
 :: Expects the Transform Tool jar file to be located in the ../lib directory.
