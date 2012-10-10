@@ -126,6 +126,9 @@ public class TransformLauncher {
     if (target == null) {
       throw new InvalidOptionException("No target specified.");
     }
+    if (output == null) {
+      throw new InvalidOptionException("-o flag option not specified.");
+    }
     if (formatType.isEmpty()) {
       throw new InvalidOptionException("-f flag option not specified.");
     } else {
