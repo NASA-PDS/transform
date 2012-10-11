@@ -75,7 +75,7 @@ public class Pds3Transformer implements PdsTransformer {
           convert(imageFile, output, format, input);
           log.log(new ToolsLogRecord(ToolsLevel.INFO,
               "Successfully transformed into a viewable image file: "
-              + output.toString()));
+              + output.toString(), input));
           break;
         } else {
           throw new TransformException("No image file references found "

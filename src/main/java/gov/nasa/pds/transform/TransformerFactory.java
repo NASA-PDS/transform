@@ -52,6 +52,9 @@ public class TransformerFactory {
    *  or 'lbl', case-insensitive.
    */
   public PdsTransformer newInstance(File label) throws TransformException {
+    if (!label.exists()) {
+      throw new TransformException("File not found: " + label);
+    }
     String extension = FilenameUtils.getExtension(label.toString());
     if (extension.equalsIgnoreCase("xml")) {
       return new Pds4Transformer();
