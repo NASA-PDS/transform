@@ -36,6 +36,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.commons.io.FileUtils;
+
 /**
  * Class to convert PDS4 data products into a viewable image file.
  *
@@ -75,8 +77,11 @@ public class Pds4Transformer implements PdsTransformer {
             + te.getMessage());
       }
     } else {
-      ObjectProvider objectAccess = new ObjectAccess(label.getParent());
       try {
+        // This ensures that the tool will get the correct full path to the
+        // label.
+        File fullPathLabel = FileUtils.toFile(label.toURI().toURL());
+        ObjectProvider objectAccess = new ObjectAccess(fullPathLabel.getParent());
         ProductObservational product = objectAccess.getProduct(label,
             ProductObservational.class);
         for (FileAreaObservational fao : product.getFileAreaObservationals()) {
