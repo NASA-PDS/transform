@@ -37,6 +37,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 
 /**
  * Class to convert PDS4 data products into a viewable image file.
@@ -51,8 +52,7 @@ public class Pds4Transformer implements PdsTransformer {
 
   private static String STYLESHEET = "pvl.xsl";
 
-  public void transform(final File label, final File output,
-      final String format)
+  public void transform(File label, File output, String format)
   throws TransformException {
     if (format.equalsIgnoreCase("pvl")) {
       // Use saxon for schematron (i.e. the XSLT generation).
@@ -62,6 +62,10 @@ public class Pds4Transformer implements PdsTransformer {
       try {
         Transformer pvlTransformer = factory.newTransformer(new StreamSource(
           this.getClass().getResourceAsStream(STYLESHEET)));
+        if (output == null) {
+          output = new File(FilenameUtils.getBaseName(label.getName()) + "."
+              + format);
+        }
         pvlTransformer.transform(new StreamSource(label),
             new StreamResult(output));
         log.log(new ToolsLogRecord(ToolsLevel.INFO, "Successfully "
@@ -87,11 +91,21 @@ public class Pds4Transformer implements PdsTransformer {
         for (FileAreaObservational fao : product.getFileAreaObservationals()) {
           TwoDImageExporter exporter = ExporterFactory.get2DImageExporter(fao,
               objectAccess);
-          exporter.setExportType(format);
           Array2DImage image = objectAccess.getArray2DImages(fao).get(0);
           log.log(new ToolsLogRecord(ToolsLevel.INFO,
               "Transforming image file: " + fao.getFile().getFileName(),
               label));
+          if (output == null) {
+            String fileExtension = format;
+            if ("jpeg2000".equals(format)) {
+              fileExtension = "jp2";
+            } else if ("JPEG2000".equals(format)) {
+              fileExtension = "JP2";
+            }
+            output = new File(FilenameUtils.getBaseName(
+                fao.getFile().getFileName()) + "." + fileExtension);
+          }
+          exporter.setExportType(format);
           exporter.convert(image, new FileOutputStream(output));
           log.log(new ToolsLogRecord(ToolsLevel.INFO,
               "Successfully transformed image file. Output is found at the" +

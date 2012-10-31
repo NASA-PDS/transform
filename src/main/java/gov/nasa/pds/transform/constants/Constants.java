@@ -39,6 +39,12 @@ public class Constants {
     VALID_FORMATS.remove("vic");
     VALID_FORMATS.remove("isis");
     VALID_FORMATS.remove("fits");
+    VALID_FORMATS.remove("jpeg 2000");
+    VALID_FORMATS.remove("jpeg2000");
+    VALID_FORMATS.remove("JPEG 2000");
+    VALID_FORMATS.remove("JPEG2000");
+    VALID_FORMATS.add("jp2");
+    VALID_FORMATS.add("JP2");
     VALID_FORMATS.add("pvl");
     VALID_FORMATS.add("PVL");
   }

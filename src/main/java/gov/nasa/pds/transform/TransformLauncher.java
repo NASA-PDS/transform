@@ -126,9 +126,6 @@ public class TransformLauncher {
     if (target == null) {
       throw new InvalidOptionException("No target specified.");
     }
-    if (output == null) {
-      throw new InvalidOptionException("-o flag option not specified.");
-    }
     if (formatType.isEmpty()) {
       throw new InvalidOptionException("-f flag option not specified.");
     } else {
@@ -142,6 +139,11 @@ public class TransformLauncher {
       if (!found) {
         throw new InvalidOptionException("Format type specified is not a "
             + "valid value. Valid values are: " + Constants.VALID_FORMATS);
+      }
+      if ("jp2".equals(formatType)) {
+        formatType = "jpeg2000";
+      } else if ("JP2".equals(formatType)) {
+        formatType = "JPEG2000";
       }
     }
   }
@@ -229,8 +231,10 @@ public class TransformLauncher {
         "Time                        " + Utility.getDateTime()));
     log.log(new ToolsLogRecord(ToolsLevel.CONFIGURATION,
         "Target                      " + target.toString()));
-    log.log(new ToolsLogRecord(ToolsLevel.CONFIGURATION,
-        "Output                      " + output.toString()));
+    if (output != null) {
+      log.log(new ToolsLogRecord(ToolsLevel.CONFIGURATION,
+          "Output                      " + output.toString()));
+    }
     log.log(new ToolsLogRecord(ToolsLevel.CONFIGURATION,
         "Format Type                 " + formatType + "\n"));
   }
@@ -256,7 +260,8 @@ public class TransformLauncher {
       logHeader();
       doTransformation();
     } catch (Exception e) {
-      log.log(new ToolsLogRecord(ToolsLevel.SEVERE, e.getMessage()));
+      System.err.println(e.getMessage());
+      System.exit(1);
     }
   }
 

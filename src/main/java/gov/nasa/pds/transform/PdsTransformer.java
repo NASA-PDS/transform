@@ -33,7 +33,6 @@ public interface PdsTransformer {
    *
    * @throws TransformException
    */
-  public void transform(final File input, final File output,
-      final String format)
+  public void transform(File input, File output, String format)
   throws TransformException;
 }

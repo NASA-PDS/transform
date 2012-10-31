@@ -32,6 +32,8 @@ import java.util.logging.Logger;
 import javax.media.jai.JAI;
 import javax.media.jai.ParameterBlockJAI;
 
+import org.apache.commons.io.FilenameUtils;
+
 /**
  * Class that converts PDS3 data products into a viewable image file.
  *
@@ -44,8 +46,7 @@ public class Pds3Transformer implements PdsTransformer {
       Pds3Transformer.class.getName());
 
   @Override
-  public void transform(final File input, final File output,
-      final String format)
+  public void transform(File input, File output, String format)
   throws TransformException {
     ManualPathResolver resolver = new ManualPathResolver();
     DefaultLabelParser parser = new DefaultLabelParser(false, true, resolver);
@@ -72,6 +73,16 @@ public class Pds3Transformer implements PdsTransformer {
             throw new TransformException("Image file does not exist: "
                 + imageFile.toString());
           }
+          if (output == null) {
+            String fileExtension = format;
+            if ("jpeg2000".equals(format)) {
+              fileExtension = "jp2";
+            } else if ("JPEG2000".equals(format)) {
+              fileExtension = "JP2";
+            }
+            output = new File(FilenameUtils.getBaseName(
+                imageFile.getName()) + "." + fileExtension);
+          }
           convert(imageFile, output, format, input);
           log.log(new ToolsLogRecord(ToolsLevel.INFO,
               "Successfully transformed into a viewable image file: "
@@ -85,8 +96,8 @@ public class Pds3Transformer implements PdsTransformer {
     }
   }
 
-  private void convert(final File image, final File output,
-      final String format, final File inputLabel) {
+  private void convert(File image, File output, String format,
+      File inputLabel) {
     log.log(new ToolsLogRecord(ToolsLevel.INFO,
         "Transforming PDS3 image file: " + image.toString(), inputLabel));
     RenderedImage renderedImage = JAI.create("ImageRead", image);
