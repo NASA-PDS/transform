@@ -46,8 +46,8 @@
 
         <table>
           <tr><th>Command-Line Option</th><th>Description</th></tr>
-          <tr><td>-t, --target</td><td>Explicitly specify a PDS3 or PDS4 product label that contains a reference to an image file to transform. The target can be specified implicitly as well. (example: transform array2DImage.xml)</td></tr>
-          <tr><td>-o, --output</td><td>Specify an output file where the transformed image will reside. This is a required flag option.</td></tr>
+          <tr><td>-t, --target</td><td>Explicitly specify a PDS3 or PDS4 product label that contains a reference to an image file to transform. The target can be specified implicitly as well. (example: transform i943630r.xml)</td></tr>
+          <tr><td>-o, --output</td><td>Specify an output file where the transformed image will reside. If this option is not specified on the command-line, the tool will default to creating an output file using the target image file name with the user-specified format type as the file extension. This output file will be located in the current working directory.</td></tr>
           <tr><td>-f, --format-type</td><td>Specify a format type to use for the transformation. The valid values are: <i>raw, jpeg, tif, WBMP, PNM, JPG, wbmp, JPEG, PNG, jpeg 2000, tiff, BMP, JPEG2000, RAW, jpeg2000, GIF, TIF, TIFF, bmp, jpg, pnm, png, gif, JPEG 2000</i></td></tr>
           <tr><td>-V, --version</td><td>Display the release number and copyright information.</td></tr>
           <tr><td>-h, --help</td><td>Display tool usage.</td></tr>
@@ -57,12 +57,12 @@
       <subsection name="Running the Transform Tool">
         <p>The Transform Tool requires the passing in of a PDS3 or PDS4 product label that contains a reference to an image file. In addition, the tool assumes that the referenced image file is co-located with the product label. Under the current implementation, if there are multiple image files referenced in a target label, the tool will default to only transforming the first image file reference. Other notable caveats with this initial version of the tool include:
         </p>
-        
+
         <ul>
           <li>Transformations of PDS3 images greater than 8-bits are not supported at the moment.</li>
           <li>For PDS3 to TIFF transformations, the output tile size defaults to 8 lines by the image width.</li>
         </ul>
-        
+
         <p>This section demonstrates some of the ways that the tool can be executed using the command-line option flags:
         </p>
 
@@ -86,28 +86,38 @@
 
         <p>Under the current implementation, for PDS4 data products, the tool only supports the transformation of array 2D images.
         </p>
-        
+
+        <p>If the <i>-o</i> flag option is not specified on the command-line, the tool will default to creating an output file using the target image file name with the user-specified format as the file extension. The resulting output file will be written to the current working directory. The following command demonstrates transforming a PDS4 array 2D image referenced in the associated product label, <i>i943630r.xml</i>, into a graphics interchange format file:
+        </p>
+
+        <source>
+% transform ../examples/i943630r.xml -f gif
+        </source>
+
+        <p>The resulting output is written to the output file <i>i943630r.gif</i> in the current working directory.
+        </p>
+
         <p><b><i>Transform a Single PDS4 Label To Parameter Value Language (PVL) File</i></b></p>
-        
+
         <p>The following command demonstrates transforming a PDS4 label, <i>i943630r.xml</i>, to a PVL file, <i>i943630r.pvl</i>:
         </p>
-        
+
         <source>
 % transform ../examples/i943630r.xml -o i943630r.pvl -f pvl
         </source>
-        
+
         <p><b><i>Transform a Single 8-Bit PDS3 Image</i></b></p>
-        
+
         <p>The following command demonstrates transforming a PDS3, 8-bit image referenced in the associated attached label, <i>FHA01118.LBL</i>, into a bitmap image file named <i>FHA01118.BMP</i>:
         </p>
-        
+
         <source>
 % transform ../examples/FHA01118.LBL -o FHA01118.BMP -f bmp
         </source>
-        
+
         <p>The following command demonstrates transforming a PDS3, 8-bit image referenced in the associated detached label, <i>FF01.LBL</i>, into a portable network graphics file named <i>FF01.PNG</i>:
         </p>
-        
+
         <source>
 % transform ../examples/FF01.LBL -o FF01.PNG -f PNG
         </source>

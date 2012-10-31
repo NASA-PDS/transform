@@ -24,6 +24,9 @@
 
   <body>
     <release version="0.2.0" date="TBD" description="This release of the Transform Tool is a component of the integrated release 3.1.0 of the PDS 2010 System. This is an operational release of the system components to date.">
+      <action dev="mcayanan" type="update">
+        Update to create an output file using the target image file name with the user-specified format as the file extension when an output file is not specified on the command-line.
+      </action>
     </release>
 
     <release version="0.1.0" date="2012-09-30" description="This release of the Transform Tool is a component of the integrated release 3.0.0 of the PDS 2010 System. This is an operational release of the system components to date.">
