@@ -15,7 +15,9 @@ package gov.nasa.pds.transform.constants;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 
@@ -47,5 +49,17 @@ public class Constants {
     VALID_FORMATS.add("JP2");
     VALID_FORMATS.add("pvl");
     VALID_FORMATS.add("PVL");
+    VALID_FORMATS.add("html");
+    VALID_FORMATS.add("HTML");
+    VALID_FORMATS.add("html-structure-only");
+    VALID_FORMATS.add("HTML-STRUCTURE-ONLY");
+  }
+
+  public static Map<String, String> STYLESHEETS = new HashMap<String, String>();
+
+  static {
+    STYLESHEETS.put("pvl", "pvl.xsl");
+    STYLESHEETS.put("html", "html.xsl");
+    STYLESHEETS.put("html-structure-only", "html-structure-only.xsl");
   }
 }

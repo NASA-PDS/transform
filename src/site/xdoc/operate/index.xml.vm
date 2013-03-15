@@ -48,7 +48,7 @@
           <tr><th>Command-Line Option</th><th>Description</th></tr>
           <tr><td>-t, --target</td><td>Explicitly specify a PDS3 or PDS4 product label that contains a reference to an image file to transform. The target can be specified implicitly as well. (example: transform i943630r.xml)</td></tr>
           <tr><td>-o, --output</td><td>Specify an output file where the transformed image will reside. If this option is not specified on the command-line, the tool will default to creating an output file using the target image file name with the user-specified format type as the file extension. This output file will be located in the current working directory.</td></tr>
-          <tr><td>-f, --format-type</td><td>Specify a format type to use for the transformation. The valid values are: <i>raw, jpeg, tif, WBMP, PNM, JPG, wbmp, JPEG, PNG, jpeg 2000, tiff, BMP, JPEG2000, RAW, jpeg2000, GIF, TIF, TIFF, bmp, jpg, pnm, png, gif, JPEG 2000</i></td></tr>
+          <tr><td>-f, --format-type</td><td>Specify a format type to use for the transformation. The valid values are: <i>raw, jpeg, tif, WBMP, PNM, JPG, wbmp, JPEG, PNG, jpeg 2000, tiff, BMP, JPEG2000, RAW, jpeg2000, GIF, TIF, TIFF, bmp, jpg, pnm, png, gif, JPEG 2000, html, HTML, html-structure-only, HTML-STRUCTURE-ONLY</i></td></tr>
           <tr><td>-V, --version</td><td>Display the release number and copyright information.</td></tr>
           <tr><td>-h, --help</td><td>Display tool usage.</td></tr>
         </table>

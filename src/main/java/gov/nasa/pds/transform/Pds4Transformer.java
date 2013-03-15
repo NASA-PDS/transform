@@ -22,6 +22,7 @@ import gov.nasa.pds.objectAccess.ObjectAccess;
 import gov.nasa.pds.objectAccess.ObjectProvider;
 import gov.nasa.pds.objectAccess.ParseException;
 import gov.nasa.pds.objectAccess.TwoDImageExporter;
+import gov.nasa.pds.transform.constants.Constants;
 import gov.nasa.pds.transform.logging.ToolsLevel;
 import gov.nasa.pds.transform.logging.ToolsLogRecord;
 
@@ -50,34 +51,37 @@ public class Pds4Transformer implements PdsTransformer {
   private static Logger log = Logger.getLogger(
       Pds4Transformer.class.getName());
 
-  private static String STYLESHEET = "pvl.xsl";
-
   public void transform(File label, File output, String format)
   throws TransformException {
-    if (format.equalsIgnoreCase("pvl")) {
+    if (Constants.STYLESHEETS.containsKey(format.toLowerCase())) {
       // Use saxon for schematron (i.e. the XSLT generation).
       System.setProperty("javax.xml.transform.TransformerFactory",
           "net.sf.saxon.TransformerFactoryImpl");
       TransformerFactory factory = TransformerFactory.newInstance();
       try {
         Transformer pvlTransformer = factory.newTransformer(new StreamSource(
-          this.getClass().getResourceAsStream(STYLESHEET)));
+          this.getClass().getResourceAsStream(
+              Constants.STYLESHEETS.get(format.toLowerCase()))));
         if (output == null) {
+          String extension = format;
+          if (format.equalsIgnoreCase("html-structure-only")) {
+            extension = "html";
+          }
           output = new File(FilenameUtils.getBaseName(label.getName()) + "."
-              + format);
+              + extension);
         }
         pvlTransformer.transform(new StreamSource(label),
             new StreamResult(output));
         log.log(new ToolsLogRecord(ToolsLevel.INFO, "Successfully "
-            + "transformed input label to a pvl file: " + output.toString(),
-            label));
+            + "transformed input label: " + output.toString(), label));
       } catch (TransformerConfigurationException tce) {
         throw new TransformException(
-            "Error occurred while loading stylesheet for PVL transformation: "
+            "Error occurred while loading stylesheet for the '" + format
+            + "' transformation: "
             + tce.getMessage());
       } catch (TransformerException te) {
         throw new TransformException(
-            "Error occurred while performing PVL transformation: "
+            "Error occurred while performing stylesheet transformation: "
             + te.getMessage());
       }
     } else {
@@ -108,8 +112,8 @@ public class Pds4Transformer implements PdsTransformer {
           exporter.setExportType(format);
           exporter.convert(image, new FileOutputStream(output));
           log.log(new ToolsLogRecord(ToolsLevel.INFO,
-              "Successfully transformed image file. Output is found at the" +
-              " following location: " + output.toString(), label));
+              "Successfully transformed image file: "
+              + output.toString(), label));
         }
       } catch (ParseException pe) {
         throw new TransformException("Problems parsing input label: "

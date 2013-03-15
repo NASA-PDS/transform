@@ -56,9 +56,7 @@
         <filtering>true</filtering>
         <targetPath>gov/nasa/pds/transform</targetPath>
         <directory>src/main/resources/stylesheet</directory>
-        <includes>
-          <include>pvl.xsl</include>
-        </includes>
+        <includes/>
       </resource>
     </resources>
     <plugins>

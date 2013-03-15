@@ -58,7 +58,7 @@ public class TransformerFactory {
     String extension = FilenameUtils.getExtension(label.toString());
     if (extension.equalsIgnoreCase("xml")) {
       return new Pds4Transformer();
-    } else if (extension.equalsIgnoreCase("lbl")) {
+    } else if (extension.equalsIgnoreCase("lbl") || (extension.equalsIgnoreCase("img"))) {
       return new Pds3Transformer();
     } else {
       throw new TransformException(
