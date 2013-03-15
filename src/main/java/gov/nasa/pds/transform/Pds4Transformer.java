@@ -64,11 +64,12 @@ public class Pds4Transformer implements PdsTransformer {
               Constants.STYLESHEETS.get(format.toLowerCase()))));
         if (output == null) {
           String extension = format;
+          String baseFilename = FilenameUtils.getBaseName(label.getName());
           if (format.equalsIgnoreCase("html-structure-only")) {
             extension = "html";
+            baseFilename += "-structure";
           }
-          output = new File(FilenameUtils.getBaseName(label.getName()) + "."
-              + extension);
+          output = new File(baseFilename + "." + extension);
         }
         pvlTransformer.transform(new StreamSource(label),
             new StreamResult(output));
