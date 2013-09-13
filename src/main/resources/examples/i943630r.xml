@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?xml-model href="http://pds.jpl.nasa.gov/repository/pds4/examples/dph_examples_3a/dph_example_products/schemas/PDS4_PDS_0300a.sch"?>
+<?xml-model href="http://pds.jpl.nasa.gov/repository/pds4/examples/test_0100/PDS4_PDS_1000.sch"?>
 
-<Product_Observational xmlns="http://pds.nasa.gov/pds4/pds/v03"
-    xmlns:pds="http://pds.nasa.gov/pds4/pds/v03"
+<Product_Observational xmlns="http://pds.nasa.gov/pds4/pds/v1"
+    xmlns:pds="http://pds.nasa.gov/pds4/pds/v1"
     xmlns:dph="http://pds.nasa.gov/pds4/dph/v01"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pds.nasa.gov/pds4/pds/v03 http://pds.jpl.nasa.gov/repository/pds4/examples/dph_examples_3a/dph_example_products/schemas/PDS4_PDS_0300a.xsd
-                        http://pds.nasa.gov/pds4/dph/v01 http://pds.jpl.nasa.gov/repository/pds4/examples/dph_examples_3a/dph_example_products/local_dictionaries/dph_example_dict_0300a.xsd">
+    xsi:schemaLocation="http://pds.nasa.gov/pds4/pds/v1 http://pds.jpl.nasa.gov/repository/pds4/examples/test_0100/PDS4_PDS_1000.xsd
+                        http://pds.nasa.gov/pds4/dph/v01 http://pds.jpl.nasa.gov/repository/pds4/examples/test_0100/dph_example_dict_0100.xsd">
        
     <Identification_Area>
-        <logical_identifier>urn:nasa:pds:example.DPH.sampleProducts:exampleProducts:Array2D_Image.MPFL-M-IMP-2-EDR-V1.0</logical_identifier>
+        <logical_identifier>urn:nasa:pds:example.dph.sampleproducts:exampleproducts:array2d_image.mpfl-m-imp-2-edr-v1.0</logical_identifier>
         <version_id>1.0</version_id>
         <title>MARS
         	 PATHFINDER LANDER Experiment</title>
-        <information_model_version>0.3.0.0.a</information_model_version>
+        <information_model_version>1.0.0.0</information_model_version>
         <product_class>Product_Observational</product_class>
         <Modification_History>
             <Modification_Detail>
@@ -31,15 +31,24 @@
         <comment>Observational Intent</comment>
         <Time_Coordinates>
             <start_date_time>1997-07-07T23:48:33.442Z</start_date_time>
-            <stop_date_time>1997-07-07T23:48:51.766Z</stop_date_time>
+            <stop_date_time nilReason="unknown" xsi:nil="true"></stop_date_time>
             <local_mean_solar_time>not applicable</local_mean_solar_time>
             <local_true_solar_time>not applicable</local_true_solar_time>
         </Time_Coordinates>
+        <Primary_Result_Summary>
+            <type>Image</type>
+            <purpose>Science</purpose>
+            <data_regime>Visible</data_regime>
+            <processing_level_id>Raw</processing_level_id>
+            <description>
+                This is where a generic description of the product goes            
+            </description>
+        </Primary_Result_Summary>
         <Investigation_Area>
             <name>MARS_PATHFINDER</name>
             <type>Mission</type>
             <Internal_Reference>
-                <lidvid_reference>urn:nasa:pds:investigation.MARS_PATHFINDER::1.0</lidvid_reference>
+                <lidvid_reference>urn:nasa:pds:context:investigation:mission.mars_pathfinder::1.0</lidvid_reference>
                 <reference_type>data_to_investigation</reference_type>
             </Internal_Reference>
         </Investigation_Area>
@@ -47,19 +56,19 @@
             <name>Observing System for MPFL+IMP</name>
             <Observing_System_Component>
                 <name>MPFL</name>
-                <observing_system_component_type>Spacecraft</observing_system_component_type>
+                <type>Spacecraft</type>
                 <description>instrument_host MPFL</description>
                 <Internal_Reference>
-                    <lid_reference>urn:nasa:pds:instrument_host.MPFL</lid_reference>
+                    <lid_reference>urn:nasa:pds:context:instrument_host:instrument_host.mpfl</lid_reference>
                     <reference_type>is_instrument_host</reference_type>
                 </Internal_Reference>
             </Observing_System_Component>
             <Observing_System_Component>
                 <name>TT</name>
-                <observing_system_component_type>Instrument</observing_system_component_type>
+                <type>Instrument</type>
                 <description>instrument TT</description>
                 <Internal_Reference>
-                    <lid_reference>urn:nasa:pds:instrument.IMP__MPFL</lid_reference>
+                    <lid_reference>urn:nasa:pds:context:instrument:instrument.imp__mpfl</lid_reference>
                     <reference_type>is_instrument</reference_type>
                 </Internal_Reference>
             </Observing_System_Component>
@@ -69,7 +78,7 @@
             <type>planet</type>
             <description>description of MARS goes here</description>
             <Internal_Reference>
-                <lidvid_reference>urn:nasa:pds:target.MARS::1.0</lidvid_reference>
+                <lidvid_reference>urn:nasa:pds:context:target:target.mars::1.0</lidvid_reference>
                 <reference_type>data_to_target</reference_type>
             </Internal_Reference>
         </Target_Identification>
@@ -88,23 +97,23 @@
   
     <Reference_List>
         <Internal_Reference>
-            <lidvid_reference>urn:nasa:pds:investigation.MPFL::1.0</lidvid_reference>
+            <lidvid_reference>urn:nasa:pds:context:investigation:mission.mpfl::1.0</lidvid_reference>
             <reference_type>data_to_document</reference_type>
         </Internal_Reference>
         <Internal_Reference>
-            <lid_reference>urn:nasa:pds:instrument_host.MPFL</lid_reference>
+            <lid_reference>urn:nasa:pds:context:instrument_host:instrument_host.mpfl</lid_reference>
             <reference_type>data_to_document</reference_type>
         </Internal_Reference>
         <Internal_Reference>
-            <lid_reference>urn:nasa:pds:instrument.IMP__MPFL</lid_reference>
+            <lid_reference>urn:nasa:pds:context:instrument:instrument.imp__mpfl</lid_reference>
             <reference_type>data_to_document</reference_type>
         </Internal_Reference>
         <Internal_Reference>
-            <lid_reference>urn:nasa:pds:target.MARS</lid_reference>
+            <lid_reference>urn:nasa:pds:context:target:target.mars</lid_reference>
             <reference_type>data_to_document</reference_type>
         </Internal_Reference>
         <Internal_Reference>
-            <lid_reference>urn:nasa:pds:node.IMG</lid_reference>
+            <lid_reference>urn:nasa:pds:context:node:node.img</lid_reference>
             <reference_type>data_to_document</reference_type>
         </Internal_Reference>
     </Reference_List>
@@ -123,8 +132,7 @@
             <local_identifier>MPFL-M-IMP_IMG_GRAYSCALE</local_identifier>
             <offset unit="byte">0</offset>
             <axes>2</axes>
-            <axis_index_order>Last_Index_Fastest</axis_index_order>
-            <encoding_type>Binary</encoding_type>
+            <axis_index_order>Last Index Fastest</axis_index_order>
 
             <Element_Array>
                 <data_type>UnsignedMSB2</data_type>
@@ -135,13 +143,11 @@
             <Axis_Array>
                 <axis_name>Line</axis_name>
                 <elements>248</elements>
-                <unit>not applicable</unit>
                 <sequence_number>1</sequence_number>
             </Axis_Array>
             <Axis_Array>
                 <axis_name>Sample</axis_name>
                 <elements>256</elements>
-                <unit>not applicable</unit>
                 <sequence_number>2</sequence_number>
             </Axis_Array>
            
