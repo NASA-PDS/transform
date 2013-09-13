@@ -60,8 +60,11 @@ public enum Flag {
       "Specify an output file."),
 
   FORMAT("f", "format-type", "type", String.class,
-      "Specify the file format type to transform the input target into. "
-      + "Valid format types are the following: " + Constants.VALID_FORMATS),
+      "Specify the transformation format type to perform on the target. "
+      + "Valid format types are the following: "
+      + Constants.COMMON_VALID_FORMATS + ". "
+      + "The following additional format types are available for "
+      + "PDS4-related transformations: " + Constants.PDS4_ONLY_VALID_FORMATS),
 
   /**
    * Flag to specify the severity level and above to include in the report.

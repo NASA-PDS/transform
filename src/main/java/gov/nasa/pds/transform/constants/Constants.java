@@ -1,4 +1,4 @@
-// Copyright 2006-2012, by the California Institute of Technology.
+// Copyright 2006-2013, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship acknowledged.
 // Any commercial use must be negotiated with the Office of Technology Transfer
 // at the California Institute of Technology.
@@ -32,27 +32,74 @@ public class Constants {
    * Contains the valid format file types that can be used for
    * transformations.
    */
-  public static List<String> VALID_FORMATS = new ArrayList<String>();
-
+  public static List<String> COMMON_VALID_FORMATS = new ArrayList<String>();
   static {
-    VALID_FORMATS.addAll(Arrays.asList(ImageIO.getReaderFormatNames()));
-    VALID_FORMATS.remove("pds");
-    VALID_FORMATS.remove("vicar");
-    VALID_FORMATS.remove("vic");
-    VALID_FORMATS.remove("isis");
-    VALID_FORMATS.remove("fits");
-    VALID_FORMATS.remove("jpeg 2000");
-    VALID_FORMATS.remove("jpeg2000");
-    VALID_FORMATS.remove("JPEG 2000");
-    VALID_FORMATS.remove("JPEG2000");
-    VALID_FORMATS.add("jp2");
-    VALID_FORMATS.add("JP2");
-    VALID_FORMATS.add("pvl");
-    VALID_FORMATS.add("PVL");
-    VALID_FORMATS.add("html");
-    VALID_FORMATS.add("HTML");
-    VALID_FORMATS.add("html-structure-only");
-    VALID_FORMATS.add("HTML-STRUCTURE-ONLY");
+    COMMON_VALID_FORMATS.addAll(Arrays.asList(ImageIO.getReaderFormatNames()));
+    COMMON_VALID_FORMATS.remove("pds");
+    COMMON_VALID_FORMATS.remove("vicar");
+    COMMON_VALID_FORMATS.remove("vic");
+    COMMON_VALID_FORMATS.remove("isis");
+    COMMON_VALID_FORMATS.remove("fits");
+    COMMON_VALID_FORMATS.remove("jpeg 2000");
+    COMMON_VALID_FORMATS.remove("jpeg2000");
+    COMMON_VALID_FORMATS.remove("JPEG 2000");
+    COMMON_VALID_FORMATS.remove("JPEG2000");
+    COMMON_VALID_FORMATS.add("jp2");
+    COMMON_VALID_FORMATS.add("JP2");
+  }
+
+  /**
+   * Contains the valid transformation formats that apply to only PDS3 data
+   * products.
+   *
+   */
+  public static List<String> PDS3_VALID_FORMATS = new ArrayList<String>();
+  static {
+    PDS3_VALID_FORMATS.addAll(COMMON_VALID_FORMATS);
+  }
+
+  /**
+   * Contains the valid transformation formats that apply to only PDS4
+   * data products.
+   *
+   */
+  public static List<String> PDS4_VALID_FORMATS = new ArrayList<String>();
+  static {
+    PDS4_VALID_FORMATS.addAll(COMMON_VALID_FORMATS);
+    PDS4_VALID_FORMATS.add("pvl");
+    PDS4_VALID_FORMATS.add("PVL");
+    PDS4_VALID_FORMATS.add("html");
+    PDS4_VALID_FORMATS.add("HTML");
+    PDS4_VALID_FORMATS.add("html-structure-only");
+    PDS4_VALID_FORMATS.add("HTML-STRUCTURE-ONLY");
+    PDS4_VALID_FORMATS.add("csv");
+    PDS4_VALID_FORMATS.add("CSV");
+  }
+
+  /**
+   * This is used to only tell which transformations are PDS4 specific.
+   *
+   */
+  public static List<String> PDS4_ONLY_VALID_FORMATS = new ArrayList<String>();
+  static {
+    PDS4_ONLY_VALID_FORMATS.add("pvl");
+    PDS4_ONLY_VALID_FORMATS.add("PVL");
+    PDS4_ONLY_VALID_FORMATS.add("html");
+    PDS4_ONLY_VALID_FORMATS.add("HTML");
+    PDS4_ONLY_VALID_FORMATS.add("html-structure-only");
+    PDS4_ONLY_VALID_FORMATS.add("HTML-STRUCTURE-ONLY");
+    PDS4_ONLY_VALID_FORMATS.add("csv");
+    PDS4_ONLY_VALID_FORMATS.add("CSV");
+  }
+
+  /**
+   * Contains all the valid transformation formats possible.
+   *
+   */
+  public static List<String> ALL_VALID_FORMATS = new ArrayList<String>();
+  static {
+    ALL_VALID_FORMATS.addAll(PDS3_VALID_FORMATS);
+    ALL_VALID_FORMATS.addAll(PDS4_VALID_FORMATS);
   }
 
   public static Map<String, String> STYLESHEETS = new HashMap<String, String>();

@@ -13,6 +13,8 @@
 // $Id$
 package gov.nasa.pds.transform;
 
+import gov.nasa.pds.transform.constants.Constants;
+
 import java.io.File;
 
 import org.apache.commons.io.FilenameUtils;
@@ -42,27 +44,40 @@ public class TransformerFactory {
   }
 
   /**
-   * Gets an instance of a Transformer.
+   * Gets an instance of a Transformer. If the given label ends in ".xml",
+   * then this will return a PDS4 Transformer object. Otherwise, a PDS3
+   * Transformer object will be returned.
    *
-   * @param label A PDS3 or PDS4 label. Filename must end in 'xml' or 'lbl'.
+   * @param label A PDS3 or PDS4 label.
+   * @param formatType The transformation format.
    *
    * @return The appropriate Transformer object.
    *
-   * @throws TransformException If the label filename does not end in 'xml'
-   *  or 'lbl', case-insensitive.
+   * @throws TransformException If the input label could not be opened or
+   * the format type is not one of the valid formats.
    */
-  public PdsTransformer newInstance(File label) throws TransformException {
+  public PdsTransformer newInstance(File label, String formatType)
+  throws TransformException {
     if (!label.exists()) {
       throw new TransformException("File not found: " + label);
     }
     String extension = FilenameUtils.getExtension(label.toString());
     if (extension.equalsIgnoreCase("xml")) {
-      return new Pds4Transformer();
-    } else if (extension.equalsIgnoreCase("lbl") || (extension.equalsIgnoreCase("img"))) {
-      return new Pds3Transformer();
+      if (Constants.PDS4_VALID_FORMATS.contains(formatType)) {
+        return new Pds4Transformer();
+      } else {
+        throw new TransformException("Format type '" + formatType
+            + "' is not one of the valid formats for a PDS4 transformation: "
+            + Constants.PDS4_VALID_FORMATS);
+      }
     } else {
-      throw new TransformException(
-          "Target does not appear to be a PDS3 or PDS4 label.");
+      if (Constants.PDS3_VALID_FORMATS.contains(formatType)) {
+        return new Pds3Transformer();
+      } else {
+        throw new TransformException("Format type '" + formatType
+            + "' is not one of the valid formats for a PDS3 transformation: "
+            + Constants.PDS3_VALID_FORMATS);
+      }
     }
   }
 }

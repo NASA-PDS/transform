@@ -1,4 +1,4 @@
-// Copyright 2006-2012, by the California Institute of Technology.
+// Copyright 2006-2013, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship acknowledged.
 // Any commercial use must be negotiated with the Office of Technology Transfer
 // at the California Institute of Technology.
@@ -25,6 +25,7 @@ import gov.nasa.pds.objectAccess.TwoDImageExporter;
 import gov.nasa.pds.transform.constants.Constants;
 import gov.nasa.pds.transform.logging.ToolsLevel;
 import gov.nasa.pds.transform.logging.ToolsLogRecord;
+import gov.nasa.pds.transform.types.pds4.TableTransformer;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -84,6 +85,22 @@ public class Pds4Transformer implements PdsTransformer {
         throw new TransformException(
             "Error occurred while performing stylesheet transformation: "
             + te.getMessage());
+      }
+    } else if ("csv".equalsIgnoreCase(format)){
+      if (output == null) {
+        String extension = format;
+        String baseFilename = FilenameUtils.getBaseName(label.getName());
+        output = new File(baseFilename + "." + extension);
+      }
+      try {
+        TableTransformer t = new TableTransformer();
+        t.transform(label, output);
+        log.log(new ToolsLogRecord(ToolsLevel.INFO,
+            "Successfully transformed table file: "
+            + output.toString(), label));
+      } catch (Exception e) {
+        throw new TransformException("Problem occurred during "
+            + "transformation: " + e.getMessage());
       }
     } else {
       try {

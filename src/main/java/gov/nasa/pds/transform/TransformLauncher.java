@@ -1,4 +1,4 @@
-// Copyright 2006-2012, by the California Institute of Technology.
+// Copyright 2006-2013, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship acknowledged.
 // Any commercial use must be negotiated with the Office of Technology Transfer
 // at the California Institute of Technology.
@@ -21,7 +21,6 @@ import gov.nasa.pds.transform.util.ToolInfo;
 import gov.nasa.pds.transform.util.Utility;
 import gov.nasa.pds.transform.commandline.options.Flag;
 import gov.nasa.pds.transform.commandline.options.InvalidOptionException;
-import gov.nasa.pds.transform.constants.Constants;
 
 import java.io.File;
 import java.io.IOException;
@@ -127,24 +126,7 @@ public class TransformLauncher {
       throw new InvalidOptionException("No target specified.");
     }
     if (formatType.isEmpty()) {
-      throw new InvalidOptionException("-f flag option not specified.");
-    } else {
-      boolean found = false;
-      for (String type : Constants.VALID_FORMATS) {
-        if (type.equals(formatType)) {
-          found = true;
-          break;
-        }
-      }
-      if (!found) {
-        throw new InvalidOptionException("Format type specified is not a "
-            + "valid value. Valid values are: " + Constants.VALID_FORMATS);
-      }
-      if ("jp2".equals(formatType)) {
-        formatType = "jpeg2000";
-      } else if ("JP2".equals(formatType)) {
-        formatType = "JPEG2000";
-      }
+      throw new InvalidOptionException("-f flag option is required.");
     }
   }
 
@@ -246,7 +228,12 @@ public class TransformLauncher {
   private void doTransformation() {
     TransformerFactory factory = TransformerFactory.getInstance();
     try {
-      PdsTransformer transformer = factory.newInstance(target);
+      PdsTransformer transformer = factory.newInstance(target, formatType);
+      if ("jp2".equals(formatType)) {
+        formatType = "jpeg2000";
+      } else if ("JP2".equals(formatType)) {
+        formatType = "JPEG2000";
+      }
       transformer.transform(target, output, formatType);
     } catch (TransformException te) {
       log.log(new ToolsLogRecord(ToolsLevel.SEVERE, te.getMessage(), target));
