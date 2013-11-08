@@ -24,6 +24,18 @@
 
   <body>
     <release version="0.3.0" date="TBD" description="TBD">
+      <action dev="mcayanan" type="add" issue="PDS-200">
+        Added support for executing python scripts to do transformations. Python script added performs VICAR to PDS4 transformations.
+      </action>
+      <action dev="mcayanan" type="update" issue="PDS-211">
+        Re-factored code to provide an API for the Transformation library.
+      </action>
+      <action dev="mcayanan" type="update">
+        Updated the tool to support the passing in of multiple targets to transform.
+      </action>
+      <action dev="mcayanan" type="update">
+        Updated the tool to allow the output flag option to accept a directory specification rather than a file.
+      </action>
     </release>
 
     <release version="0.2.1" date="2013-09-13" description="This release of the Transform Tool is a component of the integrated releases 3.1.1 and 4.0.0 of the PDS4 System. This is an operational release of the system components to date.">

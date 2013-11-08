@@ -54,7 +54,16 @@
       <directory>src/main/resources/examples</directory>
       <outputDirectory>examples</outputDirectory>
       <fileMode>644</fileMode>
-      <lineEnding>crlf</lineEnding>
+      <lineEnding>keep</lineEnding>
+    </fileSet>
+    <fileSet>
+      <directory>src/main/resources/external-programs</directory>
+      <outputDirectory>external-programs</outputDirectory>
+      <excludes>
+        <exclude>*.properties</exclude>
+      </excludes>
+      <fileMode>755</fileMode>
+      <lineEnding>keep</lineEnding>
     </fileSet>
   </fileSets>
 

@@ -13,12 +13,33 @@
 // $Id$
 package gov.nasa.pds.transform.util;
 
+import gov.nasa.arc.pds.xml.generated.FileAreaObservational;
+import gov.nasa.arc.pds.xml.generated.ProductObservational;
+import gov.nasa.pds.objectAccess.ObjectAccess;
+import gov.nasa.pds.objectAccess.ObjectProvider;
+import gov.nasa.pds.objectAccess.ParseException;
+import gov.nasa.pds.tools.LabelParserException;
+import gov.nasa.pds.tools.label.Label;
+import gov.nasa.pds.tools.label.ManualPathResolver;
+import gov.nasa.pds.tools.label.parser.DefaultLabelParser;
+import gov.nasa.pds.tools.util.MessageUtils;
+
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+
+import org.apache.commons.io.FilenameUtils;
 
 /**
  * Utility class.
@@ -63,5 +84,95 @@ public class Utility {
     "EEE, MMM dd yyyy 'at' hh:mm:ss a");
     Date date = Calendar.getInstance().getTime();
     return df.format(date);
+  }
+
+  public static Label parsePds3Label(File label) throws Exception {
+    ManualPathResolver resolver = new ManualPathResolver();
+    DefaultLabelParser parser = new DefaultLabelParser(false, true, resolver);
+    Label l = null;
+    try {
+      l = parser.parseLabel(label.toURI().toURL());
+    } catch (LabelParserException lp) {
+      throw new Exception("Problem while parsing input label: "
+          + MessageUtils.getProblemMessage(lp));
+    } catch (Exception e) {
+      throw new Exception("Problem while parsing input label: "
+          + e.getMessage());
+    }
+    return l;
+  }
+
+  public static List<FileAreaObservational> getFileAreas(File pds4Label)
+  throws ParseException {
+    List<FileAreaObservational> result = new ArrayList<FileAreaObservational>();
+    ObjectProvider objectAccess = new ObjectAccess();
+    ProductObservational product = objectAccess.getProduct(pds4Label,
+        ProductObservational.class);
+    if (product.getFileAreaObservationals() != null) {
+      result.addAll(product.getFileAreaObservationals());
+    }
+    return result;
+  }
+
+  public static File createOutputFile(File file, File outputDir, String format) {
+    String fileExtension = format;
+    String baseFilename = FilenameUtils.getBaseName(file.getName());
+    if ("html-structure-only".equals(format)) {
+      fileExtension = "html";
+      baseFilename += "-structure";
+    } else if ("pds".equals(format)) {
+      fileExtension = "img";
+    }
+    File outputFile = new File(outputDir, baseFilename + "." + fileExtension);
+    return outputFile;
+  }
+
+  public static void exec(File program, String[] args)
+  throws IOException, InterruptedException {
+    List<String> cmdArray = new ArrayList<String>();
+    cmdArray.add(program.toString());
+    cmdArray.addAll(Arrays.asList(args));
+    if ("py".equalsIgnoreCase(FilenameUtils.getExtension(
+        program.getName()))) {
+      cmdArray.add(0, "python");
+    }
+    Runtime runtime = Runtime.getRuntime();
+    Process process = null;
+    try {
+      process = runtime.exec(cmdArray.toArray(new String[0]));
+    } catch (IOException io) {
+      throw new IOException("Error occurred while running external "
+          + "transform process: " + io.getMessage());
+    }
+    InputStream errstream = process.getErrorStream();
+    BufferedReader errReader = new BufferedReader(
+        new InputStreamReader(errstream));
+    String errorMsg = "";
+    try {
+      String line = "";
+      while ( (line = errReader.readLine()) != null) {
+        errorMsg += line + "\n";
+      }
+    } catch (IOException io) {
+      throw new IOException("Error occurred while reading error stream: "
+          + io.getMessage());
+    }
+    try {
+      if (process.waitFor() != 0) {
+        PrintStream ps = new PrintStream(process.getOutputStream());
+        ps.println();
+
+        throw new IOException("Process did not terminate normally, exit code ["
+            + process.exitValue() + "]: " + errorMsg);
+      }
+    } catch (InterruptedException i) {
+      throw i;
+    } finally {
+      if (errReader != null) {
+        try {
+          errReader.close();
+        } catch (Exception ignore) {}
+      }
+    }
   }
 }

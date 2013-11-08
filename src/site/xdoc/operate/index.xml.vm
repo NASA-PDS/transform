@@ -47,8 +47,8 @@
         <table>
           <tr><th>Command-Line Option</th><th>Description</th></tr>
           <tr><td>-t, --target</td><td>Explicitly specify a PDS3 or PDS4 product label that contains a reference to an image file to transform. The target can be specified implicitly as well. (example: transform i943630r.xml)</td></tr>
-          <tr><td>-o, --output</td><td>Specify an output file where the transformed image will reside. If this option is not specified on the command-line, the tool will default to creating an output file using the target's data file name with the user-specified format type as the file extension. This output file will be located in the current working directory.</td></tr>
-          <tr><td>-f, --format-type</td><td>Specify a format type to use for the transformation. The valid values are: <i>raw, tif, jpeg, mgn-fbidr, WBMP, PNM, JPG, wbmp, JPEG, PNG, tiff, BMP, RAW, GIF, TIF, TIFF, jpg, bmp, pnm, png, gif, jp2, JP2</i>. The following additional format types are available for PDS4-related transformations: <i>pvl, PVL, html, HTML, html-structure-only, HTML-STRUCTURE-ONLY, csv, CSV</i></td></tr>
+          <tr><td>-o, --output</td><td>Specify an output directory where the transformed images will reside. If this option is not specified on the command-line, the tool will default to placing the output files in the current working directory.</td></tr>
+          <tr><td>-f, --format-type</td><td>Specify the transformation format type to perform on the target(s). Valid format types are the following: [raw, tif, jpeg, mgn-fbidr, jpg, bmp, pnm, wbmp, png, gif, tiff, jp2]. For PDS4 products, the following additional formats are available: [pvl, html, html-structure-only, csv]. For PDS3 products, the following additional formats are available: [pds] (applies to target VICAR images only.)</td></tr>
           <tr><td>-V, --version</td><td>Display the release number and copyright information.</td></tr>
           <tr><td>-h, --help</td><td>Display tool usage.</td></tr>
         </table>
@@ -119,7 +119,7 @@
         </p>
 
         <source>
-% transform ../examples/FF01.LBL -o FF01.PNG -f PNG
+% transform ../examples/FF01.LBL -o FF01.PNG -f png
         </source>
       </subsection>
     </section>

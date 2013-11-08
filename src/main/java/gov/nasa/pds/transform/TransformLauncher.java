@@ -17,10 +17,13 @@ import gov.nasa.pds.transform.logging.ToolsLevel;
 import gov.nasa.pds.transform.logging.ToolsLogRecord;
 import gov.nasa.pds.transform.logging.format.TransformFormatter;
 import gov.nasa.pds.transform.logging.handler.TransformStreamHandler;
+import gov.nasa.pds.transform.product.ProductTransformer;
+import gov.nasa.pds.transform.product.ProductTransformerFactory;
 import gov.nasa.pds.transform.util.ToolInfo;
 import gov.nasa.pds.transform.util.Utility;
 import gov.nasa.pds.transform.commandline.options.Flag;
 import gov.nasa.pds.transform.commandline.options.InvalidOptionException;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -31,6 +34,7 @@ import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -55,25 +59,22 @@ public class TransformLauncher {
   private static Logger log = Logger.getLogger(
       TransformLauncher.class.getName());
 
-  /** The output file. */
-  private File output;
+  /** The output directory. */
+  private File outputDir;
 
-  /** A list of targets to transform. (Not used at the moment) */
+  /** A list of targets to transform. */
   private List<File> targets;
-
-  /** A target file. */
-  private File target;
 
   /** A format type for the transformation. */
   private String formatType;
 
   /**
    * Constructor.
+   * @throws IOException
    */
-  public TransformLauncher() {
-    output = null;
+  public TransformLauncher() throws IOException {
+    outputDir = new File(".").getCanonicalFile();
     targets = new ArrayList<File>();
-    target = null;
     formatType = "";
   }
 
@@ -101,9 +102,12 @@ public class TransformLauncher {
    */
   public final void query(final CommandLine line)
   throws InvalidOptionException, IOException {
+    List<String> targetList = new ArrayList<String>();
     for (Iterator<String> i = line.getArgList().iterator(); i.hasNext();) {
-      target = new File(i.next().toString());
-      break;
+      String[] values = i.next().split(",");
+      for (int index = 0; index < values.length; index++) {
+        targetList.add(values[index].trim());
+      }
     }
     List<Option> processedOptions = Arrays.asList(line.getOptions());
     for (Option o : processedOptions) {
@@ -114,15 +118,17 @@ public class TransformLauncher {
         displayVersion();
         System.exit(0);
       } else if (o.getOpt().equals(Flag.TARGET.getShortName())) {
-        target = new File(o.getValue());
-      } else if (o.getOpt().equals(Flag.OUTPUT.getShortName())) {
-        setOutput(o.getValue());
+        targetList.addAll(o.getValuesList());
+      } else if (o.getOpt().equals(Flag.OUTPUTDIR.getShortName())) {
+        setOutputDir(o.getValue());
       } else if (o.getOpt().equals(Flag.FORMAT.getShortName())) {
-        setFormatType(o.getValue());
+        setFormatType(o.getValue().toLowerCase());
       }
     }
     setLogger();
-    if (target == null) {
+    if (!targetList.isEmpty()) {
+      setTargets(targetList);
+    } else {
       throw new InvalidOptionException("No target specified.");
     }
     if (formatType.isEmpty()) {
@@ -153,7 +159,7 @@ public class TransformLauncher {
   }
 
   /**
-   * Set the target.
+   * Set the targets.
    *
    * @param targets A list of targets.
    */
@@ -166,12 +172,15 @@ public class TransformLauncher {
   }
 
   /**
-   * Set the output file.
+   * Set the output directory.
    *
-   * @param output A file.
+   * @param output A directory.
    */
-  private void setOutput(String output) {
-    this.output = new File(output);
+  private void setOutputDir(String outputDir) {
+    this.outputDir = new File(outputDir);
+    if (!this.outputDir.exists()) {
+      this.outputDir.mkdirs();
+    }
   }
 
   /**
@@ -212,11 +221,9 @@ public class TransformLauncher {
     log.log(new ToolsLogRecord(ToolsLevel.CONFIGURATION,
         "Time                        " + Utility.getDateTime()));
     log.log(new ToolsLogRecord(ToolsLevel.CONFIGURATION,
-        "Target                      " + target.toString()));
-    if (output != null) {
-      log.log(new ToolsLogRecord(ToolsLevel.CONFIGURATION,
-          "Output                      " + output.toString()));
-    }
+        "Target                      " + targets.toString()));
+    log.log(new ToolsLogRecord(ToolsLevel.CONFIGURATION,
+        "Output Directory            " + outputDir.toString()));
     log.log(new ToolsLogRecord(ToolsLevel.CONFIGURATION,
         "Format Type                 " + formatType + "\n"));
   }
@@ -226,17 +233,12 @@ public class TransformLauncher {
    * Do the transformation.
    */
   private void doTransformation() {
-    TransformerFactory factory = TransformerFactory.getInstance();
+    ProductTransformerFactory factory = ProductTransformerFactory.getInstance();
     try {
-      PdsTransformer transformer = factory.newInstance(target, formatType);
-      if ("jp2".equals(formatType)) {
-        formatType = "jpeg2000";
-      } else if ("JP2".equals(formatType)) {
-        formatType = "JPEG2000";
-      }
-      transformer.transform(target, output, formatType);
-    } catch (TransformException te) {
-      log.log(new ToolsLogRecord(ToolsLevel.SEVERE, te.getMessage(), target));
+      ProductTransformer pt = factory.newInstance(targets.get(0), formatType);
+      pt.transform(targets, outputDir, formatType);
+    } catch (TransformException t) {
+      log.log(new ToolsLogRecord(ToolsLevel.SEVERE, t.getMessage()));
     }
   }
 
@@ -252,7 +254,7 @@ public class TransformLauncher {
     }
   }
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException {
     //This removes the log4j warnings
     ConsoleAppender ca = new ConsoleAppender(new PatternLayout("%-5p %m%n"));
     ca.setThreshold(Priority.FATAL);

@@ -13,11 +13,17 @@
 // $Id$
 package gov.nasa.pds.transform.constants;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.imageio.ImageIO;
 
@@ -34,7 +40,11 @@ public class Constants {
    */
   public static List<String> COMMON_VALID_FORMATS = new ArrayList<String>();
   static {
-    COMMON_VALID_FORMATS.addAll(Arrays.asList(ImageIO.getReaderFormatNames()));
+    HashSet<String> set = new HashSet<String>();
+    for (String format : Arrays.asList(ImageIO.getReaderFormatNames())) {
+      set.add(format.toLowerCase());
+    }
+    COMMON_VALID_FORMATS.addAll(set);
     COMMON_VALID_FORMATS.remove("pds");
     COMMON_VALID_FORMATS.remove("vicar");
     COMMON_VALID_FORMATS.remove("vic");
@@ -42,10 +52,57 @@ public class Constants {
     COMMON_VALID_FORMATS.remove("fits");
     COMMON_VALID_FORMATS.remove("jpeg 2000");
     COMMON_VALID_FORMATS.remove("jpeg2000");
-    COMMON_VALID_FORMATS.remove("JPEG 2000");
-    COMMON_VALID_FORMATS.remove("JPEG2000");
     COMMON_VALID_FORMATS.add("jp2");
-    COMMON_VALID_FORMATS.add("JP2");
+  }
+
+  public static Map<String, String> STYLESHEETS = new HashMap<String, String>();
+  static {
+    Properties props = new Properties();
+    try {
+      URL propertyFile = Constants.class.getResource("stylesheets.properties");
+      InputStream in = propertyFile.openStream();
+      props.load(in);
+     } catch (IOException io) {
+         throw new RuntimeException(io.getMessage());
+     }
+    for(Object key : props.keySet()) {
+      STYLESHEETS.put(key.toString(), props.getProperty(key.toString()));
+    }
+  }
+
+  public static Map<String, File> EXTERNAL_PROGRAMS = new HashMap<String, File>();
+  static {
+    Properties props = new Properties();
+    try {
+      URL propertyFile = Constants.class.getResource("external-programs.properties");
+      InputStream in = propertyFile.openStream();
+      props.load(in);
+     } catch (IOException io) {
+         throw new RuntimeException(io.getMessage());
+     }
+    for(Object key : props.keySet()) {
+      File program = new File(
+          System.getProperties().getProperty("external.programs.home"),
+          props.getProperty(key.toString()));
+      EXTERNAL_PROGRAMS.put(key.toString(), program);
+    }
+  }
+
+  public static List<String> PDS3_ONLY_VALID_FORMATS = new ArrayList<String>();
+  static {
+    PDS3_ONLY_VALID_FORMATS.add("pds");
+  }
+
+  /**
+   * This is used to only tell which transformations are PDS4 specific.
+   *
+   */
+  public static List<String> PDS4_ONLY_VALID_FORMATS = new ArrayList<String>();
+  static {
+    PDS4_ONLY_VALID_FORMATS.add("pvl");
+    PDS4_ONLY_VALID_FORMATS.add("html");
+    PDS4_ONLY_VALID_FORMATS.add("html-structure-only");
+    PDS4_ONLY_VALID_FORMATS.add("csv");
   }
 
   /**
@@ -56,6 +113,7 @@ public class Constants {
   public static List<String> PDS3_VALID_FORMATS = new ArrayList<String>();
   static {
     PDS3_VALID_FORMATS.addAll(COMMON_VALID_FORMATS);
+    PDS3_VALID_FORMATS.addAll(PDS3_ONLY_VALID_FORMATS);
   }
 
   /**
@@ -66,47 +124,6 @@ public class Constants {
   public static List<String> PDS4_VALID_FORMATS = new ArrayList<String>();
   static {
     PDS4_VALID_FORMATS.addAll(COMMON_VALID_FORMATS);
-    PDS4_VALID_FORMATS.add("pvl");
-    PDS4_VALID_FORMATS.add("PVL");
-    PDS4_VALID_FORMATS.add("html");
-    PDS4_VALID_FORMATS.add("HTML");
-    PDS4_VALID_FORMATS.add("html-structure-only");
-    PDS4_VALID_FORMATS.add("HTML-STRUCTURE-ONLY");
-    PDS4_VALID_FORMATS.add("csv");
-    PDS4_VALID_FORMATS.add("CSV");
-  }
-
-  /**
-   * This is used to only tell which transformations are PDS4 specific.
-   *
-   */
-  public static List<String> PDS4_ONLY_VALID_FORMATS = new ArrayList<String>();
-  static {
-    PDS4_ONLY_VALID_FORMATS.add("pvl");
-    PDS4_ONLY_VALID_FORMATS.add("PVL");
-    PDS4_ONLY_VALID_FORMATS.add("html");
-    PDS4_ONLY_VALID_FORMATS.add("HTML");
-    PDS4_ONLY_VALID_FORMATS.add("html-structure-only");
-    PDS4_ONLY_VALID_FORMATS.add("HTML-STRUCTURE-ONLY");
-    PDS4_ONLY_VALID_FORMATS.add("csv");
-    PDS4_ONLY_VALID_FORMATS.add("CSV");
-  }
-
-  /**
-   * Contains all the valid transformation formats possible.
-   *
-   */
-  public static List<String> ALL_VALID_FORMATS = new ArrayList<String>();
-  static {
-    ALL_VALID_FORMATS.addAll(PDS3_VALID_FORMATS);
-    ALL_VALID_FORMATS.addAll(PDS4_VALID_FORMATS);
-  }
-
-  public static Map<String, String> STYLESHEETS = new HashMap<String, String>();
-
-  static {
-    STYLESHEETS.put("pvl", "pvl.xsl");
-    STYLESHEETS.put("html", "html.xsl");
-    STYLESHEETS.put("html-structure-only", "html-structure-only.xsl");
+    PDS4_VALID_FORMATS.addAll(PDS4_ONLY_VALID_FORMATS);
   }
 }

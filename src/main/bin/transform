@@ -42,4 +42,4 @@ TRANSFORM_JAR=`ls ${LIB_DIR}/transform-*.jar`
 
 # Executes Transform Tool via the executable jar file
 # Arguments are passed in to the tool via '$@'
-${JAVA_HOME}/bin/java -jar ${TRANSFORM_JAR} "$@"
+${JAVA_HOME}/bin/java -Dexternal.programs.home=${PARENT_DIR}/external-programs -jar ${TRANSFORM_JAR} "$@"

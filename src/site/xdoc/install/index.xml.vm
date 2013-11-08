@@ -94,6 +94,10 @@ or
           <p>This directory contains the dependent jar files for the tool along with the executable jar file (${project.artifactId}-${project.version}.jar) containing the Transform Tool software.
           </p>
         </li>
+        <li><b>external-programs/</b><br/>
+          <p>This directory contains the external programs that the Transform Tool uses for some of its transformations.
+          </p>
+        </li>
       </ul>
     </section>
 
@@ -169,6 +173,25 @@ set PARENT_DIR=%SCRIPT_DIR%..
 
 set PARENT_DIR=C:\Program Files\\${project.artifactId}-${project.version}
         </source>
+      </subsection>
+
+      <subsection name="Java System Properties">
+      <p>The Transform Tool utilizes external programs to perform some of its transformations. The Java system property, <i>external.programs.home</i>, is used to point to the top-level directory of the location of these programs. By default, the Transform Tool shell script and batch file come configured to point to the <i>external-programs</i> directory of the deployment package. The following shows how the <i>external.programs.home</i> system property is set in the Transform Tool startup scripts:
+      </p>
+
+      <p>In the <i>transform</i> shell script:
+      </p>
+
+      <source>
+${JAVA_HOME}/bin/java -Dexternal.programs.home=${PARENT_DIR}/external-programs -jar ${TRANSFORM_JAR} "$@"
+      </source>
+
+      <p>In the <i>transform.bat</i> batch file:
+      </p>
+
+      <source>
+"%JAVA_HOME%"\bin\java -Dexternal.programs.home=%PARENT_DIR%\external-programs -jar "%TRANSFORM_JAR%" %*
+      </source>
       </subsection>
     </section>
   </body>

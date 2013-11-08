@@ -1,4 +1,4 @@
-// Copyright 2006-2012, by the California Institute of Technology.
+// Copyright 2006-2013, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship acknowledged.
 // Any commercial use must be negotiated with the Office of Technology Transfer
 // at the California Institute of Technology.
@@ -11,8 +11,9 @@
 // providing access to foreign nationals.
 //
 // $Id$
-package gov.nasa.pds.transform;
+package gov.nasa.pds.transform.product;
 
+import gov.nasa.pds.transform.TransformException;
 import gov.nasa.pds.transform.constants.Constants;
 
 import java.io.File;
@@ -26,19 +27,19 @@ import org.apache.commons.io.FilenameUtils;
  * @author mcayanan
  *
  */
-public class TransformerFactory {
+public class ProductTransformerFactory {
   /** Holds the factory object. */
-  private static TransformerFactory factory = null;
+  private static ProductTransformerFactory factory = null;
 
   /** Private constructor. */
-  private TransformerFactory() {}
+  private ProductTransformerFactory() {}
 
   /** Gets an instance of the factory.
    *
    */
-  public static synchronized TransformerFactory getInstance() {
+  public static synchronized ProductTransformerFactory getInstance() {
     if (factory == null) {
-      factory = new TransformerFactory();
+      factory = new ProductTransformerFactory();
     }
     return factory;
   }
@@ -48,33 +49,39 @@ public class TransformerFactory {
    * then this will return a PDS4 Transformer object. Otherwise, a PDS3
    * Transformer object will be returned.
    *
-   * @param label A PDS3 or PDS4 label.
-   * @param formatType The transformation format.
+   * @param target A PDS3 or PDS4 label file.
+   * @param format The transformation format.
    *
    * @return The appropriate Transformer object.
    *
    * @throws TransformException If the input label could not be opened or
    * the format type is not one of the valid formats.
    */
-  public PdsTransformer newInstance(File label, String formatType)
+  public ProductTransformer newInstance(File target, String format)
   throws TransformException {
-    if (!label.exists()) {
-      throw new TransformException("File not found: " + label);
+    if (!target.exists()) {
+      throw new TransformException("Target not found: " + target);
     }
-    String extension = FilenameUtils.getExtension(label.toString());
+    String extension = FilenameUtils.getExtension(target.toString());
     if (extension.equalsIgnoreCase("xml")) {
-      if (Constants.PDS4_VALID_FORMATS.contains(formatType)) {
-        return new Pds4Transformer();
+      if (Constants.PDS4_VALID_FORMATS.contains(format)) {
+        if ("csv".equals(format)) {
+          return new Pds4TableTransformer();
+        } else if (Constants.STYLESHEETS.containsKey(format)) {
+          return new StylesheetTransformer();
+        } else {
+          return new Pds4ImageTransformer();
+        }
       } else {
-        throw new TransformException("Format type '" + formatType
+        throw new TransformException("Format value '" + format
             + "' is not one of the valid formats for a PDS4 transformation: "
             + Constants.PDS4_VALID_FORMATS);
       }
     } else {
-      if (Constants.PDS3_VALID_FORMATS.contains(formatType)) {
-        return new Pds3Transformer();
+      if (Constants.PDS3_VALID_FORMATS.contains(format)) {
+          return new Pds3ImageTransformer();
       } else {
-        throw new TransformException("Format type '" + formatType
+        throw new TransformException("Format value '" + format
             + "' is not one of the valid formats for a PDS3 transformation: "
             + Constants.PDS3_VALID_FORMATS);
       }

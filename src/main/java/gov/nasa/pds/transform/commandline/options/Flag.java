@@ -51,20 +51,23 @@ public enum Flag {
   /**
    * Flag to explicitly specify the target to validate.
    */
-  TARGET("t", "target", "file", String.class, false, "Explicitly specify "
-      + "the target to transform. The target can be "
+  TARGET("t", "target", "files", String.class, true, "Explicitly specify "
+      + "the targets to transform. The targets can be "
       + "specified implicitly as well. "
       + "(example: transform array2DImage.xml)"),
 
-  OUTPUT("o", "output", "file", String.class,
-      "Specify an output file."),
+  OUTPUTDIR("o", "output-dir", "file", String.class,
+      "Specify an output directory."),
 
   FORMAT("f", "format-type", "type", String.class,
       "Specify the transformation format type to perform on the target. "
       + "Valid format types are the following: "
       + Constants.COMMON_VALID_FORMATS + ". "
-      + "The following additional format types are available for "
-      + "PDS4-related transformations: " + Constants.PDS4_ONLY_VALID_FORMATS),
+      + "For PDS4 products, the following additional formats are "
+      + "available: " + Constants.PDS4_ONLY_VALID_FORMATS
+      + ". For PDS3 products, the following additional formats are "
+      + "available: " + Constants.PDS3_ONLY_VALID_FORMATS
+      + " (applies to target VICAR images only.)"),
 
   /**
    * Flag to specify the severity level and above to include in the report.
@@ -213,7 +216,7 @@ public enum Flag {
 
     options.addOption(new ToolsOption(FORMAT));
     options.addOption(new ToolsOption(HELP));
-    options.addOption(new ToolsOption(OUTPUT));
+    options.addOption(new ToolsOption(OUTPUTDIR));
     options.addOption(new ToolsOption(TARGET));
     options.addOption(new ToolsOption(VERSION));
   }

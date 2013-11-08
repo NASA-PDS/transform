@@ -75,9 +75,27 @@
       </resource>
       <resource>
         <filtering>true</filtering>
-        <targetPath>gov/nasa/pds/transform</targetPath>
-        <directory>src/main/resources/stylesheet</directory>
-        <includes/>
+        <targetPath>gov/nasa/pds/transform/defaults</targetPath>
+        <directory>src/main/resources/stylesheets</directory>
+        <excludes>
+          <exclude>stylesheets.properties</exclude>
+        </excludes>
+      </resource>
+      <resource>
+        <filtering>true</filtering>
+        <targetPath>gov/nasa/pds/transform/constants</targetPath>
+        <directory>src/main/resources/stylesheets</directory>
+        <includes>
+          <include>stylesheets.properties</include>
+        </includes>
+      </resource>
+      <resource>
+        <filtering>true</filtering>
+        <targetPath>gov/nasa/pds/transform/constants</targetPath>
+        <directory>src/main/resources/external-programs</directory>
+        <includes>
+          <include>external-programs.properties</include>
+        </includes>
       </resource>
     </resources>
     <plugins>
