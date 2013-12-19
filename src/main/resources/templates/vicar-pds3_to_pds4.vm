@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Product_Observational xmlns="http://pds.nasa.gov/pds4/pds/v1"
+    xmlns:pds="http://pds.nasa.gov/pds4/pds/v1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="">
+
+    <Identification_Area>
+        #if ( $label.PRODUCT_ID )
+            <logical_identifier>urn:nasa:pds:data:$label.DATA_SET_ID.toLowerCase().replaceAll("/","-"):$label.PRODUCT_ID.toLowerCase()</logical_identifier>
+        #else
+            <logical_identifier>urn:nasa:pds:data:$label.DATA_SET_ID.toLowerCase().replaceAll("/","-"):$generate.file_name.toLowerCase()</logical_identifier>
+        #end
+        <version_id>1.0</version_id>
+        #if ( $label.OBSERVATION_NAME )
+            <title>$label.OBSERVATION_NAME.toLowerCase()</title>
+        #elseif ( $label.OBSERVATION_ID )
+            <title>$label.OBSERVATION_ID.toLowerCase()</title>
+        #end
+        <information_model_version>1.1.0.1</information_model_version>
+        <product_class>Product_Observational</product_class>
+        <Modification_History>
+            <Modification_Detail>
+                <modification_date>$generate.current_date_utc</modification_date>
+                <version_id>1.0</version_id>
+                <description>Auto generated PDS4 product label created by the Transform Tool.</description>
+            </Modification_Detail>
+        </Modification_History>
+    </Identification_Area>
+
+    <Observation_Area>
+        <Time_Coordinates>
+            #if( $label.IMAGE_TIME )
+                <start_date_time>${label.IMAGE_TIME}Z</start_date_time>
+            #else
+                <start_date_time xsi:nil="true"></start_date_time>
+            #end
+            <stop_date_time xsi:nil="true"></stop_date_time>
+        </Time_Coordinates>
+
+        <Investigation_Area>
+            #if ( $label.MISSION_NAME )
+                <name>$label.MISSION_NAME.toLowerCase()</name>
+                <type>Mission</type>
+                <Internal_Reference>
+                  <lid_reference>urn:nasa:pds:investigation.$label.MISSION_NAME.toLowerCase()</lid_reference>
+                  <reference_type>data_to_investigation</reference_type>
+                </Internal_Reference>
+            #end
+        </Investigation_Area>
+
+        <Observing_System>
+            #if ( $label.INSTRUMENT_HOST_NAME )
+                <Observing_System_Component>
+                    <name>$label.INSTRUMENT_HOST_NAME.toLowerCase()</name>
+                    <!-- Might have to modify type. Transform Tool always assumes 'Spacecraft' INSTRUMENT_HOST_NAME values found in a PDS3 label. -->
+                    <type>Spacecraft</type>
+                </Observing_System_Component>
+            #end
+            #if ( $label.INSTRUMENT_NAME )
+                <Observing_System_Component>
+                    <name>$label.INSTRUMENT_NAME.toLowerCase()</name>
+                    <!-- Might have to modify type. Transform Tool always assumes 'Instrument' for INSTRUMENT_NAME values found in a PDS3 label. -->
+                    <type>Instrument</type>
+                </Observing_System_Component>
+            #end
+        </Observing_System>
+        <Target_Identification>
+            <name>$label.TARGET_NAME.toLowerCase()</name>
+            <type>Planet</type>
+        </Target_Identification>
+    </Observation_Area>
+
+    <File_Area_Observational>
+        <File>
+          #if ( ! $label.get("^IMAGE").matches("\d+") )
+            <file_name>$FilenameUtils.getBaseName($label.get("^IMAGE")).concat($label.get("^IMAGE").substring($FilenameUtils.indexOfExtension($label.get("^IMAGE"))).toLowerCase())</file_name>
+          #else
+            <file_name>$generate.file_name.toLowerCase()</file_name>
+          #end
+        </File>
+
+        <Array_2D_Image>
+            <offset unit="byte">0</offset>
+            <axes>2</axes>
+            <axis_index_order>Last Index Fastest</axis_index_order>
+
+            <Element_Array>
+                #if ( $label.IMAGE.SAMPLE_TYPE == "INTEGER" || $label.IMAGE.SAMPLE_TYPE == "SUN_INTEGER" || $label.IMAGE.SAMPLE_TYPE == "MAC_INTEGER" )
+                    #if ( $label.IMAGE.SAMPLE_BITS == "8" )
+                        <data_type>SignedByte</data_type>
+                    #elseif ( $label.IMAGE.SAMPLE_BITS == "16" )
+                        <data_type>SignedMSB2</data_type>
+                    #elseif ( $label.IMAGE.SAMPLE_BITS == "32" )
+                        <data_type>SignedMSB4</data_type>
+                    #end
+                #elseif ( $label.IMAGE.SAMPLE_TYPE == "SUN_UNSIGNED_INTEGER" || $label.IMAGE.SAMPLE_TYPE == "MAC_UNSIGNED_INTEGER" || $label.IMAGE.SAMPLE_TYPE == "UNSIGNED_INTEGER" )
+                    #if ( $label.IMAGE.SAMPLE_BITS == "8" )
+                        <data_type>UnsignedByte</data_type>
+                    #elseif ( $label.IMAGE.SAMPLE_BITS == "16" )
+                        <data_type>UnsignedMSB2</data_type>
+                    #elseif ( $label.IMAGE.SAMPLE_BITS == "32" )
+                        <data_type>UnsignedMSB4</data_type>
+                    #end
+                #elseif ( $label.IMAGE.SAMPLE_TYPE == "PC_INTEGER" || $label.IMAGE.SAMPLE_TYPE == "VAX_INTEGER" )
+                    #if ( $label.IMAGE.SAMPLE_BITS == "8" )
+                        <data_type>SignedByte</data_type>
+                    #elseif ( $label.IMAGE.SAMPLE_BITS == "16" )
+                        <data_type>SignedLSB2</data_type>
+                    #elseif ( $label.IMAGE.SAMPLE_BITS == "32" )
+                        <data_type>SignedLSB4</data_type>
+                    #end
+                #elseif ( $label.IMAGE.SAMPLE_TYPE == "PC_UNSIGNED_INTEGER" || $label.IMAGE.SAMPLE_TYPE == "VAX_UNSIGNED_INTEGER" )
+                    #if ( $label.IMAGE.SAMPLE_BITS == "8" )
+                        <data_type>UnsignedByte</data_type>
+                    #elseif ( $label.IMAGE.SAMPLE_BITS == "16" )
+                        <data_type>UnsignedLSB2</data_type>
+                    #elseif ( $label.IMAGE.SAMPLE_BITS == "32" )
+                        <data_type>UnsignedLSB4</data_type>
+                    #end
+                #elseif ( $label.IMAGE.SAMPLE_TYPE == "IEEE_REAL" || $label.IMAGE.SAMPLE_TYPE == "FLOAT" || $label.IMAGE.SAMPLE_TYPE == "REAL" || $label.IMAGE.SAMPLE_TYPE == "MAC_REAL" || $label.IMAGE.SAMPLE_TYPE == "SUN_REAL" || $label.IMAGE.SAMPLE_TYPE == "VAX_REAL" || $label.IMAGE.SAMPLE_TYPE == "VAXG_REAL" || $label.IMAGE.SAMPLE_TYPE == "VAX_DOUBLE")
+                    #if ( $label.IMAGE.SAMPLE_BITS == "4" )
+                        <data_type>IEEE754MSBSingle</data_type>
+                    #elseif ( $label.IMAGE.SAMPLE_BITS == "8" )
+                        <data_type>IEEE754MSBDouble</data_type>
+                    #end
+                #elseif ( $label.IMAGE.SAMPLE_TYPE == "PC_REAL" )
+                    #if ( $label.IMAGE.SAMPLE_BITS == "4" )
+                        <data_type>IEEE754LSBSingle</data_type>
+                    #elseif ( $label.IMAGE.SAMPLE_BITS == "8" )
+                        <data_type>IEEE754LSBDouble</data_type>
+                    #end
+                #elseif ( $label.IMAGE.SAMPLE_TYPE == "PC_COMPLEX" )
+                    #if ( $label.IMAGE.SAMPLE_BITS == "8" )
+                        <data_type>ComplexLSB8</data_type>
+                    #elseif ( $label.IMAGE_SAMPLE_BITS == "16" )
+                        <data_type>ComplexLSB16</data_type>
+                    #end
+                #elseif ( $label.IMAGE_SAMPLE_TYPE == "VAX_COMPLEX" || $label.IMAGE.SAMPLE_TYPE == "VAXG_COMPLEX" )
+                    #if ( $label.IMAGE.SAMPLE_BITS == "8" )
+                        <data_type>ComplexMSB8</data_type>
+                    #elseif ( $label.IMAGE_SAMPLE_BITS == "16" )
+                        <data_type>ComplexMSB16</data_type>
+                    #end
+                #elseif ( $label.IMAGE.SAMPLE_TYPE == "MSB_BIT_STRING" || $label.IMAGE.SAMPLE_TYPE == "LSB_BIT_STRING" || $label.IMAGE.SAMPLE_TYPE == "VAX_BIT_STRING" )
+                    <data_type>UnsignedBitString</data_type>
+                #end
+            </Element_Array>
+            <Axis_Array>
+                <axis_name>Line</axis_name>
+                <elements>$label.IMAGE.LINES</elements>
+                <sequence_number>1</sequence_number>
+            </Axis_Array>
+            <Axis_Array>
+                <axis_name>Sample</axis_name>
+                <elements>$label.IMAGE.LINE_SAMPLES</elements>
+                <sequence_number>2</sequence_number>
+            </Axis_Array>
+        </Array_2D_Image>
+    </File_Area_Observational>
+
+</Product_Observational>

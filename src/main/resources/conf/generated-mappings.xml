@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<generated>
+	<element>
+		<context>md5_checksum</context>
+		<class>gov.nasa.pds.imaging.generate.automatic.elements.Md5Checksum</class>
+	</element>
+	<element>
+		<context>file_size</context>
+		<class>gov.nasa.pds.imaging.generate.automatic.elements.FileSize</class>
+	</element>
+	<element>
+		<context>file_name</context>
+		<class>gov.nasa.pds.imaging.generate.automatic.elements.FileName</class>
+	</element>
+	<element>
+		<context>label_length</context>
+		<class>gov.nasa.pds.imaging.generate.automatic.elements.LabelLength</class>
+	</element>
+	<element>
+		<context>current_date_utc</context>
+		<class>gov.nasa.pds.imaging.generate.automatic.elements.CurrentDateUTC</class>
+	</element>
+</generated>

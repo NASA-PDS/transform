@@ -16,11 +16,26 @@ package gov.nasa.pds.transform.product;
 import java.awt.Dimension;
 import java.awt.image.RenderedImage;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 import java.util.logging.Logger;
 
 import javax.media.jai.JAI;
 import javax.media.jai.ParameterBlockJAI;
 
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.Velocity;
+import org.apache.velocity.runtime.resource.loader.StringResourceLoader;
+import org.apache.velocity.runtime.resource.util.StringResourceRepository;
+
+import gov.nasa.pds.imaging.generate.Generator;
+import gov.nasa.pds.imaging.generate.context.ContextMappings;
+import gov.nasa.pds.imaging.generate.label.PDS3Label;
+import gov.nasa.pds.imaging.generate.label.PDSObject;
 import gov.nasa.pds.tools.containers.FileReference;
 import gov.nasa.pds.tools.label.Label;
 import gov.nasa.pds.tools.label.PointerStatement;
@@ -79,6 +94,22 @@ public class Pds3ImageTransformer extends DefaultTransformer {
               } catch (Exception e) {
                 throw new TransformException(e.getMessage());
               }
+              log.log(new ToolsLogRecord(ToolsLevel.INFO,
+                  "Transforming label file: " + target, target));
+              File pds4Label = Utility.createOutputFile(target, outputDir,
+                  "xml");
+              try {
+                //Transform the label to PDS4 using the Generate library
+                Utility.generate(target, pds4Label, "vicar-pds3_to_pds4.vm");
+              } catch (Exception e) {
+                e.printStackTrace();
+                throw new TransformException("Error occurred while "
+                    + "generating PDS4 label: " + e.getMessage());
+              }
+              log.log(new ToolsLogRecord(ToolsLevel.INFO,
+                  "Successfully transformed PDS3 label '" + target
+                  + "' to a PDS4 label '" + pds4Label + "'",
+                  target));
             } else {
               try {
                 RenderedImage renderedImage = JAI.create("ImageRead", imageFile);

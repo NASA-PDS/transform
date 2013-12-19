@@ -15,6 +15,10 @@ package gov.nasa.pds.transform.util;
 
 import gov.nasa.arc.pds.xml.generated.FileAreaObservational;
 import gov.nasa.arc.pds.xml.generated.ProductObservational;
+import gov.nasa.pds.imaging.generate.Generator;
+import gov.nasa.pds.imaging.generate.context.ContextMappings;
+import gov.nasa.pds.imaging.generate.label.PDS3Label;
+import gov.nasa.pds.imaging.generate.label.PDSObject;
 import gov.nasa.pds.objectAccess.ObjectAccess;
 import gov.nasa.pds.objectAccess.ObjectProvider;
 import gov.nasa.pds.objectAccess.ParseException;
@@ -38,8 +42,13 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.velocity.app.Velocity;
+import org.apache.velocity.runtime.resource.loader.StringResourceLoader;
+import org.apache.velocity.runtime.resource.util.StringResourceRepository;
 
 /**
  * Utility class.
@@ -174,5 +183,37 @@ public class Utility {
         } catch (Exception ignore) {}
       }
     }
+  }
+
+  public static void generate(File target, File outputFile, String templateName)
+  throws Exception {
+    System.getProperties().setProperty(
+        "javax.xml.parsers.DocumentBuilderFactory",
+        "com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl");
+    Generator generator = new Generator();
+    generator.setOutputFile(outputFile);
+    PDSObject pdsObject = new PDS3Label(target.toString());
+    pdsObject.setMappings();
+    generator.setPDSObject(pdsObject);
+    File confPath = new File(new File(System.getProperty("java.class.path"))
+        .getParentFile().getParent(), "conf");
+    generator.setConfPath(confPath.toString());
+    generator.setContextMappings(
+        new ContextMappings(pdsObject, confPath.toString()));
+    final Properties props = new Properties();
+    props.setProperty("resource.loader", "string");
+    props.setProperty("resource.loader.class",
+        "org.apache.velocity.runtime.resource.loader.StringResourceLoader");
+    Velocity.init(props);
+    if (!Velocity.resourceExists(templateName)) {
+      InputStream stream = Utility.class.getResourceAsStream(templateName);
+      String resourceContents = IOUtils.toString(stream, "UTF-8");
+      StringResourceRepository repo = StringResourceLoader.getRepository();
+      repo.putStringResource(templateName, resourceContents);
+    }
+    generator.setTemplate(Velocity.getTemplate(templateName));
+    generator.setContext();
+    generator.getContext().put("FilenameUtils", FilenameUtils.class);
+    generator.generate(false);
   }
 }

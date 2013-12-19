@@ -97,6 +97,14 @@
           <include>external-programs.properties</include>
         </includes>
       </resource>
+      <resource>
+        <filtering>true</filtering>
+        <targetPath>gov/nasa/pds/transform/util</targetPath>
+        <directory>src/main/resources/templates</directory>
+        <includes>
+          <include>vicar-pds3_to_pds4.vm</include>
+        </includes>
+      </resource>
     </resources>
     <plugins>
       <plugin>
@@ -272,6 +280,11 @@
       <groupId>saxon</groupId>
       <artifactId>saxon</artifactId>
       <version>9.2</version>
+    </dependency>
+    <dependency>
+      <groupId>gov.nasa.pds.2010.preparation</groupId>
+      <artifactId>generate</artifactId>
+      <version>${generate-version}</version>
     </dependency>
   </dependencies>
 

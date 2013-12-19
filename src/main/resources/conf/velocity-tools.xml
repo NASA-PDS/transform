@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tools>
+	<data type="number" key="TOOLS_VERSION" value="2.0" />
+	<data type="boolean" key="GENERIC_TOOLS_AVAILABLE" value="true" />
+	<toolbox scope="application">
+		<tool class="org.apache.velocity.tools.generic.AlternatorTool" />
+		<tool class="org.apache.velocity.tools.generic.ClassTool" />
+		<tool class="org.apache.velocity.tools.generic.ComparisonDateTool" format="yyyy-MM-dd" />
+		<tool class="org.apache.velocity.tools.generic.ConversionTool" />
+		<tool class="org.apache.velocity.tools.generic.DisplayTool" />
+		<tool class="org.apache.velocity.tools.generic.EscapeTool" />
+		<tool class="org.apache.velocity.tools.generic.FieldTool" />
+		<tool class="org.apache.velocity.tools.generic.MathTool" />
+		<tool class="org.apache.velocity.tools.generic.NumberTool" />
+		<tool class="org.apache.velocity.tools.generic.ResourceTool" />
+		<tool class="org.apache.velocity.tools.generic.SortTool" />
+	</toolbox>
+	<toolbox scope="request">
+		<tool class="org.apache.velocity.tools.generic.ContextTool" />
+		<tool class="org.apache.velocity.tools.generic.LinkTool" />
+		<tool class="org.apache.velocity.tools.generic.LoopTool" />
+		<tool class="org.apache.velocity.tools.generic.RenderTool" />
+		<!-- This is not useful in its default form. But, if it were, it'd be request-scoped. 
+			<tool class="org.apache.velocity.tools.generic.ValueParser"/> -->
+	</toolbox>
+	<data type="number" key="version" value="1.1" />
+	<data key="startdate" value="Mon Sep 17 10:08:03 PDT 2007" class="java.util.Date"
+		converter="org.apache.commons.beanutils.locale.converters.DateLocaleConverter" />
+	<data type="boolean" key="isSimple" value="true" />
+	<data key="foo" value="this is foo." />
+	<data key="bar">this is bar.</data>
+	<data type="list" key="dataKeys"
+		value="version,date,isSimple,foo,bar,dataKeys,switches" />
+	<data type="list.boolean" key="switches" value="true,false,false,true" />
+</tools>
