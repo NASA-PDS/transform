@@ -284,7 +284,7 @@
     <dependency>
       <groupId>gov.nasa.pds.2010.preparation</groupId>
       <artifactId>generate</artifactId>
-      <version>0.6.0</version>
+      <version>0.7.0-dev</version>
     </dependency>
   </dependencies>
 
