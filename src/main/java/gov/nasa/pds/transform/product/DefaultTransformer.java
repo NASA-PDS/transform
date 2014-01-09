@@ -20,6 +20,7 @@ import gov.nasa.pds.transform.logging.ToolsLevel;
 import gov.nasa.pds.transform.logging.ToolsLogRecord;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -35,19 +36,21 @@ public abstract class DefaultTransformer implements ProductTransformer {
       TransformLauncher.class.getName());
 
   @Override
-  public void transform(List<File> targets, File outputDir, String format)
+  public List<File> transform(List<File> targets, File outputDir, String format)
       throws TransformException {
+    List<File> results = new ArrayList<File>();
     for (File target : targets) {
       try {
-        transform(target, outputDir, format);
+        results.add(transform(target, outputDir, format));
       } catch (TransformException te) {
         log.log(new ToolsLogRecord(ToolsLevel.SEVERE, te.getMessage(), target));
       }
     }
+    return results;
   }
 
   @Override
-  public abstract void transform(File target, File outputDir, String format)
+  public abstract File transform(File target, File outputDir, String format)
   throws TransformException;
 
 }

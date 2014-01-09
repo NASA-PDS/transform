@@ -57,9 +57,10 @@ public class Pds3ImageTransformer extends DefaultTransformer {
       Pds3ImageTransformer.class.getName());
 
   @Override
-  public void transform(File target, File outputDir, String format)
+  public File transform(File target, File outputDir, String format)
       throws TransformException {
     Label label = null;
+    File outputFile = null;
     try {
       label = Utility.parsePds3Label(target);
     } catch (Exception e) {
@@ -75,7 +76,7 @@ public class Pds3ImageTransformer extends DefaultTransformer {
             throw new TransformException("Image file does not exist: "
                 + imageFile.toString());
           } else {
-            File outputFile = Utility.createOutputFile(imageFile, outputDir,
+            outputFile = Utility.createOutputFile(imageFile, outputDir,
                 format);
             log.log(new ToolsLogRecord(ToolsLevel.INFO,
                 "Transforming image file: " + imageFile.toString(),
@@ -142,5 +143,6 @@ public class Pds3ImageTransformer extends DefaultTransformer {
         }
       }
     }
+    return outputFile;
   }
 }

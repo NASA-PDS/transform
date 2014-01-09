@@ -80,9 +80,10 @@ public class Pds4TableTransformer extends DefaultTransformer {
    * @throws TransformException If an error occurred during transformation.
    * @throws ParseException If there were errors parsing the given label.
    */
-  public void transform(File target, File outputDir, String format)
+  public File transform(File target, File outputDir, String format)
   throws TransformException {
     setFormat(format);
+    File result = null;
     try {
       ObjectProvider objectAccess = new ObjectAccess(
           target.getCanonicalFile().getParent());
@@ -124,7 +125,9 @@ public class Pds4TableTransformer extends DefaultTransformer {
         } finally {
           out.close();
         }
+        result = outputFile;
       }
+      return result;
     } catch (ParseException p) {
       throw new TransformException("Error occurred while parsing label '"
           + target.toString() + "': " + p.getMessage());

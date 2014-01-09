@@ -41,7 +41,7 @@ public class StylesheetTransformer extends DefaultTransformer {
   private static Logger log = Logger.getLogger(
       StylesheetTransformer.class.getName());
 
-  public void transform(File target, File outputDir, String format)
+  public File transform(File target, File outputDir, String format)
   throws TransformException {
     // Use saxon for schematron (i.e. the XSLT generation).
     System.setProperty("javax.xml.transform.TransformerFactory",
@@ -58,6 +58,7 @@ public class StylesheetTransformer extends DefaultTransformer {
       log.log(new ToolsLogRecord(ToolsLevel.INFO,
           "Successfully transformed target label to the following output: "
           + outputFile.toString(), target));
+      return outputFile;
     } catch (TransformerConfigurationException tce) {
       throw new TransformException(
           "Error occurred while loading stylesheet for the '" + format

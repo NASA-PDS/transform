@@ -42,8 +42,9 @@ public class Pds4ImageTransformer extends DefaultTransformer {
       Pds4ImageTransformer.class.getName());
 
   @Override
-  public void transform(File target, File outputDir, String format)
+  public File transform(File target, File outputDir, String format)
       throws TransformException {
+    File result = null;
     try {
       ObjectProvider objectAccess = new ObjectAccess(
           target.getCanonicalFile().getParent());
@@ -73,12 +74,14 @@ public class Pds4ImageTransformer extends DefaultTransformer {
                   "Successfully transformed image file '"
                   + fao.getFile().getFileName() + "' to the following output: "
                   + outputFile.toString(), target));
+              result = outputFile;
             }
           } else {
             log.log(new ToolsLogRecord(ToolsLevel.INFO,
                 "No images found in label.", target));
           }
         }
+        return result;
       }
     } catch (ParseException pe) {
       throw new TransformException("Problems parsing label: "

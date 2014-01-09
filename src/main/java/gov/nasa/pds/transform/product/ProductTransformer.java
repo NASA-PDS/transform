@@ -36,7 +36,7 @@ public interface ProductTransformer {
    *
    * @throws TransformException
    */
-  public void transform(File target, File outputDir, String format)
+  public File transform(File target, File outputDir, String format)
   throws TransformException;
 
   /**
@@ -49,6 +49,6 @@ public interface ProductTransformer {
    *
    * @throws TransformException
    */
-  public void transform(List<File> targets, File outputDir, String format)
+  public List<File> transform(List<File> targets, File outputDir, String format)
   throws TransformException;
 }
