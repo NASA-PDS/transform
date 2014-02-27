@@ -30,6 +30,7 @@
 
       <ul>
         <li><a href="#Tool_Execution">Tool Execution</a></li>
+        <li><a href="#PDS3_to_PDS4_Label_Transformation">PDS3 to PDS4 Label Transformation</a></li>
       </ul>
 
       <p>Note: The command-line examples in this section have been broken into multiple lines for readability. The commands should be reassembled into a single line prior to execution.
@@ -48,9 +49,47 @@
           <tr><th>Command-Line Option</th><th>Description</th></tr>
           <tr><td>-t, --target</td><td>Explicitly specify a PDS3 or PDS4 product label that contains a reference to an image file to transform. The target can be specified implicitly as well. (example: transform i943630r.xml)</td></tr>
           <tr><td>-o, --output</td><td>Specify an output directory where the transformed images will reside. If this option is not specified on the command-line, the tool will default to placing the output files in the current working directory.</td></tr>
-          <tr><td>-f, --format-type</td><td>Specify the transformation format type to perform on the target(s). Valid format types are the following: [raw, tif, jpeg, mgn-fbidr, jpg, bmp, pnm, wbmp, png, gif, tiff, jp2]. For PDS4 products, the following additional formats are available: [pvl, html, html-structure-only, csv]. For PDS3 products, the following additional formats are available: [pds] (applies to target VICAR images only.)</td></tr>
+          <tr><td>-f, --format-type</td><td>Specify the transformation format type to perform on the target(s). Please see the <a href="#Format_Types">Format Types</a> section for details on the valid format types available to the tool.</td></tr>
           <tr><td>-V, --version</td><td>Display the release number and copyright information.</td></tr>
           <tr><td>-h, --help</td><td>Display tool usage.</td></tr>
+        </table>
+      </subsection>
+
+      <subsection name="Format Types">
+        <p>The following table describes the format types available to both PDS3 and PDS4 target inputs:
+        </p>
+
+        <table>
+          <tr><th>Format Type</th><th>Description</th></tr>
+          <tr><td>jpeg or jpg</td><td>Specify to transform to an image in a Joint Photogrpahic Experts Group format.</td></tr>
+          <tr><td>jp2</td><td>Specify to transform to an image in a JPEG 2000 format.</td></tr>
+          <tr><td>bmp</td><td>Specify to transform to an image in a Windows bitmap format.</td></tr>
+          <tr><td>wbmp</td><td>Specify to transform to an image in a Wireless Bitmap image format.</td></tr>
+          <tr><td>gif</td><td>Specify to transform to an image in a Graphics Interchange Format.</td></tr>
+          <tr><td>png</td><td>Specify to transform to an image in a Portable Network Graphics format.</td></tr>
+          <tr><td>raw</td><td>Specify to transform to an image in a Raw image format.</td></tr>
+          <tr><td>tif or tiff</td><td>Specify to transform to an image in a Tagged Image File Format.</td></tr>
+          <tr><td>pnm</td><td>Specify to transform to an image in a Portable Any Map format.</td></tr>
+        </table>
+        
+        <p>The following table describes the format types available only to PDS4 products:
+        </p>
+ 
+        <table>
+          <tr><th>Format Type</th><th>Description</th></tr>
+          <tr><td>pvl</td><td>Specify to transform a given PDS4 label into a Parameter Value Language file.</td></tr>
+          <tr><td>html</td><td>Specify to transform a given PDS4 label into an html representation of the label.</td></tr>
+          <tr><td>html-structure-only</td><td>Specify to transform a given PDS4 label into an html representation of the label structure. As a result, the element contents are stripped out in the resulting file.</td></tr>
+          <tr><td>csv</td><td>Specify to transform a given table into a comma-separated value file.</td></tr>
+        </table>
+        
+        <p>The following table describes the format types available only to PDS3 products:
+        </p>
+        
+        <table>
+          <tr><th>Format Type</th><th>Description</th></tr>
+          <tr><td>pds4</td><td>Specify to transform a given image into a PDS4 Array 2D image. Additionally, the given PDS3 label will be transformed into a PDS4 label. Note that this transformation currently applies to target VICAR images only. Please see the <a href="#PDS3_to_PDS4_Label_Transformation">PDS3 to PDS4 Label Transformation</a> section for more details on how the tool performs a PDS3 to PDS4 label transformation.</td></tr>
+          <tr><td>pds4-label</td><td>Specify to transform a given PDS3 data product label into a PDS4 Product Observational product label. Please see the <a href="#PDS3_to_PDS4_Label_Transformation">PDS3 to PDS4 Label Transformation</a> section for more details on how the tool performs a PDS3 to PDS4 label transformation. </td></tr>
         </table>
       </subsection>
 
@@ -70,6 +109,7 @@
           <li>Transform a Single PDS4 Array 2D Image</li>
           <li>Transform a Single PDS4 Label To Parameter Value Language (PVL) File</li>
           <li>Transform a Single 8-Bit PDS3 Image</li>
+          <li>Transform a PDS3 Label to PDS4 Label</li> 
         </ul>
 
         <p>The files used in the command-line examples below are packaged with the tool in the <i>examples</i> directory.
@@ -81,7 +121,7 @@
         </p>
 
         <source>
-% transform ../examples/i943630r.xml -o i943630r.jpg -f jpg
+% transform ../examples/i943630r.xml -f jpg
         </source>
 
         <p>Under the current implementation, for PDS4 data products, the tool only supports the transformation of array 2D images.
@@ -103,7 +143,7 @@
         </p>
 
         <source>
-% transform ../examples/i943630r.xml -o i943630r.pvl -f pvl
+% transform ../examples/i943630r.xml -f pvl
         </source>
 
         <p><b><i>Transform a Single 8-Bit PDS3 Image</i></b></p>
@@ -112,16 +152,124 @@
         </p>
 
         <source>
-% transform ../examples/FHA01118.LBL -o FHA01118.BMP -f bmp
+% transform ../examples/FHA01118.LBL -f bmp
         </source>
 
         <p>The following command demonstrates transforming a PDS3, 8-bit image referenced in the associated detached label, <i>FF01.LBL</i>, into a portable network graphics file named <i>FF01.PNG</i>:
         </p>
 
         <source>
-% transform ../examples/FF01.LBL -o FF01.PNG -f png
+% transform ../examples/FF01.LBL -f png
+        </source>
+        
+        <p><b><i>Transform a PDS3 Label to PDS4 Label</i></b></p>
+        
+        <p>The following command demonstrates transforming a PDS3 data product label, <i>ELE_MOM.LBL</i>, into a PDS4 Product Observational label named <i>ele_mom.xml</i>:
+        </p>
+        <source>
+% transform ../examples/ELE_MOM.LBL -f pds4-label
         </source>
       </subsection>
     </section>
+    
+    <section name="PDS3 to PDS4 Label Transformation">
+      <p>The intent of the PDS3 to PDS4 label transformation is to transform a PDS3 data product label into a PDS4 Product Observational product label with the minimum set of elements in order to be compliant with the PDS4 standards. Therefore, not all PDS3 keywords will map to the resulting label. This section details how the Transform tool populates some of the required elements of a PDS4 label.
+      </p>
+      
+      <subsection name="Limitations">
+        <p>At this time, the Transform tool will support PDS3 to PDS4 label transformations of the following object types:
+        </p>
+        
+        <ul>
+          <li>TABLE</li>
+          <li>SERIES</li>
+          <li>COLUMN</li>
+          <li>BIT_COLUMN</li>
+          <li>CONTAINER</li>
+          <li>IMAGE</li>
+          <li>SPREADSHEET</li>
+        </ul>
+        
+        <p>Explicit FILE objects, QUBE objects, as well as labels containing pointers to label fragments (i.e. ^STRUCTURE) are not supported by the tool at this time.  
+        </p>
+      </subsection>
+      
+      <subsection name="Populating PDS4 Elements">
+        <p>This section describes how the tool leverages the PDS3 label in order to populate some of the PDS4 elements. Below is a list of PDS4 elements and a description of how the tool goes about populating that element.
+        </p>
+        
+        <p><b><i>logical_identifier</i></b></p>
+        
+        <p>The tool will populate the <i>logical_identifier</i> element in the following mannner:
+        </p>
+        
+        <source>
+urn:nasa:pds:data:${DATA_SET_ID}:${PRODUCT_ID}
+        </source>
+        
+        <p>If <i>PRODUCT_ID</i> does not exist in the PDS3 label, then the tool will default to using the label filename instead:
+        </p>
+        
+        <source>
+urn:nasa:pds:data:${DATA_SET_ID}:${labelFilename}
+        </source>
+        
+        <p><b><i>title</i></b></p>
+        
+        <p>The tool will populate the <i>title</i> element in the PDS4 label based on the existency of one or more of the following keywords:
+        </p>
+        
+        <ul>
+          <li>OBSERVATION_NAME or</li>
+          <li>OBSERVATION_ID or</li>
+          <li>PRODUCT_NAME or</li>
+          <li>DATA_SET_ID + PRODUCT_ID or</li>
+          <li>DATA_SET_ID</li>
+        </ul>
+        
+        <p>So if <i>OBSERVATION_NAME</i> exists in the PDS3 label, it will use that to populate the <i>title</i> element. If it does not exist, it will use <i>OBSERVATION_ID</i>. If that does not exist, then it will use <i>PRODUCT_NAME</i>, and so forth.
+        </p>
+        
+        <p><b><i>Investigation_Area</i></b></p>
+        
+        <p>For the <i>Investigation_Area</i>, the tool will use <i>MISSION_NAME</i> to populate this element in the following manner:
+        </p>
+        
+        <source>
+&lt;name&gt;${MISSION_NAME}&lt;/name&gt;
+&lt;type&gt;Mission&lt;/type&gt;
+&lt;Internal_Reference&gt;
+  &lt;lid_reference&gt;urn:nasa:pds:investigation.${MISSION_NAME}&lt;/lid_reference&gt;
+  &lt;reference_type&gt;data_to_investigation&lt;/reference_type&gt;
+&lt;/Internal_Reference&gt;
+        </source>
+               
+        <p>If <i>MISSION_NAME</i> does not exist, then the tool will use <i>MISSION_PHASE_NAME</i> instead.
+        </p>
+        
+        <p><b><i>Observing_System</i></b></p>
+        
+        <p>For the <i>Observing_System</i>, the tool will populate this element with <i>INSTRUMENT_HOST_NAME</i>, <i>INSTRUMENT_NAME</i>, and <i>INSTRUMENT_ID</i> in the following manner:
+        </p>
+        
+        <source>
+&lt;Observing_System_Component&gt;
+  &lt;name&gt;${INSTRUMENT_HOST_NAME}&lt;/name&gt;
+  &lt;type&gt;Spacecraft&lt;/type&gt;
+&lt;/Observing_System_Component&gt;
+
+&lt;Observing_System_Component&gt;
+  &lt;name&gt;${INSTRUMENT_NAME}&lt;/name&gt;
+  &lt;type&gt;Instrument&lt;/type&gt;
+&lt;/Observing_System_Component&gt;
+
+&lt;Observing_System_Component&gt;
+  &lt;name&gt;${INSTRUMENT_ID}&lt;/name&gt;
+  &lt;type&gt;Instrument&lt;/type&gt;
+&lt;/Observing_System_Component&gt;   
+        </source>
+        
+      </subsection>
+    </section>    
   </body>
 </document>
