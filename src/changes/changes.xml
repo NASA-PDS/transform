@@ -28,7 +28,10 @@
         Added support for executing python scripts to do transformations. Python script added performs VICAR to PDS4 transformations.
       </action>
       <action dev="mcayanan" type="add" issue="PDS-236">
-        For VICAR to PDS4 transformations, added the capability to also transform the given PDS3 label into a PDS4 label.
+        Added the capability to transform a given PDS3 data product label into a PDS4 Product Observational label. See operational guide for limitations on this feature.
+      </action>
+      <action dev="mcayanan" type="add">
+        For VICAR to PDS4 image transformations, also added the capability to transform the given label into a PDS4 label.
       </action>
       <action dev="mcayanan" type="update" issue="PDS-211">
         Re-factored code to provide an API for the Transformation library.
