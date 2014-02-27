@@ -236,7 +236,7 @@ public class TransformLauncher {
     ProductTransformerFactory factory = ProductTransformerFactory.getInstance();
     try {
       ProductTransformer pt = factory.newInstance(targets.get(0), formatType);
-      pt.transform(targets, outputDir, formatType);
+      List<File> results = pt.transform(targets, outputDir, formatType);
     } catch (TransformException t) {
       log.log(new ToolsLogRecord(ToolsLevel.SEVERE, t.getMessage()));
     }

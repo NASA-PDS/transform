@@ -131,6 +131,9 @@ public class Utility {
       baseFilename += "-structure";
     } else if ("pds".equals(format)) {
       fileExtension = "img";
+    } else if ("pds4-label".equals(format)) {
+      fileExtension = "xml";
+      baseFilename = baseFilename.toLowerCase();
     }
     File outputFile = new File(outputDir, baseFilename + "." + fileExtension);
     return outputFile;
@@ -204,10 +207,13 @@ public class Utility {
     props.setProperty("resource.loader", "string");
     props.setProperty("resource.loader.class",
         "org.apache.velocity.runtime.resource.loader.StringResourceLoader");
+    // Property to disable the velocity logging
+    props.setProperty("runtime.log.logsystem.class",
+        "org.apache.velocity.runtime.log.NullLogSystem");
     Velocity.init(props);
     if (!Velocity.resourceExists(templateName)) {
       InputStream stream = Utility.class.getResourceAsStream(templateName);
-      String resourceContents = IOUtils.toString(stream, "UTF-8");
+      String resourceContents = IOUtils.toString(stream);
       StringResourceRepository repo = StringResourceLoader.getRepository();
       repo.putStringResource(templateName, resourceContents);
     }

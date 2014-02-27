@@ -1,0 +1,69 @@
+PDS_VERSION_ID                = PDS3                                          
+RECORD_TYPE                   = FIXED_LENGTH                                  
+RECORD_BYTES                  = 46                                            
+FILE_RECORDS                  = 2278                                          
+^TABLE                        = "ELE_MOM.TAB"                                 
+DATA_SET_ID                   = "VG2-J-PLS-5-SUMM-ELE-MOM-96.0SEC-V1.0"       
+SPACECRAFT_NAME               = "VOYAGER 2"                                   
+INSTRUMENT_NAME               = "PLASMA SCIENCE EXPERIMENT"                   
+TARGET_NAME                   = JUPITER                                       
+START_TIME                    = 1979-07-06T00:00:42.687Z                      
+STOP_TIME                     = 1979-07-09T23:59:06.436Z                      
+MISSION_PHASE_NAME            = "VOYAGER 2 JUPITER ENCOUNTER"                 
+PRODUCT_ID                    = "ELE_MOM.TAB"                                 
+PRODUCT_TYPE                  = "DATA"                                        
+PRODUCT_CREATION_TIME         = "UNK"                                         
+SPACECRAFT_CLOCK_START_COUNT  = "2/20541:22:726"                              
+SPACECRAFT_CLOCK_STOP_COUNT   = "2/20661:20:726"                              
+DESCRIPTION                   = "                                             
+  Electron density and moment temperature from the Plasma experiment on       
+  Voyager 2 from the Jupiter encounter.  The data set contains 96 second      
+  averages of the electron moment data."                                      
+                                                                              
+OBJECT                        = TABLE                                         
+  INTERCHANGE_FORMAT          = ASCII                                         
+  ROWS                        = 2278                                          
+  COLUMNS                     = 3                                             
+  ROW_BYTES                   = 46                                            
+  SAMPLING_PARAMETER_NAME     = TIME                                          
+  SAMPLING_PARAMETER_UNIT     = SECOND                                        
+  SAMPLING_PARAMETER_INTERVAL = 96.0                                          
+  OBJECT                      = COLUMN                                        
+    NAME                      = "TIME"                                        
+    COLUMN_NUMBER             = 1                                             
+    UNIT                      = "N/A"                                         
+    DATA_TYPE                 = TIME                                          
+    START_BYTE                = 1                                             
+    BYTES                     = 24                                            
+    DESCRIPTION               = "                                             
+      Time column. This field contains time in PDS format                     
+      yyyy-mm-ddThh:mm:ss.sssZ. The individual elements of the                
+      time field can be read using the format                                 
+      (i4,4(1x,i2),1x,f6.3) yr, mon, day, hr, min, sec."                      
+  END_OBJECT                  = COLUMN                                        
+  OBJECT                      = COLUMN                                        
+    NAME                      = "ELE_DEN"                                     
+    COLUMN_NUMBER             = 2                                             
+    UNIT                      = "COUNT/CM**3"                                 
+    DATA_TYPE                 = ASCII_REAL                                    
+    START_BYTE                = 25                                            
+    BYTES                     = 10                                            
+    MISSING_CONSTANT          = -9.99e+10                                     
+    DESCRIPTION               = "                                             
+      Column contains total electron moment density in counts/cm^3."          
+  END_OBJECT                  = COLUMN                                        
+  OBJECT                      = COLUMN                                        
+    NAME                      = "ELE_TEMP"                                    
+    COLUMN_NUMBER             = 3                                             
+    UNIT                      = "ELECTRONVOLT"                                
+    DATA_TYPE                 = ASCII_REAL                                    
+    START_BYTE                = 35                                            
+    BYTES                     = 10                                            
+    MISSING_CONSTANT          = -9.99e+10                                     
+    DESCRIPTION               = "                                             
+      Column contains total electron moment temperature in units of           
+      electron volts."                                                        
+  END_OBJECT                  = COLUMN                                        
+                                                                              
+END_OBJECT                    = TABLE                                         
+END                                                                           

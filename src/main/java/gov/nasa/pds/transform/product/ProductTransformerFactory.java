@@ -79,7 +79,11 @@ public class ProductTransformerFactory {
       }
     } else {
       if (Constants.PDS3_VALID_FORMATS.contains(format)) {
+        if ("pds4-label".equals(format)) {
+          return new Pds3LabelTransformer();
+        } else {
           return new Pds3ImageTransformer();
+        }
       } else {
         throw new TransformException("Format value '" + format
             + "' is not one of the valid formats for a PDS3 transformation: "

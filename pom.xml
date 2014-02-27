@@ -75,7 +75,7 @@
       </resource>
       <resource>
         <filtering>true</filtering>
-        <targetPath>gov/nasa/pds/transform/defaults</targetPath>
+        <targetPath>gov/nasa/pds/transform/product</targetPath>
         <directory>src/main/resources/stylesheets</directory>
         <excludes>
           <exclude>stylesheets.properties</exclude>
@@ -103,6 +103,7 @@
         <directory>src/main/resources/templates</directory>
         <includes>
           <include>vicar-pds3_to_pds4.vm</include>
+          <include>generic-pds3_to_pds4.vm</include>
         </includes>
       </resource>
     </resources>

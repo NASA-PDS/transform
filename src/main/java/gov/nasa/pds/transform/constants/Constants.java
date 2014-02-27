@@ -52,6 +52,7 @@ public class Constants {
     COMMON_VALID_FORMATS.remove("fits");
     COMMON_VALID_FORMATS.remove("jpeg 2000");
     COMMON_VALID_FORMATS.remove("jpeg2000");
+    COMMON_VALID_FORMATS.remove("mgn-fbidr");
     COMMON_VALID_FORMATS.add("jp2");
   }
 
@@ -91,6 +92,7 @@ public class Constants {
   public static List<String> PDS3_ONLY_VALID_FORMATS = new ArrayList<String>();
   static {
     PDS3_ONLY_VALID_FORMATS.add("pds");
+    PDS3_ONLY_VALID_FORMATS.add("pds4-label");
   }
 
   /**
