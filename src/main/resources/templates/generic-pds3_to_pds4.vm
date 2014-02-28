@@ -21,7 +21,7 @@
   #else
      <title>$title</title>
   #end
-     <information_model_version>1.2.0.0</information_model_version>
+     <information_model_version>1.1.0.1</information_model_version>
      <product_class>Product_Observational</product_class>
      <Modification_History>
        <Modification_Detail>
@@ -35,7 +35,7 @@
   <Observation_Area>
     <Time_Coordinates>
     #if ( $label.START_TIME )
-      #if ( $label.START_TIME.trim().endsWith("Z") ) 
+      #if ( $label.START_TIME.trim().endsWith("Z") )
         <start_date_time>${label.START_TIME}</start_date_time>
       #else
         <start_date_time>${label.START_TIME}Z</start_date_time>
@@ -43,9 +43,9 @@
     #else
       <start_date_time xsi:nil="true"></start_date_time>
     #end
-    
+
     #if( $label.STOP_TIME )
-      #if ( $label.START_TIME.trim().endsWith("Z") ) 
+      #if ( $label.START_TIME.trim().endsWith("Z") )
         <stop_date_time>${label.STOP_TIME}</stop_date_time>
       #else
         <stop_date_time>${label.STOP_TIME}Z</stop_date_time>
@@ -71,7 +71,7 @@
       <Internal_Reference>
         <lid_reference>urn:nasa:pds:investigation.$missionPhaseName.toLowerCase().replaceAll("\s+", ".")</lid_reference>
         <reference_type>data_to_investigation</reference_type>
-      </Internal_Reference>    
+      </Internal_Reference>
     #end
     </Investigation_Area>
 
@@ -91,7 +91,7 @@
       <Observing_System_Component>
         <name>$label.INSTRUMENT_ID.toLowerCase()</name>
         <type>Instrument</type>
-      </Observing_System_Component>    
+      </Observing_System_Component>
     #end
     </Observing_System>
     <Target_Identification>
@@ -226,7 +226,7 @@
         #set ($recordType = "Record_Binary")
         #set ($fieldType = "Field_Binary")
         #set ($groupType = "Group_Field_Binary")
-      #end      
+      #end
         <$recordType>
         <fields>$object.COLUMNS</fields>
         #set( $value = false )
@@ -240,12 +240,12 @@
         <groups>$containers.size()</groups>
         #else
           #set ( $containers = [] )
-        <groups>0</groups>                  
+        <groups>0</groups>
         #end
         <record_length unit="byte">$object.ROW_BYTES</record_length>
-        
-        #mapContainers($containers $fieldType)            
-        
+
+        #mapContainers($containers $fieldType)
+
         #set( $value = false )
         #set ( $value = $object.COLUMN )
         #if ( $!{value} )
@@ -258,17 +258,17 @@
           #set ( $columns = [] )
         #end
         #set ( $index = 0 )
-        #mapColumns($columns, $fieldType)                   
-        
+        #mapColumns($columns, $fieldType)
+
         </$recordType>
       </$tableType>
       #elseif ( $objectName.endsWith("SPREADSHEET") )
       <Table_Delimited>
         <offset unit="byte">$dataFileOffset</offset>
-        <parsing_standard_id>PDS DV 1</parsing_standard_id>  
+        <parsing_standard_id>PDS DV 1</parsing_standard_id>
         <records>$object.ROWS</records>
-        <record_delimiter>carriage-return-line-feed</record_delimiter>        
-        <field_delimiter>$object.FIELD_DELIMITER.toString().toLowerCase()</field_delimiter>             
+        <record_delimiter>carriage-return-line-feed</record_delimiter>
+        <field_delimiter>$object.FIELD_DELIMITER.toString().toLowerCase()</field_delimiter>
         <Record_Delimited>
           <fields>$object.FIELDS</fields>
           <groups>0</groups>
@@ -287,7 +287,7 @@
           <Field_Delimited>
             <name>$field.NAME.toString().toLowerCase()</name>
             #getDataType($field "Field_Delimited")
-            <maximum_field_length unit="byte">$field.BYTES</maximum_field_length>                       
+            <maximum_field_length unit="byte">$field.BYTES</maximum_field_length>
           </Field_Delimited>
           #end
         </Record_Delimited>
@@ -315,7 +315,7 @@
       #set ( $columns = [] )
       <fields>0</fields>
     #end
-    
+
     #set( $value = false )
     #set ( $value = $container.CONTAINER )
     #if ( $!{value} )
@@ -327,12 +327,12 @@
       <groups>$containers.size()</groups>
     #else
       #set ( $containers = [] )
-      <groups>0</groups>                  
+      <groups>0</groups>
     #end
     <group_location unit="byte">$container.START_BYTE</group_location>
-    <group_length unit="byte">$container.BYTES</group_length> 
-    #mapColumns($columns $fieldType)   
-    #mapContainers($containers $fieldType)   
+    <group_length unit="byte">$container.BYTES</group_length>
+    #mapColumns($columns $fieldType)
+    #mapContainers($containers $fieldType)
   </$groupType>
   #end
 #end
@@ -360,10 +360,10 @@
           </Packed_Data_Fields>
         #else
          #set ( $bitColumns = [] )
-        #end    
+        #end
         #end
   </$fieldType>
-  #end        
+  #end
 #end
 
 #macro( getDataType $column $fieldType )
@@ -425,8 +425,8 @@
       <data_type>ComplexMSB16</data_type>
       #end
     #end
-  #end  
-  
+  #end
+
   #if ( $column.DATA_TYPE == "MSB_BIT_STRING" || $column.DATA_TYPE == "LSB_BIT_STRING" || $column.DATA_TYPE == "VAX_BIT_STRING" )
     <data_type>SignedBitString</data_type>
   #elseif ( $column.DATA_TYPE == "CHARACTER" )
@@ -438,11 +438,11 @@
   #elseif ( $column.DATA_TYPE == "BOOLEAN" )
     <data_type>ASCII_Boolean</data_type>
   #elseif ( $column.DATA_TYPE == "ASCII_REAL" )
-    <data_type>ASCII_REAL</data_type>
+    <data_type>ASCII_Real</data_type>
   #elseif ( $column.DATA_TYPE == "ASCII_INTEGER" )
     <data_type>ASCII_Integer</data_type>
   #end
-  
+
 #end
 
 #macro( mapBitColumns $bitColumns )
@@ -459,5 +459,5 @@
       <data_type>SignedBitString</data_type>
     #end
   </Field_Bit>
-  #end        
+  #end
 #end
