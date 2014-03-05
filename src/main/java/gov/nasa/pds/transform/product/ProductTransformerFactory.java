@@ -1,4 +1,4 @@
-// Copyright 2006-2013, by the California Institute of Technology.
+// Copyright 2006-2014, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship acknowledged.
 // Any commercial use must be negotiated with the Office of Technology Transfer
 // at the California Institute of Technology.
@@ -34,6 +34,8 @@ public class ProductTransformerFactory {
   /** Private constructor. */
   private ProductTransformerFactory() {}
 
+  private final String OVERWRITE_PROP = "overwrite.output";
+
   /** Gets an instance of the factory.
    *
    */
@@ -62,15 +64,17 @@ public class ProductTransformerFactory {
     if (!target.exists()) {
       throw new TransformException("Target not found: " + target);
     }
+    boolean overwrite = Boolean.parseBoolean(
+        System.getProperty(OVERWRITE_PROP));
     String extension = FilenameUtils.getExtension(target.toString());
     if (extension.equalsIgnoreCase("xml")) {
       if (Constants.PDS4_VALID_FORMATS.contains(format)) {
         if ("csv".equals(format)) {
-          return new Pds4TableTransformer();
+          return new Pds4TableTransformer(overwrite);
         } else if (Constants.STYLESHEETS.containsKey(format)) {
-          return new StylesheetTransformer();
+          return new StylesheetTransformer(overwrite);
         } else {
-          return new Pds4ImageTransformer();
+          return new Pds4ImageTransformer(overwrite);
         }
       } else {
         throw new TransformException("Format value '" + format
@@ -80,9 +84,9 @@ public class ProductTransformerFactory {
     } else {
       if (Constants.PDS3_VALID_FORMATS.contains(format)) {
         if ("pds4-label".equals(format)) {
-          return new Pds3LabelTransformer();
+          return new Pds3LabelTransformer(overwrite);
         } else {
-          return new Pds3ImageTransformer();
+          return new Pds3ImageTransformer(overwrite);
         }
       } else {
         throw new TransformException("Format value '" + format

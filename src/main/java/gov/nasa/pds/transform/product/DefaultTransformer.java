@@ -1,4 +1,4 @@
-// Copyright 2006-2013, by the California Institute of Technology.
+// Copyright 2006-2014, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship acknowledged.
 // Any commercial use must be negotiated with the Office of Technology Transfer
 // at the California Institute of Technology.
@@ -32,8 +32,31 @@ import java.util.logging.Logger;
  */
 public abstract class DefaultTransformer implements ProductTransformer {
   /** logger object. */
-  private static Logger log = Logger.getLogger(
+  protected static Logger log = Logger.getLogger(
       TransformLauncher.class.getName());
+
+  /**
+   * Flag to indicate whether to overwrite an existing output file.
+   */
+  protected boolean overwriteOutput;
+
+  /**
+   * Default constructor. Sets the flag to overwrite outputs to
+   * true.
+   *
+   */
+  public DefaultTransformer() {
+    this(true);
+  }
+
+  /**
+   * Constructor to set the flag to overwrite outputs.
+   *
+   * @param overwrite Set to true to overwrite outputs, false otherwise.
+   */
+  public DefaultTransformer(boolean overwrite) {
+    this.overwriteOutput = overwrite;
+  }
 
   @Override
   public List<File> transform(List<File> targets, File outputDir, String format)

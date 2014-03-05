@@ -1,4 +1,4 @@
-// Copyright 2006-2013, by the California Institute of Technology.
+// Copyright 2006-2014, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship acknowledged.
 // Any commercial use must be negotiated with the Office of Technology Transfer
 // at the California Institute of Technology.
@@ -31,7 +31,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.util.logging.Logger;
 
 
 /**
@@ -41,9 +40,6 @@ import java.util.logging.Logger;
  *
  */
 public class Pds4TableTransformer extends DefaultTransformer {
-  /** logger object. */
-  private static Logger log = Logger.getLogger(
-      Pds4TableTransformer.class.getName());
 
   /**
    * Defines an enumeration for the different output formats.
@@ -59,10 +55,12 @@ public class Pds4TableTransformer extends DefaultTransformer {
   private String[] requestedFields;
 
   /**
-   * Default constructor.
+   * Constructor to set the flag to overwrite outputs.
    *
+   * @param overwrite Set to true to overwrite outputs, false otherwise.
    */
-  public Pds4TableTransformer() {
+  public Pds4TableTransformer(boolean overwrite) {
+    super(overwrite);
     format = OutputFormat.CSV;
     out = new PrintWriter(new OutputStreamWriter(System.out));
     fieldSeparator = ",";
@@ -91,41 +89,47 @@ public class Pds4TableTransformer extends DefaultTransformer {
         String dataFilename = fileArea.getFile().getFileName();
         File outputFile = Utility.createOutputFile(new File(dataFilename),
             outputDir, format);
-        try {
-          out = new PrintWriter(new FileWriter(outputFile));
-          File dataFile = new File(target.getParent(), dataFilename);
-          int currentIndex = 1;
-          if (objectAccess.getTableObjects(fileArea).isEmpty()) {
-            log.log(new ToolsLogRecord(ToolsLevel.INFO,
-                "No table objects are found in the label.", target));
-          } else {
-            for (Object object : objectAccess.getTableObjects(fileArea)) {
-              try {
-                log.log(new ToolsLogRecord(ToolsLevel.INFO,
-                    "Transforming table '" + currentIndex + "' of file: "
-                    + dataFile.toString(), target));
-                TableReader reader = ExporterFactory.getTableReader(object,
-                    dataFile);
-                extractTable(reader);
-              } catch (Exception e) {
-                throw new TransformException(
-                    "Error occurred while reading table '" + currentIndex
-                    + "' of file '" + dataFile.toString() + "': "
-                    + e.getMessage());
+        if (outputFile.exists() && !overwriteOutput) {
+          log.log(new ToolsLogRecord(ToolsLevel.INFO,
+              "Output file already exists. No transformation will occur: "
+              + outputFile.toString(), target));
+        } else {
+          try {
+            out = new PrintWriter(new FileWriter(outputFile));
+            File dataFile = new File(target.getParent(), dataFilename);
+            int currentIndex = 1;
+            if (objectAccess.getTableObjects(fileArea).isEmpty()) {
+              log.log(new ToolsLogRecord(ToolsLevel.INFO,
+                  "No table objects are found in the label.", target));
+            } else {
+              for (Object object : objectAccess.getTableObjects(fileArea)) {
+                try {
+                  log.log(new ToolsLogRecord(ToolsLevel.INFO,
+                      "Transforming table '" + currentIndex + "' of file: "
+                      + dataFile.toString(), target));
+                  TableReader reader = ExporterFactory.getTableReader(object,
+                      dataFile);
+                  extractTable(reader);
+                } catch (Exception e) {
+                  throw new TransformException(
+                      "Error occurred while reading table '" + currentIndex
+                      + "' of file '" + dataFile.toString() + "': "
+                      + e.getMessage());
+                }
+                ++currentIndex;
               }
-              ++currentIndex;
+              log.log(new ToolsLogRecord(ToolsLevel.INFO,
+                  "Successfully transformed table(s) to the following output: "
+                  + outputFile.toString(), target));
             }
-            log.log(new ToolsLogRecord(ToolsLevel.INFO,
-                "Successfully transformed table(s) to the following output: "
-                + outputFile.toString(), target));
+          } catch (IOException io) {
+            throw new TransformException("Cannot open output file \'"
+                + outputFile.toString() + "': " + io.getMessage());
+          } finally {
+            out.close();
           }
-        } catch (IOException io) {
-          throw new TransformException("Cannot open output file \'"
-              + outputFile.toString() + "': " + io.getMessage());
-        } finally {
-          out.close();
+          result = outputFile;
         }
-        result = outputFile;
       }
       return result;
     } catch (ParseException p) {

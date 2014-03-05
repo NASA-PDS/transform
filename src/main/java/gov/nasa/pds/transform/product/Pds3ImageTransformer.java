@@ -1,4 +1,4 @@
-// Copyright 2006-2013, by the California Institute of Technology.
+// Copyright 2006-2014, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship acknowledged.
 // Any commercial use must be negotiated with the Office of Technology Transfer
 // at the California Institute of Technology.
@@ -16,26 +16,10 @@ package gov.nasa.pds.transform.product;
 import java.awt.Dimension;
 import java.awt.image.RenderedImage;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-import java.util.logging.Logger;
 
 import javax.media.jai.JAI;
 import javax.media.jai.ParameterBlockJAI;
 
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.velocity.Template;
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.Velocity;
-import org.apache.velocity.runtime.resource.loader.StringResourceLoader;
-import org.apache.velocity.runtime.resource.util.StringResourceRepository;
-
-import gov.nasa.pds.imaging.generate.Generator;
-import gov.nasa.pds.imaging.generate.context.ContextMappings;
-import gov.nasa.pds.imaging.generate.label.PDS3Label;
-import gov.nasa.pds.imaging.generate.label.PDSObject;
 import gov.nasa.pds.tools.containers.FileReference;
 import gov.nasa.pds.tools.label.Label;
 import gov.nasa.pds.tools.label.PointerStatement;
@@ -52,9 +36,15 @@ import gov.nasa.pds.transform.util.Utility;
  *
  */
 public class Pds3ImageTransformer extends DefaultTransformer {
-  /** logger object. */
-  private static Logger log = Logger.getLogger(
-      Pds3ImageTransformer.class.getName());
+
+  /**
+   * Constructor to set the flag to overwrite outputs.
+   *
+   * @param overwrite Set to true to overwrite outputs, false otherwise.
+   */
+  public Pds3ImageTransformer(boolean overwrite) {
+    super(overwrite);
+  }
 
   @Override
   public File transform(File target, File outputDir, String format)
@@ -78,64 +68,70 @@ public class Pds3ImageTransformer extends DefaultTransformer {
           } else {
             outputFile = Utility.createOutputFile(imageFile, outputDir,
                 format);
-            log.log(new ToolsLogRecord(ToolsLevel.INFO,
-                "Transforming image file: " + imageFile.toString(),
-                target));
-            if ("pds".equals(format)) {
-              try {
-                String[] args = {imageFile.getCanonicalPath(),
-                    outputFile.getCanonicalPath()};
-                if (Constants.EXTERNAL_PROGRAMS.containsKey(format)) {
-                  Utility.exec(Constants.EXTERNAL_PROGRAMS.get(format), args);
-                } else {
-                  throw new TransformException("Could not find an external "
-                      + "program to run for the following format type: "
-                      + format);
-                }
-              } catch (Exception e) {
-                throw new TransformException(e.getMessage());
-              }
+            if (outputFile.exists() && !overwriteOutput) {
               log.log(new ToolsLogRecord(ToolsLevel.INFO,
-                  "Transforming label file: " + target, target));
-              File pds4Label = Utility.createOutputFile(target, outputDir,
-                  "xml");
-              try {
-                //Transform the label to PDS4 using the Generate library
-                Utility.generate(target, pds4Label, "vicar-pds3_to_pds4.vm");
-              } catch (Exception e) {
-                e.printStackTrace();
-                throw new TransformException("Error occurred while "
-                    + "generating PDS4 label: " + e.getMessage());
-              }
-              log.log(new ToolsLogRecord(ToolsLevel.INFO,
-                  "Successfully transformed PDS3 label '" + target
-                  + "' to a PDS4 label '" + pds4Label + "'",
-                  target));
+                  "Output file already exists. No transformation will occur: "
+                  + imageFile.toString(), target));
             } else {
-              try {
-                RenderedImage renderedImage = JAI.create("ImageRead", imageFile);
-                ParameterBlockJAI paramBlock = new ParameterBlockJAI("imagewrite");
-                paramBlock.addSource(renderedImage);
-                paramBlock.setParameter("output", outputFile.toString());
-                if ("jp2".equalsIgnoreCase(format)) {
-                  paramBlock.setParameter("format", "jpeg2000");
-                } else {
-                  paramBlock.setParameter("format", format);
+              log.log(new ToolsLogRecord(ToolsLevel.INFO,
+                  "Transforming image file: " + imageFile.toString(),
+                  target));
+              if ("pds".equals(format)) {
+                try {
+                  String[] args = {imageFile.getCanonicalPath(),
+                      outputFile.getCanonicalPath()};
+                  if (Constants.EXTERNAL_PROGRAMS.containsKey(format)) {
+                    Utility.exec(Constants.EXTERNAL_PROGRAMS.get(format), args);
+                  } else {
+                    throw new TransformException("Could not find an external "
+                        + "program to run for the following format type: "
+                        + format);
+                  }
+                } catch (Exception e) {
+                  throw new TransformException(e.getMessage());
                 }
-                if (format.equalsIgnoreCase("tiff")
-                    || format.equalsIgnoreCase("tif")) {
-                  Dimension tilesize = new Dimension(renderedImage.getWidth(), 8);
-                  paramBlock.setParameter("tilesize", tilesize);
+                log.log(new ToolsLogRecord(ToolsLevel.INFO,
+                    "Transforming label file: " + target, target));
+                File pds4Label = Utility.createOutputFile(target, outputDir,
+                    "xml");
+                try {
+                  //Transform the label to PDS4 using the Generate library
+                  Utility.generate(target, pds4Label, "vicar-pds3_to_pds4.vm");
+                } catch (Exception e) {
+                  e.printStackTrace();
+                  throw new TransformException("Error occurred while "
+                      + "generating PDS4 label: " + e.getMessage());
                 }
-                JAI.create("imagewrite", paramBlock);
-              } catch (Exception e) {
-                throw new TransformException(e.getMessage());
+                log.log(new ToolsLogRecord(ToolsLevel.INFO,
+                    "Successfully transformed PDS3 label '" + target
+                    + "' to a PDS4 label '" + pds4Label + "'",
+                    target));
+              } else {
+                try {
+                  RenderedImage renderedImage = JAI.create("ImageRead", imageFile);
+                  ParameterBlockJAI paramBlock = new ParameterBlockJAI("imagewrite");
+                  paramBlock.addSource(renderedImage);
+                  paramBlock.setParameter("output", outputFile.toString());
+                  if ("jp2".equalsIgnoreCase(format)) {
+                    paramBlock.setParameter("format", "jpeg2000");
+                  } else {
+                    paramBlock.setParameter("format", format);
+                  }
+                  if (format.equalsIgnoreCase("tiff")
+                      || format.equalsIgnoreCase("tif")) {
+                    Dimension tilesize = new Dimension(renderedImage.getWidth(), 8);
+                    paramBlock.setParameter("tilesize", tilesize);
+                  }
+                  JAI.create("imagewrite", paramBlock);
+                } catch (Exception e) {
+                  throw new TransformException(e.getMessage());
+                }
               }
+              log.log(new ToolsLogRecord(ToolsLevel.INFO,
+                  "Successfully transformed image file '" + imageFile.toString()
+                  + "' to the following output: " + outputFile.toString(),
+                  target));
             }
-            log.log(new ToolsLogRecord(ToolsLevel.INFO,
-                "Successfully transformed image file '" + imageFile.toString()
-                + "' to the following output: " + outputFile.toString(),
-                target));
           }
         } else {
           throw new TransformException("No image file references found "

@@ -1,4 +1,4 @@
-// Copyright 2006-2013, by the California Institute of Technology.
+// Copyright 2006-2014, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship acknowledged.
 // Any commercial use must be negotiated with the Office of Technology Transfer
 // at the California Institute of Technology.
@@ -16,7 +16,6 @@ package gov.nasa.pds.transform.product;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.List;
-import java.util.logging.Logger;
 
 import gov.nasa.arc.pds.xml.generated.Array2DImage;
 import gov.nasa.arc.pds.xml.generated.FileAreaObservational;
@@ -37,9 +36,15 @@ import gov.nasa.pds.transform.util.Utility;
  *
  */
 public class Pds4ImageTransformer extends DefaultTransformer {
-  /** logger object. */
-  private static Logger log = Logger.getLogger(
-      Pds4ImageTransformer.class.getName());
+
+  /**
+   * Constructor to set the flag to overwrite outputs.
+   *
+   * @param overwrite Set to true to overwrite outputs, false otherwise.
+   */
+  public Pds4ImageTransformer(boolean overwrite) {
+    super(overwrite);
+  }
 
   @Override
   public File transform(File target, File outputDir, String format)
@@ -64,17 +69,23 @@ public class Pds4ImageTransformer extends DefaultTransformer {
                   target));
               File outputFile = Utility.createOutputFile(
                   new File(fao.getFile().getFileName()), outputDir, format);
-              if ("jp2".equalsIgnoreCase(format)) {
-                exporter.setExportType("jpeg2000");
+              if (outputFile.exists() && !overwriteOutput) {
+                log.log(new ToolsLogRecord(ToolsLevel.INFO,
+                    "Output file already exists. No transformation will occur: "
+                    + outputFile.toString(), target));
               } else {
-                exporter.setExportType(format);
-              }
-              exporter.convert(image, new FileOutputStream(outputFile));
-              log.log(new ToolsLogRecord(ToolsLevel.INFO,
-                  "Successfully transformed image file '"
-                  + fao.getFile().getFileName() + "' to the following output: "
-                  + outputFile.toString(), target));
-              result = outputFile;
+                if ("jp2".equalsIgnoreCase(format)) {
+                  exporter.setExportType("jpeg2000");
+                } else {
+                  exporter.setExportType(format);
+                }
+                exporter.convert(image, new FileOutputStream(outputFile));
+                log.log(new ToolsLogRecord(ToolsLevel.INFO,
+                    "Successfully transformed image file '"
+                    + fao.getFile().getFileName() + "' to the following output: "
+                    + outputFile.toString(), target));
+                result = outputFile;
+                }
             }
           } else {
             log.log(new ToolsLogRecord(ToolsLevel.INFO,

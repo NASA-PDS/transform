@@ -19,7 +19,6 @@ import gov.nasa.pds.transform.logging.ToolsLogRecord;
 import gov.nasa.pds.transform.util.Utility;
 
 import java.io.File;
-import java.util.logging.Logger;
 
 /**
  * Class to support transformations given a PDS3 label.
@@ -28,9 +27,15 @@ import java.util.logging.Logger;
  *
  */
 public class Pds3LabelTransformer extends DefaultTransformer {
-  /** logger object. */
-  private static Logger log = Logger.getLogger(
-      Pds3LabelTransformer.class.getName());
+
+  /**
+   * Constructor to set the flag to overwrite outputs.
+   *
+   * @param overwrite Set to true to overwrite outputs, false otherwise.
+   */
+  public Pds3LabelTransformer(boolean overwrite) {
+    super(overwrite);
+  }
 
   @Override
   public File transform(File target, File outputDir, String format)
@@ -38,6 +43,12 @@ public class Pds3LabelTransformer extends DefaultTransformer {
     log.log(new ToolsLogRecord(ToolsLevel.INFO,
         "Transforming label file: " + target, target));
     File outputFile = Utility.createOutputFile(target, outputDir, format);
+    if (outputFile.exists() && !overwriteOutput) {
+      log.log(new ToolsLogRecord(ToolsLevel.INFO,
+          "Output file already exists. No transformation will occur: "
+          + outputFile.toString(), target));
+      return outputFile;
+    }
     try {
       Utility.generate(target, outputFile, "generic-pds3_to_pds4.vm");
     } catch (Exception e) {

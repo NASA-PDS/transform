@@ -20,7 +20,6 @@ import gov.nasa.pds.transform.logging.ToolsLogRecord;
 import gov.nasa.pds.transform.util.Utility;
 
 import java.io.File;
-import java.util.logging.Logger;
 
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -37,9 +36,14 @@ import javax.xml.transform.stream.StreamSource;
  *
  */
 public class StylesheetTransformer extends DefaultTransformer {
-  /** logger object. */
-  private static Logger log = Logger.getLogger(
-      StylesheetTransformer.class.getName());
+  /**
+   * Constructor to set the flag to overwrite outputs.
+   *
+   * @param overwrite Set to true to overwrite outputs, false otherwise.
+   */
+  public StylesheetTransformer(boolean overwrite) {
+    super(overwrite);
+  }
 
   public File transform(File target, File outputDir, String format)
   throws TransformException {
@@ -53,11 +57,17 @@ public class StylesheetTransformer extends DefaultTransformer {
               Constants.STYLESHEETS.get(format)))
           );
       File outputFile = Utility.createOutputFile(target, outputDir, format);
-      transformer.transform(new StreamSource(target),
-          new StreamResult(outputFile));
-      log.log(new ToolsLogRecord(ToolsLevel.INFO,
-          "Successfully transformed target label to the following output: "
-          + outputFile.toString(), target));
+      if (outputFile.exists() && !overwriteOutput) {
+        log.log(new ToolsLogRecord(ToolsLevel.INFO,
+            "Output file already exists. No transformation will occur: "
+            + outputFile.toString(), target));
+      } else {
+        transformer.transform(new StreamSource(target),
+            new StreamResult(outputFile));
+        log.log(new ToolsLogRecord(ToolsLevel.INFO,
+            "Successfully transformed target label to the following output: "
+            + outputFile.toString(), target));
+      }
       return outputFile;
     } catch (TransformerConfigurationException tce) {
       throw new TransformException(
