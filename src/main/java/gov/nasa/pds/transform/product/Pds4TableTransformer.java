@@ -128,8 +128,8 @@ public class Pds4TableTransformer extends DefaultTransformer {
           } finally {
             out.close();
           }
-          result = outputFile;
         }
+        result = outputFile;
       }
       return result;
     } catch (ParseException p) {

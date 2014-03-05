@@ -73,6 +73,7 @@ public class Pds4ImageTransformer extends DefaultTransformer {
                 log.log(new ToolsLogRecord(ToolsLevel.INFO,
                     "Output file already exists. No transformation will occur: "
                     + outputFile.toString(), target));
+
               } else {
                 if ("jp2".equalsIgnoreCase(format)) {
                   exporter.setExportType("jpeg2000");
@@ -84,8 +85,8 @@ public class Pds4ImageTransformer extends DefaultTransformer {
                     "Successfully transformed image file '"
                     + fao.getFile().getFileName() + "' to the following output: "
                     + outputFile.toString(), target));
-                result = outputFile;
-                }
+              }
+              result = outputFile;
             }
           } else {
             log.log(new ToolsLogRecord(ToolsLevel.INFO,
