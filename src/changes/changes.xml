@@ -33,6 +33,9 @@
       <action dev="mcayanan" type="add">
         For VICAR to PDS4 image transformations, also added the capability to transform the given label into a PDS4 label.
       </action>
+      <action dev="mcayanan" type="add">
+        Add support to not overwrite the file of the transformed output if it already exists in the file system.
+      </action>
       <action dev="mcayanan" type="update" issue="PDS-211">
         Re-factored code to provide an API for the Transformation library.
       </action>
