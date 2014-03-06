@@ -71,7 +71,7 @@ public class Pds3ImageTransformer extends DefaultTransformer {
             if (outputFile.exists() && !overwriteOutput) {
               log.log(new ToolsLogRecord(ToolsLevel.INFO,
                   "Output file already exists. No transformation will occur: "
-                  + imageFile.toString(), target));
+                  + outputFile.toString(), target));
             } else {
               log.log(new ToolsLogRecord(ToolsLevel.INFO,
                   "Transforming image file: " + imageFile.toString(),
