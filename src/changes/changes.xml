@@ -39,6 +39,9 @@
       <action dev="mcayanan" type="update" issue="PDS-211">
         Re-factored code to provide an API for the Transformation library.
       </action>
+      <action dev="mcayanan" type="update" issue="PDS-253">
+        Updated Unix shell script and Windows batch file to provide a more user friendly message when JAVA_HOME is not set in the environment.
+      </action>
       <action dev="mcayanan" type="update">
         Updated the tool to support the passing in of multiple targets to transform.
       </action>
