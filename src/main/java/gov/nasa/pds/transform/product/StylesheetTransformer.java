@@ -57,7 +57,7 @@ public class StylesheetTransformer extends DefaultTransformer {
               Constants.STYLESHEETS.get(format)))
           );
       File outputFile = Utility.createOutputFile(target, outputDir, format);
-      if (outputFile.exists() && !overwriteOutput) {
+      if ((outputFile.exists() && outputFile.length() != 0) && !overwriteOutput) {
         log.log(new ToolsLogRecord(ToolsLevel.INFO,
             "Output file already exists. No transformation will occur: "
             + outputFile.toString(), target));

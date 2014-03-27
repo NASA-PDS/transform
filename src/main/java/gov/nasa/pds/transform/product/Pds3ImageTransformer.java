@@ -16,9 +16,13 @@ package gov.nasa.pds.transform.product;
 import java.awt.Dimension;
 import java.awt.image.RenderedImage;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.media.jai.JAI;
 import javax.media.jai.ParameterBlockJAI;
+
+import jpl.mipl.io.jConvertIIO;
 
 import gov.nasa.pds.tools.containers.FileReference;
 import gov.nasa.pds.tools.label.Label;
@@ -107,24 +111,48 @@ public class Pds3ImageTransformer extends DefaultTransformer {
                     + "' to a PDS4 label '" + pds4Label + "'",
                     target));
               } else {
-                try {
-                  RenderedImage renderedImage = JAI.create("ImageRead", imageFile);
-                  ParameterBlockJAI paramBlock = new ParameterBlockJAI("imagewrite");
-                  paramBlock.addSource(renderedImage);
-                  paramBlock.setParameter("output", outputFile.toString());
-                  if ("jp2".equalsIgnoreCase(format)) {
-                    paramBlock.setParameter("format", "jpeg2000");
+                if (imageFile.toString().equals(target.toString())) {
+                  // If we have an attached label, call the MIPL Transcoder
+                  // We will eventually want to call this all the time
+                  List<String> args = new ArrayList<String>();
+                  args.add("inp=" + target.toString());
+                  args.add("out=" + outputFile.toString());
+                  if("jp2".equalsIgnoreCase(format)) {
+                    args.add("format=JPEG 2000");
                   } else {
-                    paramBlock.setParameter("format", format);
+                    args.add("format=" + format);
                   }
-                  if (format.equalsIgnoreCase("tiff")
-                      || format.equalsIgnoreCase("tif")) {
-                    Dimension tilesize = new Dimension(renderedImage.getWidth(), 8);
-                    paramBlock.setParameter("tilesize", tilesize);
+                  args.add("RI");
+                  args.add("OFORM=BYTE");
+                  //args.add("debug=true");
+                  try {
+                    jConvertIIO.main(args.toArray(new String[0]));
+                  } catch (Exception e) {
+                    throw new TransformException(e.getMessage());
                   }
-                  JAI.create("imagewrite", paramBlock);
-                } catch (Exception e) {
-                  throw new TransformException(e.getMessage());
+                } else {
+                  // If we have a detached label, call the JAI methods
+                  // to perform the transformation. This is based off of
+                  // the SimpleConvert class in the VICAR-IO package
+                  try {
+                    RenderedImage renderedImage = JAI.create("ImageRead", imageFile);
+                    ParameterBlockJAI paramBlock = new ParameterBlockJAI("imagewrite");
+                    paramBlock.addSource(renderedImage);
+                    paramBlock.setParameter("output", outputFile.toString());
+                    if ("jp2".equalsIgnoreCase(format)) {
+                      paramBlock.setParameter("format", "jpeg2000");
+                    } else {
+                      paramBlock.setParameter("format", format);
+                    }
+                    if (format.equalsIgnoreCase("tiff")
+                        || format.equalsIgnoreCase("tif")) {
+                      Dimension tilesize = new Dimension(renderedImage.getWidth(), 8);
+                      paramBlock.setParameter("tilesize", tilesize);
+                    }
+                    JAI.create("imagewrite", paramBlock);
+                  } catch (Exception e) {
+                    throw new TransformException(e.getMessage());
+                  }
                 }
               }
               log.log(new ToolsLogRecord(ToolsLevel.INFO,

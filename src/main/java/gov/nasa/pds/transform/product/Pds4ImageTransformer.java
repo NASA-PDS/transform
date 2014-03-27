@@ -69,7 +69,7 @@ public class Pds4ImageTransformer extends DefaultTransformer {
                   target));
               File outputFile = Utility.createOutputFile(
                   new File(fao.getFile().getFileName()), outputDir, format);
-              if (outputFile.exists() && !overwriteOutput) {
+              if ( (outputFile.exists() && outputFile.length() != 0) && !overwriteOutput) {
                 log.log(new ToolsLogRecord(ToolsLevel.INFO,
                     "Output file already exists. No transformation will occur: "
                     + outputFile.toString(), target));

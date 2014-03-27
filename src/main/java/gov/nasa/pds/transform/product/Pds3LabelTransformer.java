@@ -43,7 +43,7 @@ public class Pds3LabelTransformer extends DefaultTransformer {
     log.log(new ToolsLogRecord(ToolsLevel.INFO,
         "Transforming label file: " + target, target));
     File outputFile = Utility.createOutputFile(target, outputDir, format);
-    if (outputFile.exists() && !overwriteOutput) {
+    if ((outputFile.exists() && outputFile.length() != 0) && !overwriteOutput) {
       log.log(new ToolsLogRecord(ToolsLevel.INFO,
           "Output file already exists. No transformation will occur: "
           + outputFile.toString(), target));
