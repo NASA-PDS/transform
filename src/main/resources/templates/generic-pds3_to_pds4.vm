@@ -106,9 +106,13 @@
   #foreach( $objectName in $objectNames )
     #if ( $objectName.matches($validTypes) )
     <File_Area_Observational>
-    #set ( $pointer = [])
-    #set ( $pointer = $label.get("^$objectName").split(",") )
-    #if ( $pointer.length == 2 )
+    #set ( $value = $label.get("^$objectName").toString() )
+    #set ( $pointer = [] )
+    #foreach ( $element in $value.split(",") )
+        #if ($pointer.add($element))
+        #end
+    #end
+    #if ( $pointer.size() == 2 )
       #set ( $dataFile = $pointer[0].toLowerCase() )
       #if ( $pointer[1].contains("<BYTES>") )
         #set ( $dataFileOffset = $pointer[1].split(" ")[0] )
