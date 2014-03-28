@@ -124,11 +124,6 @@ public class Pds3ImageTransformer extends DefaultTransformer {
                   }
                   args.add("RI");
                   args.add("OFORM=BYTE");
-                  // Add this flag transcoding to JPEGs
-                  if ("jpg".equalsIgnoreCase(format) ||
-                      "jpeg".equalsIgnoreCase(format)) {
-                    args.add("2RGB=true");
-                  }
                   //args.add("debug=true");
                   try {
                     jConvertIIO.main(args.toArray(new String[0]));
