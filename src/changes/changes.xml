@@ -31,6 +31,9 @@
         Added the capability to transform a given PDS3 data product label into a PDS4 Product Observational label. See operational guide for limitations on this feature.
       </action>
       <action dev="mcayanan" type="add">
+        Added support to transform PDS3 images that are greater than 8-bits, provided that the target is a PDS3 attached label.
+      </action>
+      <action dev="mcayanan" type="add">
         For VICAR to PDS4 image transformations, also added the capability to transform the given label into a PDS4 label.
       </action>
       <action dev="mcayanan" type="add">
