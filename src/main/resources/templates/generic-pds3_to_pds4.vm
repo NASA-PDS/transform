@@ -223,7 +223,7 @@
         <offset unit="byte">$dataFileOffset</offset>
         <records>$object.ROWS</records>
       #if ($tableType.equals("Table_Character"))
-        <record_delimiter>carriage-return line-feed</record_delimiter>
+        <record_delimiter>Carriage-Return Line-Feed</record_delimiter>
         #set ($recordType = "Record_Character")
         #set ($fieldType = "Field_Character")
         #set ($groupType = "Group_Field_Character")
@@ -272,7 +272,7 @@
         <offset unit="byte">$dataFileOffset</offset>
         <parsing_standard_id>PDS DV 1</parsing_standard_id>
         <records>$object.ROWS</records>
-        <record_delimiter>carriage-return-line-feed</record_delimiter>
+        <record_delimiter>Carriage-Return Line-Feed</record_delimiter>
         <field_delimiter>$object.FIELD_DELIMITER.toString().toLowerCase()</field_delimiter>
         <Record_Delimited>
           <fields>$object.FIELDS</fields>
