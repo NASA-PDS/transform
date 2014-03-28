@@ -34,7 +34,7 @@
 
   <Observation_Area>
     <Time_Coordinates>
-    #if ( $label.START_TIME )
+    #if ( $label.START_TIME && !($label.START_TIME.trim().equals("N/A") || $label.START_TIME.trim().equals("NULL") || $label.START_TIME.trim().equals("UNK")) )
       #if ( $label.START_TIME.trim().endsWith("Z") )
         <start_date_time>${label.START_TIME}</start_date_time>
       #else
@@ -44,7 +44,7 @@
       <start_date_time xsi:nil="true"></start_date_time>
     #end
 
-    #if( $label.STOP_TIME )
+    #if( $label.STOP_TIME && !($label.STOP_TIME.trim().equals("N/A") || $label.STOP_TIME.trim().equals("NULL") || $label.STOP_TIME.trim().equals("UNK")) )
       #if ( $label.START_TIME.trim().endsWith("Z") )
         <stop_date_time>${label.STOP_TIME}</stop_date_time>
       #else
@@ -137,7 +137,7 @@
         <axes>2</axes>
         <axis_index_order>Last Index Fastest</axis_index_order>
         <Element_Array>
-        #if ( $object.SAMPLE_TYPE == "INTEGER" || $object.SAMPLE_TYPE == "SUN_INTEGER" || $object.SAMPLE_TYPE == "MAC_INTEGER" )
+        #if ( $object.SAMPLE_TYPE == "MSB_INTEGER" || $object.SAMPLE_TYPE == "INTEGER" || $object.SAMPLE_TYPE == "SUN_INTEGER" || $object.SAMPLE_TYPE == "MAC_INTEGER" )
           #if ( $object.SAMPLE_BITS == "8" )
           <data_type>SignedByte</data_type>
           #elseif ( $object.SAMPLE_BITS == "16" )
@@ -145,7 +145,7 @@
           #elseif ( $object.SAMPLE_BITS == "32" )
           <data_type>SignedMSB4</data_type>
           #end
-        #elseif ( $object.SAMPLE_TYPE == "SUN_UNSIGNED_INTEGER" || $object.SAMPLE_TYPE == "MAC_UNSIGNED_INTEGER" || $object.SAMPLE_TYPE == "UNSIGNED_INTEGER" )
+        #elseif ( $object.SAMPLE_TYPE == "MSB_UNSIGNED_INTEGER" || $object.SAMPLE_TYPE == "SUN_UNSIGNED_INTEGER" || $object.SAMPLE_TYPE == "MAC_UNSIGNED_INTEGER" || $object.SAMPLE_TYPE == "UNSIGNED_INTEGER" )
           #if ( $object.SAMPLE_BITS == "8" )
           <data_type>UnsignedByte</data_type>
           #elseif ( $object.SAMPLE_BITS == "16" )
@@ -153,7 +153,7 @@
           #elseif ( $object.SAMPLE_BITS == "32" )
           <data_type>UnsignedMSB4</data_type>
           #end
-        #elseif ( $object.SAMPLE_TYPE == "PC_INTEGER" || $object.SAMPLE_TYPE == "VAX_INTEGER" )
+        #elseif ( $object.SAMPLE_TYPE == "LSB_INTEGER" || $object.SAMPLE_TYPE == "PC_INTEGER" || $object.SAMPLE_TYPE == "VAX_INTEGER" )
           #if ( $object.SAMPLE_BITS == "8" )
           <data_type>SignedByte</data_type>
           #elseif ( $object.SAMPLE_BITS == "16" )
@@ -161,7 +161,7 @@
           #elseif ( $object.SAMPLE_BITS == "32" )
           <data_type>SignedLSB4</data_type>
           #end
-        #elseif ( $object.SAMPLE_TYPE == "PC_UNSIGNED_INTEGER" || $object.SAMPLE_TYPE == "VAX_UNSIGNED_INTEGER" )
+        #elseif ( $object.SAMPLE_TYPE == "LSB_UNSIGNED_INTEGER" || $object.SAMPLE_TYPE == "PC_UNSIGNED_INTEGER" || $object.SAMPLE_TYPE == "VAX_UNSIGNED_INTEGER" )
           #if ( $object.SAMPLE_BITS == "8" )
           <data_type>UnsignedByte</data_type>
           #elseif ( $object.SAMPLE_BITS == "16" )
