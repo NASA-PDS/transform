@@ -21,7 +21,7 @@
   #else
      <title>$title</title>
   #end
-     <information_model_version>1.2.0.0</information_model_version>
+     <information_model_version>1.2.0.1</information_model_version>
      <product_class>Product_Observational</product_class>
      <Modification_History>
        <Modification_Detail>
@@ -106,25 +106,30 @@
   #foreach( $objectName in $objectNames )
     #if ( $objectName.matches($validTypes) )
     <File_Area_Observational>
-    #set ( $pointer = $label.getList("^$objectName") )
-    #if ( $pointer.size() == 2 )
-      #set ( $dataFile = $pointer.get(0).toLowerCase() )
-      #if ( $label.getUnits("^$objectName") == "BYTES" )
-        #set ( $dataFileOffset = $pointer.get(1).trim() )
+    #set ( $pointer = [])
+    #set ( $pointer = $label.get("^$objectName").split(",") )
+    #if ( $pointer.length == 2 )
+      #set ( $dataFile = $pointer[0].toLowerCase() )
+      #if ( $pointer[1].contains("<BYTES>") )
+        #set ( $dataFileOffset = $pointer[1].split(" ")[0] )
       #else
         #set( $Integer = 0 )
-        #set ( $offset = $Integer.parseInt($pointer.get(1).trim()) - 1 )
+        #set ( $offset = $Integer.parseInt($pointer[1].trim()) - 1 )
         #set ( $dataFileOffset = $offset * $Integer.parseInt($label.RECORD_BYTES.trim()) )
       #end
     #else
-      #if ( !$pointer.get(0).trim().matches("\d+") )
-        #set ( $dataFile = $pointer.get(0).toLowerCase() )
+      #if ( !$pointer[0].trim().matches("\d+") )
+        #set ( $dataFile = $pointer[0].toLowerCase() )
         #set ( $dataFileOffset = 0 )
       #else
         #set( $Integer = 0 )
-        #set ( $offset = $Integer.parseInt($pointer.get(0).trim()) - 1 )
-        #set ( $dataFileOffset = $offset * $Integer.parseInt($label.RECORD_BYTES.trim()) )
-        #set ( $dataFile = $FilenameUtils.getBaseName($generate.file_name.toString().toLowerCase()).concat(".xml") )
+        #if ( $pointer[0].contains("<BYTES>") )
+          #set ( $dataFileOffset = $pointer[0].split(" ")[0] )
+        #else
+          #set ( $offset = $Integer.parseInt($pointer[0].trim()) - 1 )
+          #set ( $dataFileOffset = $offset * $Integer.parseInt($label.RECORD_BYTES.trim()) )
+          #set ( $dataFile = $FilenameUtils.getBaseName($generate.file_name.toString().toLowerCase()).concat(".xml") )
+        #end
       #end
     #end
       <File>
