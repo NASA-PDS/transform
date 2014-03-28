@@ -17,7 +17,7 @@ OBJECT                        = IMAGE_HEADER
  TYPE                         = VICAR2                                        
  BYTES                        = 1024                                          
  RECORDS                      = 2                                             
-END_OBJECT                                                                    
+END_OBJECT                    = IMAGE_HEADER                                
 OBJECT                        = IMAGE                                         
  LINES                        = 1024                                          
  LINE_SAMPLES                 = 1024                                          
@@ -29,7 +29,7 @@ OBJECT                        = IMAGE
  Muhleman Law and converted to decibels.  Muhleman Law                        
  multiplicative constant of 0.0118 was used.  (Note: Intention                
  was to use 0.0188.)"                                                         
-END_OBJECT                                                                    
+END_OBJECT                    = IMAGE  
                                                                               
 OBJECT                        = IMAGE_MAP_PROJECTION_CATALOG                  
  ^DATA_SET_MAP_PROJECT_CATALOG = 'DSMAPF.LBL'                                 
@@ -61,5 +61,5 @@ OBJECT                        = IMAGE_MAP_PROJECTION_CATALOG
  X_AXIS_LAST_PIXEL            = 1024                                          
  Y_AXIS_LAST_PIXEL            = 1024                                          
  MAP_PROJECTION_ROTATION      = 0.0000                                        
-END_OBJECT                                                                    
+END_OBJECT                    = IMAGE_MAP_PROJECTION_CATALOG                                        
 END                                                                           
