@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
-  Copyright 2012-2013, by the California Institute of Technology.
+  Copyright 2012-2014, by the California Institute of Technology.
   ALL RIGHTS RESERVED. United States Government Sponsorship acknowledged.
   Any commercial use must be negotiated with the Office of Technology Transfer
   at the California Institute of Technology.
@@ -23,12 +23,21 @@
   </properties>
 
   <body>
-    <release version="0.3.0" date="TBD" description="TBD">
+    <release version="0.2.2" date="2014-03-31" description="This release of the Transform Tool is a component of the integrated release 4.1.0 of the PDS4 System. This is an operational release of the system components to date.">
       <action dev="mcayanan" type="add" issue="PDS-200">
         Added support for executing python scripts to do transformations. Python script added performs VICAR to PDS4 transformations.
       </action>
+      <action dev="mcayanan" type="update" issue="PDS-211">
+        Re-factored code to provide an API for the Transformation library.
+      </action>
       <action dev="mcayanan" type="add" issue="PDS-236">
         Added the capability to transform a given PDS3 data product label into a PDS4 Product Observational label. See operational guide for limitations on this feature.
+      </action>
+      <action dev="mcayanan" type="update" issue="PDS-242">
+        Modified the Pds4ImageTransformer constructor so that it takes a boolean "overwrite"=true/false which prevents the same image to be generated twice.
+      </action>
+      <action dev="mcayanan" type="update" issue="PDS-253">
+        Updated Unix shell script and Windows batch file to provide a more user friendly message when JAVA_HOME is not set in the environment.
       </action>
       <action dev="mcayanan" type="add">
         Added support to transform PDS3 images that are greater than 8-bits, provided that the target is a PDS3 attached label.
@@ -38,12 +47,6 @@
       </action>
       <action dev="mcayanan" type="add">
         Add support to not overwrite the file of the transformed output if it already exists in the file system.
-      </action>
-      <action dev="mcayanan" type="update" issue="PDS-211">
-        Re-factored code to provide an API for the Transformation library.
-      </action>
-      <action dev="mcayanan" type="update" issue="PDS-253">
-        Updated Unix shell script and Windows batch file to provide a more user friendly message when JAVA_HOME is not set in the environment.
       </action>
       <action dev="mcayanan" type="update">
         Updated the tool to support the passing in of multiple targets to transform.
