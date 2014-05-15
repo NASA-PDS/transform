@@ -89,7 +89,7 @@
 
         <table>
           <tr><th>Format Type</th><th>Description</th></tr>
-          <tr><td>pds4</td><td>Specify to transform a given image into a PDS4 Array 2D image. Additionally, the given PDS3 label will be transformed into a PDS4 label. Note that this transformation currently applies to target VICAR images only. Please see the <a href="#PDS3_to_PDS4_Label_Transformation">PDS3 to PDS4 Label Transformation</a> section for more details on how the tool performs a PDS3 to PDS4 label transformation.</td></tr>
+          <tr><td>pds</td><td>Specify to transform a VICAR image into a PDS4 Array 2D image. Additionally, the given PDS3 label will be transformed into a PDS4 label. Note that this transformation currently applies to target VICAR images only. Please see the <a href="#PDS3_to_PDS4_Label_Transformation">PDS3 to PDS4 Label Transformation</a> section for more details on how the tool performs a PDS3 to PDS4 label transformation.</td></tr>
           <tr><td>pds4-label</td><td>Specify to transform a given PDS3 data product label into a PDS4 Product Observational product label. Please see the <a href="#PDS3_to_PDS4_Label_Transformation">PDS3 to PDS4 Label Transformation</a> section for more details on how the tool performs a PDS3 to PDS4 label transformation. </td></tr>
         </table>
       </subsection>

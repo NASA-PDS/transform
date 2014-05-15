@@ -46,6 +46,7 @@ public class Constants {
     }
     COMMON_VALID_FORMATS.addAll(set);
     COMMON_VALID_FORMATS.remove("pds");
+    COMMON_VALID_FORMATS.remove("pds4");
     COMMON_VALID_FORMATS.remove("vicar");
     COMMON_VALID_FORMATS.remove("vic");
     COMMON_VALID_FORMATS.remove("isis");
