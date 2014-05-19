@@ -65,10 +65,6 @@
       <fileMode>755</fileMode>
       <lineEnding>keep</lineEnding>
     </fileSet>
-    <fileSet>
-      <directory>src/main/resources/conf</directory>
-      <outputDirectory>conf</outputDirectory>
-    </fileSet>
   </fileSets>
 
   <files>

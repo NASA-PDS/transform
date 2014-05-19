@@ -198,11 +198,7 @@ public class Utility {
     PDSObject pdsObject = new PDS3Label(target.toString());
     pdsObject.setMappings();
     generator.setPDSObject(pdsObject);
-    File confPath = new File(new File(System.getProperty("java.class.path"))
-        .getParentFile().getParent(), "conf");
-    generator.setConfPath(confPath.toString());
-    generator.setContextMappings(
-        new ContextMappings(pdsObject, confPath.toString()));
+    generator.setContextMappings(new ContextMappings(pdsObject));
     final Properties props = new Properties();
     props.setProperty("resource.loader", "string");
     props.setProperty("resource.loader.class",
