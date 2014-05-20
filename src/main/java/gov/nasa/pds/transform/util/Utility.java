@@ -47,6 +47,7 @@ import java.util.Properties;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.velocity.app.Velocity;
+import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.resource.loader.StringResourceLoader;
 import org.apache.velocity.runtime.resource.util.StringResourceRepository;
 
@@ -199,21 +200,13 @@ public class Utility {
     pdsObject.setMappings();
     generator.setPDSObject(pdsObject);
     generator.setContextMappings(new ContextMappings(pdsObject));
-    final Properties props = new Properties();
-    props.setProperty("resource.loader", "string");
-    props.setProperty("resource.loader.class",
-        "org.apache.velocity.runtime.resource.loader.StringResourceLoader");
-    // Property to disable the velocity logging
-    props.setProperty("runtime.log.logsystem.class",
-        "org.apache.velocity.runtime.log.NullLogSystem");
-    Velocity.init(props);
-    if (!Velocity.resourceExists(templateName)) {
-      InputStream stream = Utility.class.getResourceAsStream(templateName);
-      String resourceContents = IOUtils.toString(stream);
-      StringResourceRepository repo = StringResourceLoader.getRepository();
-      repo.putStringResource(templateName, resourceContents);
-    }
-    generator.setTemplate(Velocity.getTemplate(templateName));
+    VelocityEngine engine = new VelocityEngine();
+    engine.setProperty("resource.loader", "classpath");
+    engine.setProperty("classpath.resource.loader.class", 
+        "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
+    engine.init();
+    generator.setTemplate(
+        engine.getTemplate("/gov/nasa/pds/transform/util/" + templateName));
     generator.setContext();
     generator.getContext().put("FilenameUtils", FilenameUtils.class);
     generator.generate(false);
