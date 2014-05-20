@@ -226,7 +226,7 @@
     <dependency>
       <groupId>jpl.mipl.io</groupId>
       <artifactId>vicario</artifactId>
-      <version>2.0</version>
+      <version>3.0</version>
     </dependency>
     <dependency>
       <groupId>com.sun.media</groupId>
@@ -247,6 +247,12 @@
       <groupId>gov.nasa.pds.2010.preparation</groupId>
       <artifactId>generate</artifactId>
       <version>${generate-version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>jpl.mipl.io</groupId>
+          <artifactId>vicario</artifactId>
+        </exclusion>
+      </exclusions>      
     </dependency>
   </dependencies>
 

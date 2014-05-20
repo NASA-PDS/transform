@@ -25,6 +25,9 @@
   <body>
     <release version="0.3.0" date="TBD" description="TBD">
       <action dev="mcayanan" type="update">
+        Added support for transforming PDS3 images that are greater than 8-bits with a target PDS3 detached label. Inherited from the vicar io library.
+      </action>
+      <action dev="mcayanan" type="update">
         Updated to no longer depend on a configuration directory to look for the Generate Tool configuration files. Inherited from the Generate Tool package.
       </action>
     </release>
