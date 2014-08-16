@@ -32,7 +32,7 @@
   <description>
     The Transform Tool project contains software for transforming PDS3 and PDS4 product labels and product data into other formats.
   </description>
-  <url>http://pds-cm.jpl.nasa.gov/pds4/preparation/transform/</url>
+  <url>https://pds-cm.jpl.nasa.gov/pds4/preparation/transform/</url>
 
   <licenses>
     <license>
@@ -168,7 +168,7 @@
     <repository>
       <id>pds-repo</id>
       <name>PDS Maven Repository</name>
-      <url>http://pds-cm.jpl.nasa.gov/maven2</url>
+      <url>https://pds-cm.jpl.nasa.gov/maven2</url>
       <releases>
         <enabled>true</enabled>
         <updatePolicy>always</updatePolicy>
