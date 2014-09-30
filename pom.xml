@@ -25,7 +25,7 @@
 
   <groupId>gov.nasa.pds.2010.preparation</groupId>
   <artifactId>transform</artifactId>
-  <version>0.3.0-dev</version>
+  <version>1.0.0</version>
   <packaging>jar</packaging>
 
   <name>Transform Tool</name>
@@ -252,7 +252,7 @@
           <groupId>jpl.mipl.io</groupId>
           <artifactId>vicario</artifactId>
         </exclusion>
-      </exclusions>      
+      </exclusions>
     </dependency>
   </dependencies>
 
