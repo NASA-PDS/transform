@@ -23,6 +23,9 @@
   </properties>
 
   <body>
+    <release version="1.1.0" date="TBD" description="TBD">
+    </release>
+
     <release version="1.0.0" date="2014-09-30" description="This release of the Transform Tool is a component of the integrated release 5.0.0 of the PDS4 System. This is an operational release of the system components to date.">
       <action dev="mcayanan" type="update">
         Added support for transforming PDS3 images that are greater than 8-bits with a target PDS3 detached label. Inherited from the VICAR IO library.
