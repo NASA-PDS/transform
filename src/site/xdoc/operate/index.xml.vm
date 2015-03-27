@@ -31,6 +31,7 @@
       <ul>
         <li><a href="#Tool_Execution">Tool Execution</a></li>
         <li><a href="#PDS3_to_PDS4_Label_Transformation">PDS3 to PDS4 Label Transformation</a></li>
+        <li><a href="#Advanced_Use_Cases">Advanced Use Cases</a></li>
         <li><a href="#Known_Issues">Known Issues</a></li>
       </ul>
 
@@ -51,6 +52,10 @@
           <tr><td>-t, --target</td><td>Explicitly specify a PDS3 or PDS4 product label that contains a reference to an image file to transform. The target can be specified implicitly as well. (example: transform i943630r.xml)</td></tr>
           <tr><td>-o, --output</td><td>Specify an output directory where the transformed images will reside. If this option is not specified on the command-line, the tool will default to placing the output files in the current working directory.</td></tr>
           <tr><td>-f, --format-type</td><td>Specify the transformation format type to perform on the target(s). Please see the <a href="#Format_Types">Format Types</a> section for details on the valid format types available to the tool.</td></tr>
+          <tr><td>-n, --index</td><td>Specify the index of the image or table to transform. The default is to transform the first one found. Please see the <a href="#Advanced_Use_Cases">Advanced Use Cases</a> section for details on using this flag option.</td></tr>
+          <tr><td>-d, --datafile &lt;file&gt;</td><td>Specify the data file to transform. The default is to transform the first one found. Please see the <a href="#Advanced_Use_Cases">Advanced Use Cases</a> section for details on using this flag option.</td></tr>
+          <tr><td>-a, --all</td><td>Specify to transform all images or tables found within a given target PDS label. Please see the <a href="#Advanced_Use_Cases">Advanced Use Cases</a> section for details on using this flag option.</td></tr>
+          <tr><td>-O, --list-objects</td><td>List the table and image objects found within a given label that are currently supported by the tool.</td></tr>
           <tr><td>-V, --version</td><td>Display the release number and copyright information.</td></tr>
           <tr><td>-h, --help</td><td>Display tool usage.</td></tr>
         </table>
@@ -111,6 +116,7 @@
           <li>Transform a Single PDS4 Label To Parameter Value Language (PVL) File</li>
           <li>Transform a Single 8-Bit PDS3 Image</li>
           <li>Transform a PDS3 Label to PDS4 Label</li>
+          <li>List the Supported Objects</li>
         </ul>
 
         <p>The files used in the command-line examples below are packaged with the tool in the <i>examples</i> directory.
@@ -170,6 +176,168 @@
         <source>
 % transform ../examples/ELE_MOM.LBL -f pds4-label
         </source>
+      </subsection>
+
+      <subsection name="Advanced Use Cases">
+        <p>A common use case scenario of the Transform Tool is to transform a label that points to a single data file containing a single image or table. A more advanced use case scenario is handling a label that points to multiple data files where each data file contains multiple images or tables. This section details how to tell the Transform Tool to transform a specific image or table if given a more complex label.
+        </p>
+
+        <p>Note: The flag options that allow control of which images to transform, <i>-n, -d, -a</i>, are not supported with PDS3 labels pointing to multiple, non-FITS, image transformations.
+        </p>
+
+        <p><b><i>Transform a Specific Table</i></b></p>
+
+        <p>Use the <i>-O,--list-objects</i> flag option to first list the table objects being supported by the tool:
+        </p>
+
+        <source>
+% transform ../examples/Product_Table_Multiple_Tables.xml -O
+        </source>
+
+        <p>This will display the supported table objects:
+        </p>
+
+        <source>
+Supported Images:
+
+  None Found
+
+Supported Tables:
+
+  Data file: PDS4_ATM_TABLE_CHAR_MULTIPLE.TAB
+
+    index = 1
+    local identifier = TABLE_CHAR_1
+    type = fixed-width character table
+    records = 23
+    record length = 88
+    groups = 0
+    fields = 10
+
+    index = 2
+    local identifier = TABLE_CHAR_2
+    type = fixed-width character table
+    records = 23
+    record length = 88
+    groups = 0
+    fields = 10
+        </source>
+
+        <p>To perform a table to CSV transformation of the 2nd table, run the following command:
+        </p>
+
+        <source>
+% transform ../examples/Product_Table_Multiple_Tables.xml -f csv -n 2
+        </source>
+
+        <p><b><i>Transform a Specific Data File</i></b></p>
+
+        <p>Use the <i>-O,--list-objects</i> flag option to first list the table objects being supported by the tool:
+        </p>
+
+        <source>
+% ./transform ../examples/Product_Table_Multiple_Datafiles.xml -O
+        </source>
+
+        <p>This will display the supported table objects:
+        </p>
+
+        <source>
+Supported Images:
+
+  None Found
+
+Supported Tables:
+
+  Data file: PDS4_ATM_TABLE_CHAR.TAB
+
+    index = 1
+    local identifier = PHX-M-TT-5-WIND-VEL-DIR_TABLE_CHAR
+    type = fixed-width character table
+    records = 23
+    record length = 88
+    groups = 0
+    fields = 10
+
+  Data file: PDS4_TABLE_DELIMITED.csv
+
+    index = 1
+    local identifier = null
+    type = delimited table
+    records = 3
+    groups = 0
+    fields = 13
+
+  Data file: 2d234493326edratf3d2537n0m1.dat
+
+    index = 1
+    local identifier = null
+    type = fixed-width binary table
+    records = 336
+    record length = 96
+    groups = 1
+    fields = 20
+        </source>
+
+        <p>The following command demonstrates transforming the table associated with the data file <i>PDS4_TABLE_DELIMTED.csv</i>:
+        </p>
+
+        <source>
+% transform ../examples/Product_Table_Multiple_Datafiles.xml -f csv -d PDS4_TABLE_DELIMITED.csv
+        </source>
+
+        <p><b><i>Transform Everything</i></b></p>
+
+        <p>Display the list of FITS images supported by the tool using the <i>-O, --list-objects</i> flag option:
+        </p>
+
+        <source>
+% ./transform ../examples/20140804T205944Z_MAP_bias_V001.xml -O
+        </source>
+
+        <p>This will display the following:
+        </p>
+
+        <source>
+Supported Images:
+
+  Data file: 20140804T205944Z_MAP_bias_V001.fits
+
+    index = 1
+    local identifier = PDU
+    data type = IEEE754LSBSingle
+    lines = 1024
+    samples = 1024
+
+    index = 2
+    local identifier = SDU
+    data type = IEEE754LSBSingle
+    lines = 1044
+    samples = 1112
+
+Supported Tables:
+
+  None Found
+        </source>
+
+        <p>The following command demonstrates transforming all FITS images found in the label:
+        </p>
+
+        <source>
+% transform ../examples/20140804T205944Z_MAP_bias_V001.xml -f jpg -a
+        </source>
+
+        <p>The label points to a single data file that contains multiple images. So the tool ends up creating the following output files:
+        </p>
+
+        <ul>
+          <li>20140804T205944Z_MAP_bias_V001_1.jpg</li>
+          <li>20140804T205944Z_MAP_bias_V001_2.jpg</li>
+        </ul>
+
+        <p>Note that the tool appends an index value to the end of each output file name whenever the tool has to transform multiple images or tables contained within a single data file.
+        </p>
+
       </subsection>
     </section>
 
@@ -262,8 +430,18 @@ urn:nasa:pds:data:${DATA_SET_ID}:${labelFilename}
       <p><b><i>PDS3 Image Transformations</i></b></p>
 
       <ul>
-        <li>For target detached labels, the Transform Tool currently only supports 8-bit image transformations. To transform PDS3 images greater than 8-bits, the target label must be an attached label.</li>
-        <li>There is a known bug when performing a PDS3 to JPEG 2000 image transformation for target attached labels. The tool will report "null" in the output log and produce an empty output file.</li>
+        <li>The flag options that allow control of which images to transform, <i>-n, -d, -a</i>, are only supported with FITS image transformations. If the tool is given a PDS3 product label pointing to multiple, non-FITS images, the current implementation is limited to the transformation of the first image only.</li>
+        <li>For detached labels, the following exception will appear on the standard out even though the tool transforms the given image successfully:
+<source>
+IOException attempting to read embedded vicar label jpl.mipl.io.vicar.VicarLabelSyntaxException: \
+Main and EOL labels must start with LBLSIZE keyword
+jpl.mipl.io.vicar.VicarLabelSyntaxException: Main and EOL labels must start with LBLSIZE keyword
+    at jpl.mipl.io.vicar.VicarLabel.readLabelChunk(VicarLabel.java:122)
+    at jpl.mipl.io.vicar.VicarLabel.readLabelChunk(VicarLabel.java:173)
+...
+</source>
+        This can be safely ignored.
+        </li>
       </ul>
 
       <p><b><i>PDS4 Image Transformations</i></b></p>

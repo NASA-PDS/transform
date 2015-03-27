@@ -1,4 +1,4 @@
-// Copyright 2006-2014, by the California Institute of Technology.
+// Copyright 2006-2015, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship acknowledged.
 // Any commercial use must be negotiated with the Office of Technology Transfer
 // at the California Institute of Technology.
@@ -27,28 +27,89 @@ import java.util.List;
 public interface ProductTransformer {
 
   /**
-   * Transform a single target.
+   * Transform a single target. This will transform
+   * the first image/table found within the first data file found.
    *
    * @param target file specification to the PDS label.
    * @param outputDir directory where the output file will be
    * written.
    * @param format Valid format file type.
    *
-   * @throws TransformException
+   * @return The resulting output file.
+   *
+   * @throws TransformException If an error occurred during the
+   * transformation process.
    */
   public File transform(File target, File outputDir, String format)
   throws TransformException;
 
   /**
-   * Transform multiple targets.
+   * Transform a single target.
+   *
+   * @param target  file specification to the PDS label.
+   * @param outputDir directory where the output file will be written.
+   * @param format Valid format file type.
+   * @param dataFile Tells the tool which data file to transform.
+   *  If this argument is an empty string, the default is to transform
+   *  the first data file found in the label.
+   * @param index The index of the data. This tells the tool which image
+   * or table to transform if there are multiple images/tables within a
+   * single data file.
+   *
+   * @return The resulting output file.
+   *
+   * @throws TransformException If an error occurred during the
+   * transformation process.
+   */
+  public File transform(File target, File outputDir, String format,
+      String dataFile, int index) throws TransformException;
+
+  /**
+   * Transform multiple targets. This will transform
+   * the first image/table found within the first data file found in
+   * each target.
    *
    * @param targets a list of file specifications to the PDS labels.
    * @param outputDir directory where the output file will be
    * written.
    * @param format Valid format file type.
    *
-   * @throws TransformException
+   * @return The resulting output files.
+   *
+   * @throws TransformException If an error occurred during the
+   * transformation process.
    */
   public List<File> transform(List<File> targets, File outputDir, String format)
   throws TransformException;
+
+
+  /**
+   * Transform all images/tables found in the given target.
+   *
+   * @param target  file specification to the PDS label.
+   * @param outputDir directory where the output file will be written.
+   * @param format Valid format file type.
+   *
+   * @return The resulting output files.
+   *
+   * @throws TransformException If an error occurred during the
+   * transformation process.
+   */
+  public List<File> transformAll(File target, File outputDir, String format)
+      throws TransformException;
+
+  /**
+   * Transform all images/tables found in each target.
+   *
+   * @param targets a list of file specifications to the PDS labels.
+   * @param outputDir directory where the output file will be written.
+   * @param format Valid format file type.
+   *
+   * @return The resulting output files.
+   *
+   * @throws TransformException If an error occurred during the
+   * transformation process.
+   */
+  public List<File> transformAll(List<File> targets, File outputDir, String format)
+      throws TransformException;
 }

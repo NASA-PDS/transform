@@ -1,4 +1,4 @@
-// Copyright 2006-2013, by the California Institute of Technology.
+// Copyright 2006-2015, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship acknowledged.
 // Any commercial use must be negotiated with the Office of Technology Transfer
 // at the California Institute of Technology.
@@ -17,13 +17,14 @@ import gov.nasa.pds.transform.logging.ToolsLevel;
 import gov.nasa.pds.transform.logging.ToolsLogRecord;
 import gov.nasa.pds.transform.logging.format.TransformFormatter;
 import gov.nasa.pds.transform.logging.handler.TransformStreamHandler;
+import gov.nasa.pds.transform.product.Pds3ImageTransformer;
 import gov.nasa.pds.transform.product.ProductTransformer;
 import gov.nasa.pds.transform.product.ProductTransformerFactory;
+import gov.nasa.pds.transform.util.ObjectsReport;
 import gov.nasa.pds.transform.util.ToolInfo;
 import gov.nasa.pds.transform.util.Utility;
 import gov.nasa.pds.transform.commandline.options.Flag;
 import gov.nasa.pds.transform.commandline.options.InvalidOptionException;
-
 
 import java.io.File;
 import java.io.IOException;
@@ -34,7 +35,6 @@ import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -65,8 +65,27 @@ public class TransformLauncher {
   /** A list of targets to transform. */
   private List<File> targets;
 
+  private String dataFileName;
+
   /** A format type for the transformation. */
   private String formatType;
+
+  /**
+   * The index of the image or table to transform.
+   */
+  private int index;
+
+  /**
+   * Flag to indicate to transform all images or tables
+   * found within a given label.
+   */
+  private boolean transformAll;
+
+  /**
+   * Flag to display image and table objects found within
+   * a given label.
+   */
+  private boolean listObjects;
 
   /**
    * Constructor.
@@ -76,6 +95,10 @@ public class TransformLauncher {
     outputDir = new File(".").getCanonicalFile();
     targets = new ArrayList<File>();
     formatType = "";
+    index = 1;
+    transformAll = false;
+    dataFileName = "";
+    listObjects = false;
   }
 
   /**
@@ -123,6 +146,18 @@ public class TransformLauncher {
         setOutputDir(o.getValue());
       } else if (o.getOpt().equals(Flag.FORMAT.getShortName())) {
         setFormatType(o.getValue().toLowerCase());
+      } else if (o.getOpt().equals(Flag.INDEX.getShortName())) {
+        try {
+        setIndex(o.getValue());
+        } catch (Exception e) {
+          throw new InvalidOptionException(e.getMessage());
+        }
+      } else if (o.getOpt().equals(Flag.DATAFILE.getShortName())) {
+        setDataFileName(o.getValue());
+      } else if (o.getOpt().equals(Flag.ALL.getShortName())) {
+        transformAll = true;
+      } else if (o.getOpt().equals(Flag.OBJECTS.getShortName())) {
+        listObjects = true;
       }
     }
     setLogger();
@@ -131,8 +166,12 @@ public class TransformLauncher {
     } else {
       throw new InvalidOptionException("No target specified.");
     }
-    if (formatType.isEmpty()) {
+    if (formatType.isEmpty() && (!listObjects)) {
       throw new InvalidOptionException("-f flag option is required.");
+    }
+    if (transformAll && (!dataFileName.isEmpty() || index != 1)) {
+      throw new InvalidOptionException("Cannot specify the '-a' flag "
+          + "option with the '-d' flag and/or '-n' flag option");
     }
   }
 
@@ -192,6 +231,21 @@ public class TransformLauncher {
     this.formatType = formatType;
   }
 
+  private void setIndex(String value) throws Exception {
+    try {
+      index = Integer.parseInt(value);
+      if (index < 0) {
+        throw new Exception("Index value must be a positive integer.");
+      }
+    } catch (NumberFormatException ne) {
+        throw new Exception("Index value not a valid number: " + value);
+    }
+  }
+
+  private void setDataFileName(String value) {
+    this.dataFileName = value;
+  }
+
   /**
    * Sets the appropriate handlers for the logging.
    *
@@ -224,6 +278,17 @@ public class TransformLauncher {
         "Target                      " + targets.toString()));
     log.log(new ToolsLogRecord(ToolsLevel.CONFIGURATION,
         "Output Directory            " + outputDir.toString()));
+    if (transformAll) {
+    log.log(new ToolsLogRecord(ToolsLevel.CONFIGURATION,
+        "Transform All               true"));
+    } else {
+      if (!dataFileName.isEmpty()) {
+        log.log(new ToolsLogRecord(ToolsLevel.CONFIGURATION,
+          "Data File                   " + dataFileName));
+      }
+      log.log(new ToolsLogRecord(ToolsLevel.CONFIGURATION,
+          "Index                       " + index));
+    }
     log.log(new ToolsLogRecord(ToolsLevel.CONFIGURATION,
         "Format Type                 " + formatType + "\n"));
   }
@@ -234,9 +299,37 @@ public class TransformLauncher {
    */
   private void doTransformation() {
     ProductTransformerFactory factory = ProductTransformerFactory.getInstance();
+    List<File> results = new ArrayList<File>();
     try {
       ProductTransformer pt = factory.newInstance(targets.get(0), formatType);
-      List<File> results = pt.transform(targets, outputDir, formatType);
+      if (pt instanceof Pds3ImageTransformer) {
+        Pds3ImageTransformer pds3Transformer = (Pds3ImageTransformer) pt;
+        if (transformAll) {
+          results = pds3Transformer.transformAll(targets, outputDir, formatType);
+        } else {
+          for (File target : targets) {
+            try {
+              results.add(pds3Transformer.transform(target, outputDir, formatType,
+                dataFileName, index));
+            } catch (TransformException t) {
+              log.log(new ToolsLogRecord(ToolsLevel.SEVERE, t.getMessage(), target));
+            }
+          }
+        }
+      } else {
+        if (transformAll) {
+          results = pt.transformAll(targets, outputDir, formatType);
+        } else {
+          for (File target : targets) {
+            try {
+              results.add(pt.transform(target, outputDir, formatType,
+                dataFileName, index));
+            } catch (TransformException t) {
+              log.log(new ToolsLogRecord(ToolsLevel.SEVERE, t.getMessage(), target));
+            }
+          }
+        }
+      }
     } catch (TransformException t) {
       log.log(new ToolsLogRecord(ToolsLevel.SEVERE, t.getMessage()));
     }
@@ -246,8 +339,15 @@ public class TransformLauncher {
     try {
       CommandLine cmdLine = parse(args);
       query(cmdLine);
-      logHeader();
-      doTransformation();
+      if (listObjects) {
+        ObjectsReport objects = new ObjectsReport();
+        for (File target : targets) {
+          objects.list(target);
+        }
+      } else {
+        logHeader();
+        doTransformation();
+      }
     } catch (Exception e) {
       System.err.println(e.getMessage());
       System.exit(1);

@@ -226,7 +226,7 @@
     <dependency>
       <groupId>jpl.mipl.io</groupId>
       <artifactId>vicario</artifactId>
-      <version>3.0</version>
+      <version>${vicario-version}</version>
     </dependency>
     <dependency>
       <groupId>com.sun.media</groupId>

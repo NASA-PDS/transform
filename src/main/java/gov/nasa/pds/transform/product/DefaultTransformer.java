@@ -1,4 +1,4 @@
-// Copyright 2006-2014, by the California Institute of Technology.
+// Copyright 2006-2015, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship acknowledged.
 // Any commercial use must be negotiated with the Office of Technology Transfer
 // at the California Institute of Technology.
@@ -21,7 +21,9 @@ import gov.nasa.pds.transform.logging.ToolsLogRecord;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 /**
@@ -40,6 +42,8 @@ public abstract class DefaultTransformer implements ProductTransformer {
    */
   protected boolean overwriteOutput;
 
+  protected boolean appendIndexToOutputFile;
+
   /**
    * Default constructor. Sets the flag to overwrite outputs to
    * true.
@@ -47,6 +51,7 @@ public abstract class DefaultTransformer implements ProductTransformer {
    */
   public DefaultTransformer() {
     this(true);
+    appendIndexToOutputFile = false;
   }
 
   /**
@@ -57,6 +62,21 @@ public abstract class DefaultTransformer implements ProductTransformer {
   public DefaultTransformer(boolean overwrite) {
     this.overwriteOutput = overwrite;
   }
+
+  @Override
+  public File transform(File target, File outputDir, String format)
+  throws TransformException {
+    File result = null;
+    try {
+      result = transform(target, outputDir, format, "", 1);
+    } catch (TransformException te) {
+      log.log(new ToolsLogRecord(ToolsLevel.SEVERE, te.getMessage(), target));
+    }
+    return result;
+  }
+
+  public abstract File transform(File target, File outputDir, String format,
+      String dataFile, int index) throws TransformException;
 
   @Override
   public List<File> transform(List<File> targets, File outputDir, String format)
@@ -72,8 +92,21 @@ public abstract class DefaultTransformer implements ProductTransformer {
     return results;
   }
 
+
   @Override
-  public abstract File transform(File target, File outputDir, String format)
+  public abstract List<File> transformAll(File target, File outputDir, String format)
   throws TransformException;
 
+  public List<File> transformAll(List<File> targets, File outputDir,
+      String format) throws TransformException {
+    List<File> results = new ArrayList<File>();
+    for (File target : targets) {
+      try {
+        results.addAll(transformAll(target, outputDir, format));
+      } catch (TransformException te) {
+        log.log(new ToolsLogRecord(ToolsLevel.SEVERE, te.getMessage(), target));
+      }
+    }
+    return results;
+  }
 }

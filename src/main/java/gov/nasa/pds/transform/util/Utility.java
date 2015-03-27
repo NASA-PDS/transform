@@ -1,4 +1,4 @@
-// Copyright 2006-2012, by the California Institute of Technology.
+// Copyright 2006-2015, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship acknowledged.
 // Any commercial use must be negotiated with the Office of Technology Transfer
 // at the California Institute of Technology.
@@ -30,6 +30,7 @@ import gov.nasa.pds.tools.util.MessageUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -42,14 +43,14 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Properties;
+
+import nom.tam.fits.BasicHDU;
+import nom.tam.fits.Fits;
+import nom.tam.fits.FitsException;
+import nom.tam.fits.ImageHDU;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.velocity.app.Velocity;
 import org.apache.velocity.app.VelocityEngine;
-import org.apache.velocity.runtime.resource.loader.StringResourceLoader;
-import org.apache.velocity.runtime.resource.util.StringResourceRepository;
 
 /**
  * Utility class.
@@ -124,7 +125,27 @@ public class Utility {
     return result;
   }
 
+  public static FileAreaObservational getFileArea(File pds4Label,
+      String dataFile) throws ParseException {
+    FileAreaObservational result = null;
+    List<FileAreaObservational> fileAreas = getFileAreas(pds4Label);
+    if (dataFile.isEmpty()) {
+      result = fileAreas.get(0);
+    } else {
+      for (FileAreaObservational fa : fileAreas) {
+        if (fa.getFile().getFileName().equals(dataFile)) {
+          result = fa;
+        }
+      }
+    }
+    return result;
+  }
+
   public static File createOutputFile(File file, File outputDir, String format) {
+    return createOutputFile(file, outputDir, format, -1);
+  }
+
+  public static File createOutputFile(File file, File outputDir, String format, int index) {
     String fileExtension = format;
     String baseFilename = FilenameUtils.getBaseName(file.getName());
     if ("html-structure-only".equals(format)) {
@@ -135,6 +156,9 @@ public class Utility {
     } else if ("pds4-label".equals(format)) {
       fileExtension = "xml";
       baseFilename = baseFilename.toLowerCase();
+    }
+    if (index != -1) {
+      baseFilename += "_" + index;
     }
     File outputFile = new File(outputDir, baseFilename + "." + fileExtension);
     return outputFile;
@@ -194,6 +218,8 @@ public class Utility {
     System.getProperties().setProperty(
         "javax.xml.parsers.DocumentBuilderFactory",
         "com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl");
+    System.getProperties().setProperty("javax.xml.transform.TransformerFactory",
+        "com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl");
     Generator generator = new Generator();
     generator.setOutputFile(outputFile);
     PDSObject pdsObject = new PDS3Label(target.toString());
@@ -202,7 +228,7 @@ public class Utility {
     generator.setContextMappings(new ContextMappings(pdsObject));
     VelocityEngine engine = new VelocityEngine();
     engine.setProperty("resource.loader", "classpath");
-    engine.setProperty("classpath.resource.loader.class", 
+    engine.setProperty("classpath.resource.loader.class",
         "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
     engine.init();
     generator.setTemplate(
@@ -210,5 +236,41 @@ public class Utility {
     generator.setContext();
     generator.getContext().put("FilenameUtils", FilenameUtils.class);
     generator.generate(false);
+  }
+
+  /**
+   * Gets the HDU index that corresponds to the given index.
+   *
+   * @param fitsFile The FITS file to look for HDUs.
+   * @param index The desired index.
+   *
+   * @return An HDU index that corresponds to the given index.
+   *
+   * @throws FitsException If an error occurred reading the FITS file.
+   * @throws IOException If the FITS file cannot be read.
+   */
+  public static int getHDUIndex(File fitsFile, int index) throws FitsException,
+  IOException {
+    int hduIndex = 0;
+    int numImages = 0;
+    Fits fits = new Fits();
+    FileInputStream inputStream = new FileInputStream(fitsFile);
+    try {
+      fits.read(inputStream);
+      for (int i = 0; i < fits.getNumberOfHDUs(); i++) {
+        BasicHDU hdu = fits.getHDU(i);
+        if (hdu instanceof ImageHDU) {
+          if (index == numImages) {
+            break;
+          } else {
+            numImages++;
+          }
+        }
+        hduIndex++;
+      }
+      return hduIndex;
+    } finally {
+      inputStream.close();
+    }
   }
 }

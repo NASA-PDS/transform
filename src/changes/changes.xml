@@ -24,6 +24,15 @@
 
   <body>
     <release version="1.1.0" date="TBD" description="TBD">
+      <action dev="mcayanan" type="fix" issue="PDS-313">
+        Fixed an issue where the tool was only transforming the first column of a table when doing a PDS3 to PDS4 label transformation.
+      </action>
+      <action dev="mcayanan" type="add" issue="PDS-324">
+        Added support for FITS image transformations.
+      </action>
+      <action dev="mcayanan" type="add" issue="PDS-336">
+        Added initial support for labels that point to multiple tables/images. PDS3 labels pointing to multiple, non-FITS images are not supported at this time.
+      </action>
     </release>
 
     <release version="1.0.0" date="2014-09-30" description="This release of the Transform Tool is a component of the integrated release 5.0.0 of the PDS4 System. This is an operational release of the system components to date.">

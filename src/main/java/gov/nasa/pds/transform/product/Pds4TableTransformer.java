@@ -1,4 +1,4 @@
-// Copyright 2006-2014, by the California Institute of Technology.
+// Copyright 2006-2015, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship acknowledged.
 // Any commercial use must be negotiated with the Office of Technology Transfer
 // at the California Institute of Technology.
@@ -31,6 +31,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -78,60 +80,148 @@ public class Pds4TableTransformer extends DefaultTransformer {
    * @throws TransformException If an error occurred during transformation.
    * @throws ParseException If there were errors parsing the given label.
    */
-  public File transform(File target, File outputDir, String format)
+  public File transform(File target, File outputDir, String format,
+      String dataFileName, int index)
   throws TransformException {
     setFormat(format);
     File result = null;
     try {
       ObjectProvider objectAccess = new ObjectAccess(
           target.getCanonicalFile().getParent());
-      for (FileAreaObservational fileArea : Utility.getFileAreas(target)) {
-        String dataFilename = fileArea.getFile().getFileName();
-        File outputFile = Utility.createOutputFile(new File(dataFilename),
-            outputDir, format);
-        if ((outputFile.exists() && outputFile.length() != 0) && !overwriteOutput) {
-          log.log(new ToolsLogRecord(ToolsLevel.INFO,
-              "Output file already exists. No transformation will occur: "
-              + outputFile.toString(), target));
-        } else {
-          try {
-            out = new PrintWriter(new FileWriter(outputFile));
-            File dataFile = new File(target.getParent(), dataFilename);
-            int currentIndex = 1;
-            if (objectAccess.getTableObjects(fileArea).isEmpty()) {
-              log.log(new ToolsLogRecord(ToolsLevel.INFO,
-                  "No table objects are found in the label.", target));
-            } else {
-              for (Object object : objectAccess.getTableObjects(fileArea)) {
-                try {
-                  log.log(new ToolsLogRecord(ToolsLevel.INFO,
-                      "Transforming table '" + currentIndex + "' of file: "
-                      + dataFile.toString(), target));
-                  TableReader reader = ExporterFactory.getTableReader(object,
-                      dataFile);
-                  extractTable(reader);
-                } catch (Exception e) {
-                  throw new TransformException(
-                      "Error occurred while reading table '" + currentIndex
-                      + "' of file '" + dataFile.toString() + "': "
-                      + e.getMessage());
-                }
-                ++currentIndex;
-              }
-              log.log(new ToolsLogRecord(ToolsLevel.INFO,
-                  "Successfully transformed table(s) to the following output: "
-                  + outputFile.toString(), target));
-            }
-          } catch (IOException io) {
-            throw new TransformException("Cannot open output file \'"
-                + outputFile.toString() + "': " + io.getMessage());
-          } finally {
-            out.close();
+      List<FileAreaObservational> fileAreas = Utility.getFileAreas(target);
+      FileAreaObservational fileArea = null;
+      if (fileAreas.isEmpty()) {
+        throw new TransformException("Cannot find File_Area_Observational "
+            + "area in the label: " + target.toString());
+      } else {
+        for (FileAreaObservational fa : fileAreas) {
+          if (dataFileName.isEmpty()) {
+            fileArea = fileAreas.get(0);
+            dataFileName = fileArea.getFile().getFileName();
+          }
+          if (fa.getFile().getFileName().equals(dataFileName)) {
+            fileArea = fa;
           }
         }
-        result = outputFile;
+      }
+      if (fileArea != null) {
+        File dataFile = new File(target.getParent(), dataFileName);
+        File outputFile = Utility.createOutputFile(new File(dataFileName),
+            outputDir, format);
+        process(target, dataFile, outputFile, objectAccess, fileArea, index);
+      } else {
+        String message = "";
+        if (dataFileName.isEmpty()) {
+          message = "No data file(s) found in label.";
+        } else {
+          message = "No data file '" + dataFileName + "' found in label.";
+        }
+        throw new TransformException(message);
       }
       return result;
+    } catch (ParseException p) {
+      throw new TransformException("Error occurred while parsing label '"
+          + target.toString() + "': " + p.getMessage());
+    } catch (IOException i) {
+      throw new TransformException("Error occurred while resolving the path "
+          + "of the label: " + i.getMessage());
+    }
+  }
+
+  private void process(File target, File dataFile, File outputFile,
+      ObjectProvider objectAccess, FileAreaObservational fileArea, int index)
+          throws TransformException {
+    if ((outputFile.exists() && outputFile.length() != 0)
+        && !overwriteOutput) {
+      log.log(new ToolsLogRecord(ToolsLevel.INFO,
+          "Output file already exists. No transformation will occur: "
+          + outputFile.toString(), target));
+    } else {
+      List<Object> tableObjects = objectAccess.getTableObjects(fileArea);
+      if (objectAccess.getTableObjects(fileArea).isEmpty()) {
+        log.log(new ToolsLogRecord(ToolsLevel.INFO,
+            "No table objects are found in the label.", target));
+      } else {
+        Object tableObject = null;
+        try {
+          tableObject = tableObjects.get(index-1);
+        } catch (IndexOutOfBoundsException ie) {
+          throw new TransformException("Index '" + index
+              + "' is greater than the maximum number of tables found '"
+              + "for data file '" + fileArea.getFile().getFileName() + "': "
+              + tableObjects.size());
+        }
+        try {
+        out = new PrintWriter(new FileWriter(outputFile));
+        log.log(new ToolsLogRecord(ToolsLevel.INFO,
+            "Transforming table '" + index + "' of file: "
+            + dataFile.toString(), target));
+        TableReader reader = ExporterFactory.getTableReader(tableObject,
+            dataFile);
+        extractTable(reader);
+        } catch (IOException io) {
+          throw new TransformException("Cannot open output file \'"
+              + outputFile.toString() + "': " + io.getMessage());
+        } catch (Exception e) {
+          throw new TransformException(
+              "Error occurred while reading table '" + index
+              + "' of file '" + dataFile.toString() + "': "
+              + e.getMessage());
+        } finally {
+          out.close();
+        }
+        log.log(new ToolsLogRecord(ToolsLevel.INFO,
+            "Successfully transformed table '" + index
+              + "' to the following output: " + outputFile.toString(),
+              target));
+      }
+    }
+  }
+
+  @Override
+  public List<File> transformAll(File target, File outputDir, String format)
+      throws TransformException {
+    setFormat(format);
+    List<File> outputs = new ArrayList<File>();
+    try {
+      ObjectProvider objectAccess = new ObjectAccess(
+          target.getCanonicalFile().getParent());
+      List<FileAreaObservational> fileAreas = Utility.getFileAreas(target);
+      if (fileAreas.isEmpty()) {
+        throw new TransformException("Cannot find File_Area_Observational "
+            + "area in the label: " + target.toString());
+      } else {
+        for (FileAreaObservational fileArea : fileAreas) {
+          List<Object> tables = objectAccess.getTableObjects(fileArea);
+          if (!tables.isEmpty()) {
+            int numTables = tables.size();
+            String dataFilename = fileArea.getFile().getFileName();
+            File dataFile = new File(target.getParent(), dataFilename);
+            for (int i = 0; i < numTables; i++) {
+              File outputFile = null;
+              if (objectAccess.getTableObjects(fileArea).size() > 1) {
+                outputFile = Utility.createOutputFile(new File(dataFilename),
+                    outputDir, format, (i+1));
+              } else {
+                outputFile = Utility.createOutputFile(new File(dataFilename),
+                    outputDir, format);
+              }
+              try {
+              process(target, dataFile, outputFile, objectAccess, fileArea,
+                  (i+1));
+              outputs.add(outputFile);
+              } catch (Exception e) {
+                log.log(new ToolsLogRecord(ToolsLevel.SEVERE, e.getMessage(),
+                    target));
+              }
+            }
+          } else {
+            log.log(new ToolsLogRecord(ToolsLevel.INFO,
+                "No table objects are found in the label.", target));
+          }
+        }
+      }
+      return outputs;
     } catch (ParseException p) {
       throw new TransformException("Error occurred while parsing label '"
           + target.toString() + "': " + p.getMessage());

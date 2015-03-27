@@ -16,7 +16,7 @@
         #elseif ( $label.OBSERVATION_ID )
             <title>$label.OBSERVATION_ID.toLowerCase()</title>
         #end
-        <information_model_version>1.2.0.1</information_model_version>
+        <information_model_version>1.3.0.1</information_model_version>
         <product_class>Product_Observational</product_class>
         <Modification_History>
             <Modification_Detail>
@@ -79,8 +79,8 @@
     #end
     #if ( $pointer.size() == 2 )
       #set ( $dataFile = $pointer[0].toLowerCase() )
-      #if ( $label.getUnits("PTR_$objectName").equals("BYTES") )
-        #set ( $dataFileOffset = $pointer[1] )
+      #if ( $pointer[1].contains("<BYTES>") )
+        #set ( $dataFileOffset = $pointer[1].split(" ")[0] )
       #else
         #set( $Integer = 0 )
         #set ( $offset = $Integer.parseInt($pointer[1].trim()) - 1 )
@@ -88,7 +88,7 @@
       #end
     #else
       #if ( !$pointer[0].trim().matches("\d+") )
-        #set ( $dataFile = $pointer[0].toLowerCase() )
+        #set ( $dataFile = $pointer[0] )
         #set ( $dataFileOffset = 0 )
       #else
         #set( $Integer = 0 )
@@ -97,7 +97,7 @@
         #else
           #set ( $offset = $Integer.parseInt($pointer[0].trim()) - 1 )
           #set ( $dataFileOffset = $offset * $Integer.parseInt($label.RECORD_BYTES.trim()) )
-          #set ( $dataFile = $FilenameUtils.getBaseName($generate.file_name.toString().toLowerCase()).concat(".xml") )
+          #set ( $dataFile = $FilenameUtils.getBaseName($generate.file_name.toString()).concat(".xml") )
         #end
       #end
     #end

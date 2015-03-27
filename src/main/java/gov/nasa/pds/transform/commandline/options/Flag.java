@@ -66,8 +66,7 @@ public enum Flag {
       + "For PDS4 products, the following additional formats are "
       + "available: " + Constants.PDS4_ONLY_VALID_FORMATS
       + ". For PDS3 products, the following additional formats are "
-      + "available: " + Constants.PDS3_ONLY_VALID_FORMATS
-      + " (applies to target VICAR images only.)"),
+      + "available: " + Constants.PDS3_ONLY_VALID_FORMATS),
 
   /**
    * Flag to specify the severity level and above to include in the report.
@@ -85,7 +84,30 @@ public enum Flag {
   /**
    * Displays the tool version.
    */
-  VERSION("V", "version", "Display application version.");
+  VERSION("V", "version", "Display application version."),
+
+  /**
+   * Flag to specify the index of the image or table to transform.
+   */
+  INDEX("n", "index", "value", String.class, "Specify the index of the image "
+      + "or table to transform. Default is set to 1 (the first one). "),
+
+  /**
+   * Flag to specify the data file(s) to transform.
+   */
+  DATAFILE("d", "datafile", "file", String.class, "Specify the data "
+      + "file to transform. The default is to transform the first data "
+      + "file found."),
+
+  ALL("a", "all", "Specify to transform all data files found in the given "
+      + "label."),
+
+  /**
+   * Flag to display a list of images and tables found within a given label.
+   * Additionally,
+   */
+  OBJECTS("O", "list-objects", "List the table and image objects found within "
+      + "a given label that are currently supported by the tool.");
 
   /** The short name of the flag. */
   private final String shortName;
@@ -144,6 +166,8 @@ public enum Flag {
    * @param longName The long name.
    * @param argName The argument name.
    * @param argType The argument type.
+   * @param allowsMultipleArgs Flag to indicate if multiple arguments are
+   * allowed.
    * @param description A description of the flag.
    */
   private Flag(final String shortName, final String longName,
@@ -214,8 +238,12 @@ public enum Flag {
   static {
     options = new Options();
 
+    options.addOption(new ToolsOption(ALL));
+    options.addOption(new ToolsOption(DATAFILE));
     options.addOption(new ToolsOption(FORMAT));
     options.addOption(new ToolsOption(HELP));
+    options.addOption(new ToolsOption(INDEX));
+    options.addOption(new ToolsOption(OBJECTS));
     options.addOption(new ToolsOption(OUTPUTDIR));
     options.addOption(new ToolsOption(TARGET));
     options.addOption(new ToolsOption(VERSION));

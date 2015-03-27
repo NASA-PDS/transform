@@ -20,6 +20,8 @@ import gov.nasa.pds.transform.logging.ToolsLogRecord;
 import gov.nasa.pds.transform.util.Utility;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -79,5 +81,19 @@ public class StylesheetTransformer extends DefaultTransformer {
           "Error occurred while performing stylesheet transformation: "
           + te.getMessage());
     }
+  }
+
+  @Override
+  public File transform(File target, File outputDir, String format,
+      String dataFile, int index) throws TransformException {
+    return transform(target, outputDir, format);
+  }
+
+  @Override
+  public List<File> transformAll(File target, File outputDir, String format)
+      throws TransformException {
+    List<File> outputs = new ArrayList<File>();
+    outputs.add(transform(target, outputDir, format));
+    return outputs;
   }
 }
