@@ -33,6 +33,9 @@
       <action dev="mcayanan" type="add" issue="PDS-336">
         Added initial support for labels that point to multiple tables/images. PDS3 labels pointing to multiple, non-FITS images are not supported at this time.
       </action>
+      <action dev="mrose" type="update" issue="PDS-339">
+        Fixed logic to check that size of grouped field is correct, and corrected warning message. Inherited from pds4-tools.
+      </action>
     </release>
 
     <release version="1.0.0" date="2014-09-30" description="This release of the Transform Tool is a component of the integrated release 5.0.0 of the PDS4 System. This is an operational release of the system components to date.">
