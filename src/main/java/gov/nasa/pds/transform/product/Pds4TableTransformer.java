@@ -109,6 +109,8 @@ public class Pds4TableTransformer extends DefaultTransformer {
         File outputFile = Utility.createOutputFile(new File(dataFileName),
             outputDir, format);
         process(target, dataFile, outputFile, objectAccess, fileArea, index);
+        // fix for PDS-353 (PDS4_TO_CSV)
+        result = outputFile;
       } else {
         String message = "";
         if (dataFileName.isEmpty()) {
