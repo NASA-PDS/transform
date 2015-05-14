@@ -23,6 +23,9 @@
   </properties>
 
   <body>
+    <release version="1.2.0" date="TBD" description="TBD">
+    </release>
+
     <release version="1.1.1" date="2015-05-13" description="This release of the Transform Tool is a component of the integrated release 5.1.0 of the PDS4 System. This is an operational release of the system components to date.">
       <action dev="hyunlee" type="fix" issue="PDS-353">
         Correction to set the output file variable.
