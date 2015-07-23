@@ -62,40 +62,40 @@
       </subsection>
 
       <subsection name="Format Types">
-        <p>The following table describes the format types available to both PDS3 and PDS4 target inputs:
+        <p>The following table lists the output formats available to both PDS3 and PDS4 target inputs:
         </p>
 
         <table>
           <tr><th>Format Type</th><th>Description</th></tr>
           <tr><td>jpeg or jpg</td><td>Specify to transform to an image in a Joint Photogrpahic Experts Group format.</td></tr>
-          <tr><td>jp2</td><td>Specify to transform to an image in a JPEG 2000 format.</td></tr>
-          <tr><td>bmp</td><td>Specify to transform to an image in a Windows bitmap format.</td></tr>
-          <tr><td>wbmp</td><td>Specify to transform to an image in a Wireless Bitmap image format.</td></tr>
-          <tr><td>gif</td><td>Specify to transform to an image in a Graphics Interchange Format.</td></tr>
-          <tr><td>png</td><td>Specify to transform to an image in a Portable Network Graphics format.</td></tr>
-          <tr><td>raw</td><td>Specify to transform to an image in a Raw image format.</td></tr>
-          <tr><td>tif or tiff</td><td>Specify to transform to an image in a Tagged Image File Format.</td></tr>
-          <tr><td>pnm</td><td>Specify to transform to an image in a Portable Any Map format.</td></tr>
+          <tr><td>jp2</td><td>Transform an image to a JPEG 2000 format.</td></tr>
+          <tr><td>bmp</td><td>Transform an image to a Windows bitmap format.</td></tr>
+          <tr><td>wbmp</td><td>Transform an image to a Wireless Bitmap image format.</td></tr>
+          <tr><td>gif</td><td>Transform an image to a Graphics Interchange Format.</td></tr>
+          <tr><td>png</td><td>Transform an image to a Portable Network Graphics format.</td></tr>
+          <tr><td>raw</td><td>Transform an image to a Raw image format.</td></tr>
+          <tr><td>tif or tiff</td><td>Transform an image to a Tagged Image File Format.</td></tr>
+          <tr><td>pnm</td><td>Transform an image to a Portable Any Map format.</td></tr>
         </table>
 
-        <p>The following table describes the format types available only to PDS4 products:
+        <p>The following table lists the output formats available to only PDS4 target inputs:
         </p>
 
         <table>
           <tr><th>Format Type</th><th>Description</th></tr>
-          <tr><td>pvl</td><td>Specify to transform a given PDS4 label into a Parameter Value Language file.</td></tr>
-          <tr><td>html</td><td>Specify to transform a given PDS4 label into an html representation of the label.</td></tr>
-          <tr><td>html-structure-only</td><td>Specify to transform a given PDS4 label into an html representation of the label structure. As a result, the element contents are stripped out in the resulting file.</td></tr>
-          <tr><td>csv</td><td>Specify to transform a given table into a comma-separated value file.</td></tr>
+          <tr><td>pvl</td><td>Transform a given PDS4 label into a Parameter Value Language file.</td></tr>
+          <tr><td>html</td><td>Transform a given PDS4 label into an html representation of the label.</td></tr>
+          <tr><td>html-structure-only</td><td>Transform a given PDS4 label into an html representation of the label structure. As a result, the element contents are stripped out in the resulting file.</td></tr>
+          <tr><td>csv</td><td>Transform a given table into a comma-separated value file.</td></tr>
         </table>
 
-        <p>The following table describes the format types available only to PDS3 products:
+        <p>>The following table lists the output formats available to only PDS3 target inputs:
         </p>
 
         <table>
           <tr><th>Format Type</th><th>Description</th></tr>
-          <tr><td>pds</td><td>Specify to transform a VICAR image into a PDS4 Array 2D image. Additionally, the given PDS3 label will be transformed into a PDS4 label. Note that this transformation currently applies to target VICAR images only. Please see the <a href="#PDS3_to_PDS4_Label_Transformation">PDS3 to PDS4 Label Transformation</a> section for more details on how the tool performs a PDS3 to PDS4 label transformation.</td></tr>
-          <tr><td>pds4-label</td><td>Specify to transform a given PDS3 data product label into a PDS4 Product Observational product label. Please see the <a href="#PDS3_to_PDS4_Label_Transformation">PDS3 to PDS4 Label Transformation</a> section for more details on how the tool performs a PDS3 to PDS4 label transformation. </td></tr>
+          <tr><td>pds</td><td>Transform a VICAR image into a PDS4 Array 2D image. Additionally, the given PDS3 label will be transformed into a PDS4 label. Note that this transformation currently applies to target VICAR images only. Please see the <a href="#PDS3_to_PDS4_Label_Transformation">PDS3 to PDS4 Label Transformation</a> section for more details on how the tool performs a PDS3 to PDS4 label transformation.</td></tr>
+          <tr><td>pds4-label</td><td>Transform a given PDS3 data product label into a PDS4 Product Observational product label. Please see the <a href="#PDS3_to_PDS4_Label_Transformation">PDS3 to PDS4 Label Transformation</a> section for more details on how the tool performs a PDS3 to PDS4 label transformation. </td></tr>
         </table>
       </subsection>
 
