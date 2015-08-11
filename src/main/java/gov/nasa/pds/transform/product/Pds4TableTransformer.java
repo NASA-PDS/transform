@@ -33,6 +33,8 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -389,7 +391,22 @@ public class Pds4TableTransformer extends DefaultTransformer {
    * @param isRightJustified true, if the value should be right-justified, else left-justified
    */
   private void displayJustified(String s, int length, boolean isRightJustified) {
+    String quoteCharacter = "\"";
+    Pattern quoteCharacterPattern = Pattern.compile("\\Q" + quoteCharacter + "\\E");
+    // Double any quote characters.
+    if (s.contains(quoteCharacter)) {
+      Matcher matcher = quoteCharacterPattern.matcher(s);
+      s = matcher.replaceAll(quoteCharacter + quoteCharacter);
+    }
+
+    // If the value is all whitespace or contains the field separator, quote the value.
+    if (s.trim().isEmpty() || s.contains(fieldSeparator)) {
+      s = quoteCharacter + s + quoteCharacter;
+    }
+
+
     int padding = length - s.length();
+
     if (isRightJustified) {
       displayPadding(padding);
     }
