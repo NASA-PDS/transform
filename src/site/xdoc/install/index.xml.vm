@@ -193,6 +193,16 @@ ${JAVA_HOME}/bin/java -Dexternal.programs.home=${PARENT_DIR}/external-programs -
 "%JAVA_HOME%"\bin\java -Dexternal.programs.home=%PARENT_DIR%\external-programs -jar "%TRANSFORM_JAR%" %*
       </source>
       </subsection>
+      <subsection name="Verifying the Installation">
+        <p>Verify that the tool was installed correctly by running the shell script or Windows batch file with no arguments. The output should look something like the following:
+        </p>
+
+        <source>
+% ${project.artifactId}
+
+Type '${project.artifactId} -h' for usage
+        </source>
+      </subsection>
     </section>
   </body>
 </document>
