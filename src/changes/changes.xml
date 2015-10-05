@@ -23,6 +23,9 @@
   </properties>
 
   <body>
+    <release version="1.3.0" date="TBD" description="TBD">
+    </release>
+
     <release version="1.2.0" date="2015-09-30" description="This release of the Transform Tool is a component of the integrated release 6.0.0 of the PDS4 System. This is an operational release of the system components to date.">
       <action dev="mcayanan" type="fix" issue="PDS-295">
         Commas found in field names result in additional column headings during transformation.
