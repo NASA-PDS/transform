@@ -137,7 +137,7 @@
             <Element_Array>
                 <data_type>UnsignedMSB2</data_type>
                 <unit>data number</unit>
-                <scaling_factor>0</scaling_factor>
+                <scaling_factor>1.0</scaling_factor>
                 <value_offset>0</value_offset>
             </Element_Array>           
             <Axis_Array>
