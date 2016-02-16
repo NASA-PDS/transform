@@ -426,10 +426,11 @@ urn:nasa:pds:data:${DATA_SET_ID}:${labelFilename}
     <section name="Known Issues">
       <p>This section describes some of the known issues and limitations with the Transform Tool.
       </p>
-
+     
       <p><b><i>PDS3 Image Transformations</i></b></p>
 
       <ul>
+        <li>MOC images are not supported.</li>
         <li>The flag options that allow control of which images to transform, <i>-n, -d, -a</i>, are only supported with FITS image transformations. If the tool is given a PDS3 product label pointing to multiple, non-FITS images, the current implementation is limited to the transformation of the first image only.</li>
         <li>For detached labels, the following exception will appear on the standard out even though the tool transforms the given image successfully:
 <source>
