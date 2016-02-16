@@ -21,11 +21,13 @@ import java.util.List;
 import org.apache.commons.io.FilenameUtils;
 
 import gov.nasa.arc.pds.xml.generated.Array2DImage;
+import gov.nasa.arc.pds.xml.generated.Array3DImage;
 import gov.nasa.arc.pds.xml.generated.FileAreaObservational;
 import gov.nasa.pds.objectAccess.ExporterFactory;
 import gov.nasa.pds.objectAccess.ObjectAccess;
 import gov.nasa.pds.objectAccess.ObjectProvider;
 import gov.nasa.pds.objectAccess.ParseException;
+import gov.nasa.pds.objectAccess.ThreeDImageExporter;
 import gov.nasa.pds.objectAccess.TwoDImageExporter;
 import gov.nasa.pds.transform.TransformException;
 import gov.nasa.pds.transform.logging.ToolsLevel;
@@ -101,58 +103,87 @@ public class Pds4ImageTransformer extends DefaultTransformer {
           "Output file already exists. No transformation will occur: "
           + outputFile.toString(), target));
     } else {
-      TwoDImageExporter exporter = ExporterFactory.get2DImageExporter(fileArea,
-          objectAccess);
-      List<Array2DImage> images = objectAccess.getArray2DImages(fileArea);
-      if (images.isEmpty()) {
-        log.log(new ToolsLogRecord(ToolsLevel.INFO,
-            "No images found in label.", target));
-      } else {
-        Array2DImage image = null;
+      List<Array3DImage> array3DImages = objectAccess.getArray3DImages(fileArea);
+      if (!array3DImages.isEmpty()) {
+        ThreeDImageExporter exporter = ExporterFactory.get3DImageExporter(fileArea, objectAccess);
+        Array3DImage image = null;
         try {
-          image = images.get(index-1);
+          image = array3DImages.get(index-1);
         } catch (IndexOutOfBoundsException ie) {
           throw new Exception("Image index '" + index
               + "' is greater than the max number of images found for the "
-              + "label '" + (images.size()) + "' for data file '"
-              + fileArea.getFile().getFileName() + "'");
+              + "label '" + (array3DImages.size()) + "' for data file '"
+              + fileArea.getFile().getFileName() + "'");          
         }
         log.log(new ToolsLogRecord(ToolsLevel.INFO,
             "Transforming image '" + index + "' of file '"
             + fileArea.getFile().getFileName() + "'", target));
-        String extension = FilenameUtils.getExtension(
-            fileArea.getFile().getFileName());
-        // Call the Transcoder if we're transforming a FITS file
-        if ("fits".equalsIgnoreCase(extension)
-            || "fit".equalsIgnoreCase(extension)) {
-          File imageFile = new File(target.getParent(),
-              fileArea.getFile().getFileName());
-          Transcoder transcoder = new Transcoder();
-          try {
-            // For FITS, we need to map the selected index to the
-            // actual HDU index in the file since the Transcoder
-            // requires this.
-            int hduIndex = Utility.getHDUIndex(imageFile, index-1);
-            transcoder.transcode(imageFile, outputFile, format, hduIndex,
-                false);
-          } catch (Exception e) {
-            throw new TransformException(e.getMessage());
-          }
+        if ("jp2".equalsIgnoreCase(format)) {
+          exporter.setExportType("jpeg2000");
         } else {
-          // Call the PDS4-Tools library for non-FITS file
-          // transformations
-          if ("jp2".equalsIgnoreCase(format)) {
-            exporter.setExportType("jpeg2000");
-          } else {
-            exporter.setExportType(format);
-          }
-          exporter.convert(image, new FileOutputStream(outputFile));
+          exporter.setExportType(format);
         }
+        exporter.convert(image, new FileOutputStream(outputFile));        
         log.log(new ToolsLogRecord(ToolsLevel.INFO,
             "Successfully transformed image '" + index + "' of file '"
             + fileArea.getFile().getFileName()
             + "' to the following output: "
             + outputFile.toString(), target));
+        
+      } else {
+        TwoDImageExporter exporter = ExporterFactory.get2DImageExporter(fileArea,
+            objectAccess);
+        List<Array2DImage> images = objectAccess.getArray2DImages(fileArea);
+        if (images.isEmpty()) {
+          log.log(new ToolsLogRecord(ToolsLevel.INFO,
+              "No images found in label.", target));
+        } else {
+          Array2DImage image = null;
+          try {
+            image = images.get(index-1);
+          } catch (IndexOutOfBoundsException ie) {
+            throw new Exception("Image index '" + index
+                + "' is greater than the max number of images found for the "
+                + "label '" + (images.size()) + "' for data file '"
+                + fileArea.getFile().getFileName() + "'");
+          }
+          log.log(new ToolsLogRecord(ToolsLevel.INFO,
+              "Transforming image '" + index + "' of file '"
+              + fileArea.getFile().getFileName() + "'", target));
+          String extension = FilenameUtils.getExtension(
+              fileArea.getFile().getFileName());
+          // Call the Transcoder if we're transforming a FITS file
+          if ("fits".equalsIgnoreCase(extension)
+              || "fit".equalsIgnoreCase(extension)) {
+            File imageFile = new File(target.getParent(),
+                fileArea.getFile().getFileName());
+            Transcoder transcoder = new Transcoder();
+            try {
+              // For FITS, we need to map the selected index to the
+              // actual HDU index in the file since the Transcoder
+              // requires this.
+              int hduIndex = Utility.getHDUIndex(imageFile, index-1);
+              transcoder.transcode(imageFile, outputFile, format, hduIndex,
+                false);
+            } catch (Exception e) {
+              throw new TransformException(e.getMessage());
+            }
+          } else {
+            // Call the PDS4-Tools library for non-FITS file
+            // transformations
+            if ("jp2".equalsIgnoreCase(format)) {
+              exporter.setExportType("jpeg2000");
+            } else {
+              exporter.setExportType(format);
+            }
+            exporter.convert(image, new FileOutputStream(outputFile));
+          }
+          log.log(new ToolsLogRecord(ToolsLevel.INFO,
+              "Successfully transformed image '" + index + "' of file '"
+              + fileArea.getFile().getFileName()
+              + "' to the following output: "
+              + outputFile.toString(), target));
+        }
       }
     }
   }

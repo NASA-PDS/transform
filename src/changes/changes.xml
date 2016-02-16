@@ -27,8 +27,14 @@
       <action dev="mcayanan" type="fix" issue="PDS-414">
         Throws a NullPointerException when transforming an Array 2D image where the Object_Statistics and/or Display_2D_Image elements are not present in the label. Inherited from pds4-tools.
       </action>
+      <action dev="mcayanan" type="add" issue="PDS-416">
+        Added support for transforming Array_3D_Image products. Inherited from pds4-tools.
+      </action>
       <action dev="mcayanan" type="fix" issue="PDS-433">
         Not handling scaling_factor, value_offset, and orientation values properly for Array_2D_Image transformations. Inherited from pds4-tools.
+      </action>
+      <action dev="mcayanan" type="update" issue="PDS-434">
+        Support for more data types for image transformations: SignedLSB2, UnsignedLSB2, and SignedMSB2. Inherited from pds4-tools.
       </action>
     </release>
 

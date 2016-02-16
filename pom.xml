@@ -224,11 +224,6 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>jpl.mipl.io</groupId>
-      <artifactId>vicario</artifactId>
-      <version>${vicario-version}</version>
-    </dependency>
-    <dependency>
       <groupId>com.sun.media</groupId>
       <artifactId>jai_imageio</artifactId>
       <version>1.0</version>
