@@ -201,9 +201,9 @@ public class Pds4ImageTransformer extends DefaultTransformer {
             + "area in the label: " + target.toString());
       } else {
         for (FileAreaObservational fao : fileAreas) {
-          List<Array2DImage> images = objectAccess.getArray2DImages(fao);
-          if (!images.isEmpty()) {
-            int numImages = images.size();
+          List<Array2DImage> twoDImages = objectAccess.getArray2DImages(fao);
+          if (!twoDImages.isEmpty()) {
+            int numImages = twoDImages.size();
             for (int i = 0; i < numImages; i++) {
               File outputFile = null;
               if (numImages > 1) {
@@ -222,9 +222,28 @@ public class Pds4ImageTransformer extends DefaultTransformer {
                     target));
               }
             }
-          } else {
-            log.log(new ToolsLogRecord(ToolsLevel.INFO,
-                "No images found in label.", target));
+          }
+          List<Array3DImage> threeDImages = objectAccess.getArray3DImages(fao);
+          if (!threeDImages.isEmpty()) {
+            int numImages = threeDImages.size();
+            for (int i = 0; i < numImages; i++) {
+              File outputFile = null;
+              if (numImages > 1) {
+                outputFile = Utility.createOutputFile(
+                    new File(fao.getFile().getFileName()), outputDir, format,
+                    (i+1));
+              } else {
+                outputFile = Utility.createOutputFile(
+                    new File(fao.getFile().getFileName()), outputDir, format);
+              }
+              try {
+                process(target, objectAccess, fao, outputFile, format, (i+1));
+                results.add(outputFile);
+              } catch (Exception e) {
+                log.log(new ToolsLogRecord(ToolsLevel.SEVERE, e.getMessage(),
+                    target));
+              }
+            }            
           }
         }
         return results;
