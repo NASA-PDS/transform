@@ -1,4 +1,4 @@
-// Copyright 2006-2015, by the California Institute of Technology.
+// Copyright 2006-2016, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship acknowledged.
 // Any commercial use must be negotiated with the Office of Technology Transfer
 // at the California Institute of Technology.
@@ -119,7 +119,7 @@ public class Pds3ImageTransformer extends DefaultTransformer {
               "fits".equalsIgnoreCase(extension)) {
             int hduIndex = Utility.getHDUIndex(imageFile, index-1);
             transcoder.transcode(imageFile, outputFile, format, hduIndex,
-                false);
+                true);
           } else {
             transcoder.transcode(target, outputFile, format);
           }

@@ -164,7 +164,7 @@ public class Pds4ImageTransformer extends DefaultTransformer {
               // requires this.
               int hduIndex = Utility.getHDUIndex(imageFile, index-1);
               transcoder.transcode(imageFile, outputFile, format, hduIndex,
-                false);
+                true);
             } catch (Exception e) {
               throw new TransformException(e.getMessage());
             }
@@ -187,6 +187,7 @@ public class Pds4ImageTransformer extends DefaultTransformer {
       }
     }
   }
+  
 
   @Override
   public List<File> transformAll(File target, File outputDir, String format)

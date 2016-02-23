@@ -427,22 +427,23 @@ urn:nasa:pds:data:${DATA_SET_ID}:${labelFilename}
       <p>This section describes some of the known issues and limitations with the Transform Tool.
       </p>
      
+      <p><b><i>FITS Transformations</i></b></p>
+      
+      <p>When performing FITS transformations, the Transform Tool may output the following warning message:
+      </p>
+      
+      <source>
+Warning: multiple occurrences of key:      
+      </source>
+      
+      <p>This message is coming out of the FITS dependency library. It does not appear to be of concern at this time as several FITS images were used in testing and a successful transformation has occurred each time in cases where this warning message has appeared.
+      </p>
+     
       <p><b><i>PDS3 Image Transformations</i></b></p>
 
       <ul>
         <li>MOC images are not supported.</li>
         <li>The flag options that allow control of which images to transform, <i>-n, -d, -a</i>, are only supported with FITS image transformations. If the tool is given a PDS3 product label pointing to multiple, non-FITS images, the current implementation is limited to the transformation of the first image only.</li>
-        <li>For detached labels, the following exception will appear on the standard out even though the tool transforms the given image successfully:
-<source>
-IOException attempting to read embedded vicar label jpl.mipl.io.vicar.VicarLabelSyntaxException: \
-Main and EOL labels must start with LBLSIZE keyword
-jpl.mipl.io.vicar.VicarLabelSyntaxException: Main and EOL labels must start with LBLSIZE keyword
-    at jpl.mipl.io.vicar.VicarLabel.readLabelChunk(VicarLabel.java:122)
-    at jpl.mipl.io.vicar.VicarLabel.readLabelChunk(VicarLabel.java:173)
-...
-</source>
-        This can be safely ignored.
-        </li>
       </ul>
 
       <p><b><i>PDS4 Image Transformations</i></b></p>
