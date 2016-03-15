@@ -21,7 +21,7 @@
   #else
      <title>$title</title>
   #end
-     <information_model_version>1.3.0.1</information_model_version>
+     <information_model_version>1.5.0.0</information_model_version>
      <product_class>Product_Observational</product_class>
      <Modification_History>
        <Modification_Detail>
@@ -45,7 +45,7 @@
     #end
 
     #if( $label.STOP_TIME && !($label.STOP_TIME.trim().equals("N/A") || $label.STOP_TIME.trim().equals("NULL") || $label.STOP_TIME.trim().equals("UNK")) )
-      #if ( $label.START_TIME.trim().endsWith("Z") )
+      #if ( $label.STOP_TIME.trim().endsWith("Z") )
         <stop_date_time>${label.STOP_TIME}</stop_date_time>
       #else
         <stop_date_time>${label.STOP_TIME}Z</stop_date_time>
@@ -107,6 +107,7 @@
     #if ( $objectName.matches($validTypes) && !$objectName.endsWith("PDS4_IMAGE") )
     <File_Area_Observational>
     #set ( $value = $label.get("PTR_$objectName").toString() )
+    #set ( $value = $value.replaceAll("[\(\)]","") )
     #set ( $pointer = [] )
     #foreach ( $element in $value.split(",") )
         #if ($pointer.add($element))
