@@ -1,4 +1,4 @@
-// Copyright 2006-2015, by the California Institute of Technology.
+// Copyright 2006-2016, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship acknowledged.
 // Any commercial use must be negotiated with the Office of Technology Transfer
 // at the California Institute of Technology.
@@ -18,6 +18,7 @@ import gov.nasa.pds.transform.logging.ToolsLogRecord;
 import gov.nasa.pds.transform.logging.format.TransformFormatter;
 import gov.nasa.pds.transform.logging.handler.TransformStreamHandler;
 import gov.nasa.pds.transform.product.Pds3ImageTransformer;
+import gov.nasa.pds.transform.product.Pds4ImageTransformer;
 import gov.nasa.pds.transform.product.ProductTransformer;
 import gov.nasa.pds.transform.product.ProductTransformerFactory;
 import gov.nasa.pds.transform.util.ObjectsReport;
@@ -87,6 +88,8 @@ public class TransformLauncher {
    */
   private boolean listObjects;
 
+  private List<Integer> bands;
+  
   /**
    * Constructor.
    * @throws IOException
@@ -99,6 +102,7 @@ public class TransformLauncher {
     transformAll = false;
     dataFileName = "";
     listObjects = false;
+    bands = new ArrayList<Integer>();
   }
 
   /**
@@ -158,7 +162,9 @@ public class TransformLauncher {
         transformAll = true;
       } else if (o.getOpt().equals(Flag.OBJECTS.getShortName())) {
         listObjects = true;
-      }
+      }/* else if (o.getOpt().equals(Flag.BANDS.getShortName())) {
+        setBands(o.getValuesList());
+      }*/
     }
     setLogger();
     if (!targetList.isEmpty()) {
@@ -207,6 +213,26 @@ public class TransformLauncher {
     while (targets.remove(""));
     for (String t : targets) {
       this.targets.add(new File(t));
+    }
+  }
+  
+  private void setBands(List<String> bands) throws IOException {
+    while (bands.remove(""));
+    if (bands.size() != 3) {
+      throw new IOException("Must specify 3 positive integer values "
+          + "when using the '-b' flag option (i.e. -b 1,2,3).");
+    }
+    for (String b : bands) {
+      try {
+        Integer i = new Integer(b);
+        if (i.intValue() < 0) {
+          throw new NumberFormatException("Must enter a positive integer");
+        }
+        this.bands.add(i);
+      } catch (NumberFormatException e) {
+        throw new IOException("Invalid value entered for '-b' flag option '"
+            + b + "'. Must be a positive integer.");
+      }
     }
   }
 
@@ -289,6 +315,10 @@ public class TransformLauncher {
       log.log(new ToolsLogRecord(ToolsLevel.CONFIGURATION,
           "Index                       " + index));
     }
+    if (!bands.isEmpty()) {
+      log.log(new ToolsLogRecord(ToolsLevel.CONFIGURATION,
+          "Selected Bands              " + bands.toString()));
+    }
     log.log(new ToolsLogRecord(ToolsLevel.CONFIGURATION,
         "Format Type                 " + formatType + "\n"));
   }
@@ -317,6 +347,11 @@ public class TransformLauncher {
           }
         }
       } else {
+        if (pt instanceof Pds4ImageTransformer) {
+          if (!bands.isEmpty()) {
+            ((Pds4ImageTransformer) pt).setBands(bands);
+          }
+        }
         if (transformAll) {
           results = pt.transformAll(targets, outputDir, formatType);
         } else {
