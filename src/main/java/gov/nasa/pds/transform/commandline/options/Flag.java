@@ -1,4 +1,4 @@
-// Copyright 2006-2012, by the California Institute of Technology.
+// Copyright 2006-2016, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship acknowledged.
 // Any commercial use must be negotiated with the Office of Technology Transfer
 // at the California Institute of Technology.
@@ -24,6 +24,17 @@ import org.apache.commons.cli.Options;
  *
  */
 public enum Flag {
+  /**
+   * Flag to specify the band strengths for the red, green, and blue components.
+   * 
+   */
+/*  
+  BANDS("b", "bands", "band list", int.class, true, "For transformations of "
+      + "PDS4 Array_3D_Spectrum products, specify this flag to "
+      + "indicate the bands to use for the red, green and blue "
+      + "channels (i.e. -b 1,2,3) in order to get a 3-color RGB "
+      + "representative image. Default is to use band 1."),
+*/  
   /** Flag to specify a configuration file to configure the tool behavior.
    */
   CONFIG("c", "config", "file", String.class, "Specify a configuration "
@@ -237,8 +248,9 @@ public enum Flag {
 
   static {
     options = new Options();
-
+    
     options.addOption(new ToolsOption(ALL));
+//    options.addOption(new ToolsOption(BANDS));
     options.addOption(new ToolsOption(DATAFILE));
     options.addOption(new ToolsOption(FORMAT));
     options.addOption(new ToolsOption(HELP));
