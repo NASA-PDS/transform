@@ -24,6 +24,9 @@
 
   <body>
     <release version="1.3.0" date="TBD" description="TBD">
+      <action dev="mcayanan" type="update" issue="PDS-366">
+        Updated to handle FITS image transformations more efficiently. Inherited from vicario.
+      </action>
       <action dev="mcayanan" type="fix" issue="PDS-414">
         Throws a NullPointerException when transforming an Array 2D image where the Object_Statistics and/or Display_2D_Image elements are not present in the label. Inherited from pds4-tools.
       </action>
@@ -41,9 +44,6 @@
       </action>
       <action dev="mcayanan" type="fix" issue="PDS-436">
         Throws exception when performing PDS3-to-PDS4 label transformations on PDS3 pointer statements containing a file reference and an offset.
-      </action>
-      <action dev="mcayanan" type="update">
-        Updated to handle FITS image transformations more efficiently. Inherited from vicario.
       </action>
     </release>
 
