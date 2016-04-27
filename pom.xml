@@ -218,8 +218,8 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>gov.nasa.pds</groupId>
-      <artifactId>objectAccess</artifactId>
+      <groupId>gov.nasa.pds.2010.preparation</groupId>
+      <artifactId>pds4-tools</artifactId>
       <version>${pds4-tools-version}</version>
       <scope>compile</scope>
     </dependency>
