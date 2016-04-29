@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
-  Copyright 2012, by the California Institute of Technology.
+  Copyright 2012-2016, by the California Institute of Technology.
   ALL RIGHTS RESERVED. United States Government Sponsorship acknowledged.
   Any commercial use must be negotiated with the Office of Technology Transfer
   at the California Institute of Technology.
@@ -67,7 +67,7 @@
 
         <table>
           <tr><th>Format Type</th><th>Description</th></tr>
-          <tr><td>jpeg or jpg</td><td>Specify to transform to an image in a Joint Photogrpahic Experts Group format.</td></tr>
+          <tr><td>jpeg or jpg</td><td>Specify to transform to an image in a Joint Photographic Experts Group format.</td></tr>
           <tr><td>jp2</td><td>Transform an image to a JPEG 2000 format.</td></tr>
           <tr><td>bmp</td><td>Transform an image to a Windows bitmap format.</td></tr>
           <tr><td>wbmp</td><td>Transform an image to a Wireless Bitmap image format.</td></tr>
@@ -89,7 +89,7 @@
           <tr><td>csv</td><td>Transform a given table into a comma-separated value file.</td></tr>
         </table>
 
-        <p>>The following table lists the output formats available to only PDS3 target inputs:
+        <p>The following table lists the output formats available to only PDS3 target inputs:
         </p>
 
         <table>
