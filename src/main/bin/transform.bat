@@ -1,4 +1,4 @@
-:: Copyright 2014, by the California Institute of Technology.
+:: Copyright 2016, by the California Institute of Technology.
 :: ALL RIGHTS RESERVED. United States Government Sponsorship acknowledged.
 :: Any commercial use must be negotiated with the Office of Technology Transfer
 :: at the California Institute of Technology.
@@ -45,6 +45,6 @@ for %%i in ("%LIB_DIR%"\transform-*.jar) do set TRANSFORM_JAR=%%i
 :: Executes the Transform Tool via the executable jar file
 :: The special variable '%*' allows the arguments
 :: to be passed into the executable.
-"%JAVA_HOME%"\bin\java -Xms256m -Xmx1024m -Doverwrite.output=true -Dexternal.programs.home=%PARENT_DIR%\external-programs -jar "%TRANSFORM_JAR%" %*
+"%JAVA_HOME%"\bin\java -Xms256m -Xmx1024m -Dcom.sun.media.jai.disableMediaLib=true -Doverwrite.output=true -Dexternal.programs.home=%PARENT_DIR%\external-programs -jar "%TRANSFORM_JAR%" %*
 
 :END

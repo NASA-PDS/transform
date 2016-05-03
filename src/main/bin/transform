@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Copyright 2014, by the California Institute of Technology.
+# Copyright 2016, by the California Institute of Technology.
 # ALL RIGHTS RESERVED. United States Government Sponsorship acknowledged.
 # Any commercial use must be negotiated with the Office of Technology Transfer
 # at the California Institute of Technology.
@@ -42,4 +42,4 @@ TRANSFORM_JAR=`ls ${LIB_DIR}/transform-*.jar`
 
 # Executes Transform Tool via the executable jar file
 # Arguments are passed in to the tool via '$@'
-"${JAVA_HOME}"/bin/java -Xms256m -Xmx1024m -Doverwrite.output=true -Dexternal.programs.home=${PARENT_DIR}/external-programs -jar ${TRANSFORM_JAR} "$@"
+"${JAVA_HOME}"/bin/java -Xms256m -Xmx1024m -Dcom.sun.media.jai.disableMediaLib=true -Doverwrite.output=true -Dexternal.programs.home=${PARENT_DIR}/external-programs -jar ${TRANSFORM_JAR} "$@"
