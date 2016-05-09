@@ -51,6 +51,9 @@
       <action dev="mcayanan" type="fix" issue="PDS-436">
         Throws exception when performing PDS3-to-PDS4 label transformations on PDS3 pointer statements containing a file reference and an offset.
       </action>
+      <action dev="hyunlee" type="fix" issue="PDS-445">
+        Updated xerces dependency version from 1.2.3 to 2.9.0 to resolve the error. Inherited from pds4-tools.
+      </action>
     </release>
 
     <release version="1.2.0" date="2015-09-30" description="This release of the Transform Tool is a component of the integrated release 6.0.0 of the PDS4 System. This is an operational release of the system components to date.">
