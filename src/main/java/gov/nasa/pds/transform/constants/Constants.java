@@ -129,4 +129,33 @@ public class Constants {
     PDS4_VALID_FORMATS.addAll(COMMON_VALID_FORMATS);
     PDS4_VALID_FORMATS.addAll(PDS4_ONLY_VALID_FORMATS);
   }
+  
+  /**
+   * Contains a list of supported table objects.
+   */
+  public static List<String> SUPPORTED_TABLES = new ArrayList<String>();
+  static {
+    SUPPORTED_TABLES.add(gov.nasa.arc.pds.xml.generated.TableBinary.class.getSimpleName());
+    SUPPORTED_TABLES.add(gov.nasa.arc.pds.xml.generated.TableCharacter.class.getSimpleName());
+    SUPPORTED_TABLES.add(gov.nasa.arc.pds.xml.generated.TableDelimited.class.getSimpleName());    
+  }
+  
+  /**
+   * Contains a list of supported image objects.
+   */
+  public static List<String> SUPPORTED_IMAGES = new ArrayList<String>();
+  static {
+    SUPPORTED_IMAGES.add(gov.nasa.arc.pds.xml.generated.Array2DImage.class.getSimpleName());
+    SUPPORTED_IMAGES.add(gov.nasa.arc.pds.xml.generated.Array3DImage.class.getSimpleName());
+    SUPPORTED_IMAGES.add(gov.nasa.arc.pds.xml.generated.Array3DSpectrum.class.getSimpleName());
+  }
+  
+  /**
+   * Contains a list of supported objects.
+   */
+  public static List<String> SUPPORTED_OBJECTS = new ArrayList<String>();
+  static {
+    SUPPORTED_OBJECTS.addAll(SUPPORTED_TABLES);
+    SUPPORTED_OBJECTS.addAll(SUPPORTED_IMAGES);
+  }
 }

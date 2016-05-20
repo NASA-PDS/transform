@@ -188,14 +188,14 @@ set PARENT_DIR=C:\Program Files\\${project.artifactId}-${project.version}
       </p>
 
       <source>
-${JAVA_HOME}/bin/java -Dexternal.programs.home=${PARENT_DIR}/external-programs -jar ${TRANSFORM_JAR} "$@"
+"${JAVA_HOME}"/bin/java -Xms256m -Xmx1024m -Dcom.sun.media.jai.disableMediaLib=true -Doverwrite.output=true -Dexternal.programs.home=${PARENT_DIR}/external-programs -jar ${TRANSFORM_JAR} "$@"
       </source>
 
       <p>In the <i>transform.bat</i> batch file:
       </p>
 
       <source>
-"%JAVA_HOME%"\bin\java -Dexternal.programs.home=%PARENT_DIR%\external-programs -jar "%TRANSFORM_JAR%" %*
+"%JAVA_HOME%"\bin\java -Xms256m -Xmx1024m -Dcom.sun.media.jai.disableMediaLib=true -Doverwrite.output=true -Dexternal.programs.home=%PARENT_DIR%\external-programs -jar "%TRANSFORM_JAR%" %*
       </source>
       </subsection>
       <subsection name="Verifying the Installation">

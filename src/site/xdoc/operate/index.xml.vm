@@ -202,29 +202,32 @@
         </p>
         
         <source>
-Supported Images:
+Supported Images: 
 
   None Found
 
-Supported Tables:
+Supported Tables: 
 
   Data file: PDS4_ATM_TABLE_CHAR_MULTIPLE.TAB
-  
-  index = 1
-  local identifier = TABLE_CHAR_1
-  type = fixed-width character table
-  records = 23
-  record length = 88
-  groups = 0
-  fields = 10
-  
-  index = 2
-  local identifier = TABLE_CHAR_2
-  type = fixed-width character table
-  records = 23
-  record length = 88
-  groups = 0
-  fields = 10
+
+    index = 1
+    object type = Table_Character
+    name = null
+    local identifier = TABLE_CHAR_1
+    records = 23
+    record length = 88
+    groups = 0
+    fields = 10
+
+    index = 2
+    object type = Table_Character
+    name = null
+    local identifier = TABLE_CHAR_2
+    records = 23
+    record length = 88
+    groups = 0
+    fields = 10
+
         </source>
         
         <p>To perform a table to CSV transformation of the 2nd table, run the following command:
@@ -247,40 +250,44 @@ Supported Tables:
         </p>
         
         <source>
-Supported Images:
+Supported Images: 
 
   None Found
 
-Supported Tables:
+Supported Tables: 
 
   Data file: PDS4_ATM_TABLE_CHAR.TAB
-  
-  index = 1
-  local identifier = PHX-M-TT-5-WIND-VEL-DIR_TABLE_CHAR
-  type = fixed-width character table
-  records = 23
-  record length = 88
-  groups = 0
-  fields = 10
-  
+
+    index = 1
+    object type = Table_Character
+    name = null
+    local identifier = PHX-M-TT-5-WIND-VEL-DIR_TABLE_CHAR
+    records = 23
+    record length = 88
+    groups = 0
+    fields = 10
+
   Data file: PDS4_TABLE_DELIMITED.csv
-  
-  index = 1
-  local identifier = null
-  type = delimited table
-  records = 3
-  groups = 0
-  fields = 13
-  
+
+    index = 1
+    object type = Table_Delimited
+    name = null
+    local identifier = null
+    records = 3
+    groups = 0
+    fields = 13
+
   Data file: 2d234493326edratf3d2537n0m1.dat
-  
-  index = 1
-  local identifier = null
-  type = fixed-width binary table
-  records = 336
-  record length = 96
-  groups = 1
-  fields = 20
+
+    index = 1
+    object type = Table_Binary
+    name = null
+    local identifier = null
+    records = 336
+    record length = 96
+    groups = 1
+    fields = 20
+    
         </source>
         
         <p>The following command demonstrates transforming the table associated with the data file <i>PDS4_TABLE_DELIMTED.csv</i>:
@@ -303,25 +310,30 @@ Supported Tables:
         </p>
         
         <source>
-Supported Images:
+Supported Images: 
 
   Data file: 20140804T205944Z_MAP_bias_V001.fits
 
-  index = 1
-  local identifier = PDU
-  data type = IEEE754LSBSingle
-  lines = 1024
-  samples = 1024
+    index = 1
+    object type = Array_2D_Image
+    name = Primary Data Unit
+    local identifier = PDU
+    data type = IEEE754LSBSingle
+    lines = 1024
+    samples = 1024
 
-  index = 2
-  local identifier = SDU
-  data type = IEEE754LSBSingle
-  lines = 1044
-  samples = 1112
+    index = 2
+    object type = Array_2D_Image
+    name = Secondary Data Unit (Full Detector Array
+    local identifier = SDU
+    data type = IEEE754LSBSingle
+    lines = 1044
+    samples = 1112
 
-Supported Tables:
+Supported Tables: 
 
-None Found
+  None Found
+
         </source>
         
         <p>The following command demonstrates transforming all FITS images found in the label:

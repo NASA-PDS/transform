@@ -13,6 +13,7 @@
 // $Id$
 package gov.nasa.pds.transform.util;
 
+import gov.nasa.arc.pds.xml.generated.Array;
 import gov.nasa.arc.pds.xml.generated.Array2DImage;
 import gov.nasa.arc.pds.xml.generated.AxisArray;
 import gov.nasa.arc.pds.xml.generated.FileAreaObservational;
@@ -23,6 +24,7 @@ import gov.nasa.arc.pds.xml.generated.TableBinary;
 import gov.nasa.arc.pds.xml.generated.TableCharacter;
 import gov.nasa.arc.pds.xml.generated.TableDelimited;
 import gov.nasa.pds.label.object.FieldDescription;
+import gov.nasa.pds.objectAccess.DataType;
 import gov.nasa.pds.objectAccess.ExporterFactory;
 import gov.nasa.pds.objectAccess.ObjectAccess;
 import gov.nasa.pds.objectAccess.ObjectProvider;
@@ -36,11 +38,15 @@ import gov.nasa.pds.tools.label.PointerStatement;
 import java.io.File;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.io.FilenameUtils;
 
@@ -213,24 +219,31 @@ public class ObjectsReport {
     writer.println("Supported Images: \n");
     boolean hasImages = false;
     for (FileAreaObservational fileArea : fileAreas) {
-      List<Array2DImage> images = objectAccess.getArray2DImages(fileArea);
-      if (!images.isEmpty()) {
+      List<Array> arrays = objectAccess.getArrays(fileArea);
+      arrays = Utility.getSupportedImages(arrays);
+      if (!arrays.isEmpty()) {
         boolean printHeader = true;
         hasImages = true;
         int index = 1;
-        for (Array2DImage image : images) {
+        for (Array array : arrays) {
           String extension = FilenameUtils.getExtension(
               fileArea.getFile().getFileName());
-          String dataType = image.getElementArray().getDataType();
-          if ( ("fits".equalsIgnoreCase(extension) ||
-              "fit".equalsIgnoreCase(extension)) ||
-              "UnsignedMSB2".equalsIgnoreCase(dataType) ) {
+          String dataType = array.getElementArray().getDataType();
+          boolean supportedType = false;
+          for (DataType.NumericDataType type : DataType.NumericDataType.values()) {
+            if (type.toString().equalsIgnoreCase(dataType)) {
+              supportedType = true;
+              break;
+            }
+          }
+          if (("fits".equalsIgnoreCase(extension) ||
+              "fit".equalsIgnoreCase(extension)) || supportedType) {
             if (printHeader) {
               writer.println("  Data file: "
                   + fileArea.getFile().getFileName() + "\n");
               printHeader = false;
             }
-            printImageInfo(image, index);
+            printImageInfo(array, index);
             index++;
           }
         }
@@ -275,11 +288,14 @@ public class ObjectsReport {
    * @param image Object representation of a PDS4 Array 2D image.
    * @param index The index of the image.
    */
-  private void printImageInfo(Array2DImage image, int index) {
+  private void printImageInfo(Array array, int index) {
     writer.println("    index = " + index);
-    writer.println("    local identifier = " + image.getLocalIdentifier());
-    writer.println("    data type = " + image.getElementArray().getDataType());
-    for( AxisArray axisArray : image.getAxisArraies()) {
+    XmlType xmlType = array.getClass().getAnnotation(XmlType.class);
+    writer.println("    object type = " + xmlType.name());
+    writer.println("    name = " + array.getName());
+    writer.println("    local identifier = " + array.getLocalIdentifier());
+    writer.println("    data type = " + array.getElementArray().getDataType());
+    for( AxisArray axisArray : array.getAxisArraies()) {
       if ("Line".equalsIgnoreCase(axisArray.getAxisName())) {
         writer.println("    lines = " + axisArray.getElements());
       } else if ("Sample".equalsIgnoreCase(axisArray.getAxisName())) {
@@ -330,9 +346,11 @@ public class ObjectsReport {
     if (table instanceof TableBinary) {
       TableBinary tableBinary = (TableBinary) table;
       writer.println("    index = " + index);
+      XmlType xmlType = tableBinary.getClass().getAnnotation(XmlType.class);
+      writer.println("    object type = " + xmlType.name());
+      writer.println("    name = " + tableBinary.getName());
       writer.println("    local identifier = "
           + tableBinary.getLocalIdentifier());
-      writer.println("    type = " + TableType.FIXED_BINARY.getReadableType());
       writer.println("    records = " + tableBinary.getRecords());
       RecordBinary record = tableBinary.getRecordBinary();
       if (record != null) {
@@ -346,9 +364,11 @@ public class ObjectsReport {
     } else if (table instanceof TableCharacter) {
       TableCharacter tableChar = (TableCharacter) table;
       writer.println("    index = " + index);
+      XmlType xmlType = tableChar.getClass().getAnnotation(XmlType.class);
+      writer.println("    object type = " + xmlType.name());
+      writer.println("    name = " + tableChar.getName());
       writer.println("    local identifier = "
           + tableChar.getLocalIdentifier());
-      writer.println("    type = " + TableType.FIXED_TEXT.getReadableType());
       writer.println("    records = " + tableChar.getRecords());
       RecordCharacter record = tableChar.getRecordCharacter();
       if (record != null) {
@@ -362,9 +382,11 @@ public class ObjectsReport {
     } else if (table instanceof TableDelimited) {
       TableDelimited tableDelim = (TableDelimited) table;
       writer.println("    index = " + index);
+      XmlType xmlType = tableDelim.getClass().getAnnotation(XmlType.class);
+      writer.println("    object type = " + xmlType.name());
+      writer.println("    name = " + tableDelim.getName());
       writer.println("    local identifier = "
           + tableDelim.getLocalIdentifier());
-      writer.println("    type = " + TableType.DELIMITED.getReadableType());
       writer.println("    records = " + tableDelim.getRecords());
       RecordDelimited record = tableDelim.getRecordDelimited();
       if (record != null) {

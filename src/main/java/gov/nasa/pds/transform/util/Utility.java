@@ -13,6 +13,7 @@
 // $Id$
 package gov.nasa.pds.transform.util;
 
+import gov.nasa.arc.pds.xml.generated.Array;
 import gov.nasa.arc.pds.xml.generated.FileAreaObservational;
 import gov.nasa.arc.pds.xml.generated.ProductObservational;
 import gov.nasa.pds.imaging.generate.Generator;
@@ -27,6 +28,7 @@ import gov.nasa.pds.tools.label.Label;
 import gov.nasa.pds.tools.label.ManualPathResolver;
 import gov.nasa.pds.tools.label.parser.DefaultLabelParser;
 import gov.nasa.pds.tools.util.MessageUtils;
+import gov.nasa.pds.transform.constants.Constants;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -272,5 +274,22 @@ public class Utility {
     } finally {
       inputStream.close();
     }
+  }
+  
+  /**
+   * Returns a list of supported image objects.
+   * 
+   * @param arrays A list of Array objects to filter.
+   * 
+   * @return A list of supported Array image objects.
+   */
+  public static List<Array> getSupportedImages(List<Array> arrays) {
+    List<Array> results = new ArrayList<Array>();
+    for (Array array : arrays) {
+      if (Constants.SUPPORTED_IMAGES.contains(array.getClass().getSimpleName())) {
+        results.add(array);
+      }
+    }
+    return results;
   }
 }
