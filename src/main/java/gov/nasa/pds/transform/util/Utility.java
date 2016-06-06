@@ -14,6 +14,8 @@
 package gov.nasa.pds.transform.util;
 
 import gov.nasa.arc.pds.xml.generated.Array;
+import gov.nasa.arc.pds.xml.generated.DisciplineArea;
+import gov.nasa.arc.pds.xml.generated.DisplaySettings;
 import gov.nasa.arc.pds.xml.generated.FileAreaObservational;
 import gov.nasa.arc.pds.xml.generated.ProductObservational;
 import gov.nasa.pds.imaging.generate.Generator;
@@ -291,5 +293,40 @@ public class Utility {
       }
     }
     return results;
+  }
+  
+  /**
+   * Gets image properties associated with the given PDS4 label.
+   *  
+   * @param pds4Label A pds4 label to parse.
+   * 
+   * @return An ImageProperties object that contains some image
+   *  information about the given label.
+   *  
+   * @throws Exception If an error occurred during the parsing
+   *  process.
+   */
+  public static ImageProperties getImageProperties(File pds4Label) 
+      throws Exception {
+    ObjectProvider objectAccess = new ObjectAccess();
+    ProductObservational product = objectAccess.getProduct(pds4Label,
+        ProductObservational.class);
+    DisciplineArea disciplineArea = null;
+    List<DisplaySettings> displaySettings = new ArrayList<DisplaySettings>();
+    try {
+      disciplineArea = product.getObservationArea().getDisciplineArea();
+      if (disciplineArea != null) {
+        for (Object object : disciplineArea.getAnies()) {
+          if (object instanceof DisplaySettings) {
+            displaySettings.add((DisplaySettings) object);
+          }
+        }
+      }
+    } catch (IndexOutOfBoundsException e) {
+      String message = "Label has no such ObservationalArea";
+      throw new Exception(message);
+    }
+    return new ImageProperties(product.getFileAreaObservationals(), 
+        displaySettings);
   }
 }
