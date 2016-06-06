@@ -58,6 +58,9 @@ public class Pds3ImageTransformer extends DefaultTransformer {
     }
     // Get Image Pointers
     Map<String, List<PointerStatement>> imagePtrs = getImagePointers(label);
+    if (imagePtrs.isEmpty()) {
+      throw new TransformException("No image objects found in the label.");
+    }
     if (dataFile.isEmpty()) {
       for (String key : imagePtrs.keySet()) {
         dataFile = key;
