@@ -24,16 +24,18 @@ import gov.nasa.arc.pds.xml.generated.Array;
 import gov.nasa.arc.pds.xml.generated.Array2DImage;
 import gov.nasa.arc.pds.xml.generated.Array3DImage;
 import gov.nasa.arc.pds.xml.generated.Array3DSpectrum;
+import gov.nasa.arc.pds.xml.generated.DisplaySettings;
 import gov.nasa.arc.pds.xml.generated.FileAreaObservational;
 import gov.nasa.pds.objectAccess.Exporter;
 import gov.nasa.pds.objectAccess.ExporterFactory;
+import gov.nasa.pds.objectAccess.ImageExporter;
 import gov.nasa.pds.objectAccess.ObjectAccess;
 import gov.nasa.pds.objectAccess.ObjectProvider;
 import gov.nasa.pds.objectAccess.ParseException;
 import gov.nasa.pds.transform.TransformException;
-import gov.nasa.pds.transform.constants.Constants;
 import gov.nasa.pds.transform.logging.ToolsLevel;
 import gov.nasa.pds.transform.logging.ToolsLogRecord;
+import gov.nasa.pds.transform.util.ImageProperties;
 import gov.nasa.pds.transform.util.Transcoder;
 import gov.nasa.pds.transform.util.Utility;
 
@@ -64,7 +66,8 @@ public class Pds4ImageTransformer extends DefaultTransformer {
     try {
       ObjectProvider objectAccess = new ObjectAccess(
           target.getCanonicalFile().getParent());
-      List<FileAreaObservational> fileAreas = Utility.getFileAreas(target);
+      ImageProperties imageProperties = Utility.getImageProperties(target);
+      List<FileAreaObservational> fileAreas = imageProperties.getFileAreas();
       if (fileAreas.isEmpty()) {
         throw new TransformException("Cannot find File_Area_Observational "
             + "area in the label: " + target.toString());
@@ -82,7 +85,8 @@ public class Pds4ImageTransformer extends DefaultTransformer {
         if (fileArea != null) {
           File outputFile = Utility.createOutputFile(
               new File(fileArea.getFile().getFileName()), outputDir, format);
-          process(target, objectAccess, fileArea, outputFile, format, index);
+          process(target, objectAccess, fileArea, outputFile, format, index, 
+              imageProperties.getDisplaySettings());
           result = outputFile;
         } else {
           throw new TransformException("Cannot find data file '" + dataFile
@@ -100,7 +104,8 @@ public class Pds4ImageTransformer extends DefaultTransformer {
   }
 
   private void process(File target, ObjectProvider objectAccess,
-      FileAreaObservational fileArea, File outputFile, String format, int index)
+      FileAreaObservational fileArea, File outputFile, String format, 
+      int index, List<DisplaySettings> displaySettings)
           throws Exception {
     if ( (outputFile.exists() && outputFile.length() != 0)
         && !overwriteOutput) {
@@ -141,7 +146,8 @@ public class Pds4ImageTransformer extends DefaultTransformer {
           throw new TransformException(e.getMessage());
         }
       } else {
-        Exporter exporter = getImageExporter(selectedArray, fileArea, objectAccess); 
+        Exporter exporter = getImageExporter(selectedArray, fileArea, 
+            objectAccess, displaySettings); 
         if ("jp2".equalsIgnoreCase(format)) {
           exporter.setExportType("jpeg2000");
         } else {
@@ -163,21 +169,26 @@ public class Pds4ImageTransformer extends DefaultTransformer {
    * @param array
    * @param fileArea
    * @param objectAccess
-   * @return
+   * @return The Exporter object associated with the given parameters.
    * @throws Exception
    */
   private Exporter getImageExporter(Array array, FileAreaObservational fileArea,
-      ObjectProvider objectAccess) throws Exception {
+      ObjectProvider objectAccess, List<DisplaySettings> displaySettings)
+          throws Exception {
+    Exporter exporter = null;
     if (array instanceof Array2DImage) {
-      return ExporterFactory.get2DImageExporter(fileArea, objectAccess);
+      exporter = ExporterFactory.get2DImageExporter(fileArea, objectAccess);
     } else if (array instanceof Array3DImage) {
-      return ExporterFactory.get3DImageExporter(fileArea, objectAccess);
+      exporter = ExporterFactory.get3DImageExporter(fileArea, objectAccess);
     } else if (array instanceof Array3DSpectrum) {
-      return ExporterFactory.get3DSpectrumExporter(fileArea, objectAccess);
+      exporter = ExporterFactory.get3DSpectrumExporter(fileArea, objectAccess);
     } else {
       throw new Exception("Could not find an Exporter Class for "
           + array.getClass().getSimpleName());
     }
+    ImageExporter ie = (ImageExporter) exporter;
+    ie.setDisplaySettings(displaySettings);
+    return exporter;
   }
 
   @Override
@@ -187,7 +198,8 @@ public class Pds4ImageTransformer extends DefaultTransformer {
     try {
       ObjectProvider objectAccess = new ObjectAccess(
           target.getCanonicalFile().getParent());
-      List<FileAreaObservational> fileAreas = Utility.getFileAreas(target);
+      ImageProperties imageProperties = Utility.getImageProperties(target);
+      List<FileAreaObservational> fileAreas = imageProperties.getFileAreas();
       if (fileAreas.isEmpty()) {
         throw new TransformException("Cannot find File_Area_Observational "
             + "area in the label: " + target.toString());
@@ -208,7 +220,8 @@ public class Pds4ImageTransformer extends DefaultTransformer {
                   new File(fao.getFile().getFileName()), outputDir, format);
             }
             try {
-              process(target, objectAccess, fao, outputFile, format, (i+1));
+              process(target, objectAccess, fao, outputFile, format, (i+1), 
+                  imageProperties.getDisplaySettings());
               results.add(outputFile);
             } catch (Exception e) {
               log.log(new ToolsLogRecord(ToolsLevel.SEVERE, e.getMessage(),

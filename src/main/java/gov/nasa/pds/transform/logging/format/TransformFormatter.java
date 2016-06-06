@@ -18,6 +18,7 @@ import gov.nasa.pds.transform.logging.ToolsLogRecord;
 
 import java.util.logging.Formatter;
 import java.util.logging.Handler;
+import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
 /**
@@ -45,9 +46,9 @@ public class TransformFormatter extends Formatter {
   }
 
   public String format(LogRecord record) {
+    StringBuffer message = new StringBuffer();
     if (record instanceof ToolsLogRecord) {
       ToolsLogRecord tlr = (ToolsLogRecord) record;
-      StringBuffer message = new StringBuffer();
       if (tlr.getLevel().intValue() == ToolsLevel.NOTIFICATION.intValue()) {
         return tlr.getMessage() + lineFeed;
       }
@@ -75,7 +76,23 @@ public class TransformFormatter extends Formatter {
 
       return message.toString();
     } else {
-      return "******* " + record.getMessage() + " ************" + lineFeed;
+      if (record.getLevel().intValue() == Level.WARNING.intValue()) {
+        ++numWarnings;
+      } else if (record.getLevel().intValue() == Level.SEVERE.intValue()) {
+        ++numErrors;
+      }
+      if (record.getLevel().intValue() == Level.SEVERE.intValue()) {
+        message.append("ERROR");
+      } else {
+        message.append(record.getLevel().getName());
+      }
+      message.append(":   ");
+      String source = record.getSourceClassName();
+      String tokens[] = source.split("\\.");
+      message.append("[" + tokens[tokens.length-1] + ":" + record.getSourceMethodName() + "] ");
+      message.append(record.getMessage());
+      message.append(lineFeed);
+      return message.toString();
     }
   }
 
