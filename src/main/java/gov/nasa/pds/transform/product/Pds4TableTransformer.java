@@ -262,7 +262,7 @@ public class Pds4TableTransformer extends DefaultTransformer {
    *
    * @param fields an array of field descriptions
    * @param displayFields an array of field indices to display
-   * @return
+   * @return An array of field lengths.
    */
   private int[] getFieldLengths(FieldDescription[] fields, int[] displayFields) {
     int[] fieldLengths = new int[displayFields.length];
