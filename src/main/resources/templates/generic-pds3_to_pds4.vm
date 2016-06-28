@@ -444,9 +444,9 @@
   #elseif ( $column.DATA_TYPE == "CHARACTER" )
     <data_type>ASCII_String</data_type>
   #elseif ($column.DATA_TYPE == "TIME" )
-    <data_type>ASCII_Date_Time</data_type>
+    <data_type>ASCII_Date_Time_YMD_UTC</data_type>
   #elseif ($column.DATA_TYPE == "DATE" )
-    <data_type>ASCII_Date</data_type>
+    <data_type>ASCII_Date_Time_YMD_UTC</data_type>
   #elseif ( $column.DATA_TYPE == "BOOLEAN" )
     <data_type>ASCII_Boolean</data_type>
   #elseif ( $column.DATA_TYPE == "ASCII_REAL" )

@@ -224,6 +224,8 @@ public class Utility {
         "com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl");
     System.getProperties().setProperty("javax.xml.transform.TransformerFactory",
         "com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl");
+    System.getProperties().setProperty("javax.xml.parsers.SAXParserFactory", 
+        "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl");
     Generator generator = new Generator();
     generator.setOutputFile(outputFile);
     PDSObject pdsObject = new PDS3Label(target.toString());
