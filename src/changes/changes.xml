@@ -37,7 +37,13 @@
          Support the new way display direction values are set in a label. Inherited from pds4-tools.
       </action>
       <action dev="mcayanan" type="update" issue="PDS-454">
-         Update velocity template to conform to the latest data model
+         Update velocity template to conform to the latest data model.
+      </action>
+      <action dev="mcayanan" type="update" issue="PDS-460">
+         Documentation updates.
+      </action>
+      <action dev="mcayanan" type="update" issue="PDS-463">
+         Removed image transformation format types that are not commonly used.
       </action>
     </release>
 
