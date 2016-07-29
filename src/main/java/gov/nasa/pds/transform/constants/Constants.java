@@ -54,6 +54,9 @@ public class Constants {
     COMMON_VALID_FORMATS.remove("jpeg 2000");
     COMMON_VALID_FORMATS.remove("jpeg2000");
     COMMON_VALID_FORMATS.remove("mgn-fbidr");
+    COMMON_VALID_FORMATS.remove("wbmp");
+    COMMON_VALID_FORMATS.remove("bmp");
+    COMMON_VALID_FORMATS.remove("raw");
     COMMON_VALID_FORMATS.add("jp2");
   }
 
