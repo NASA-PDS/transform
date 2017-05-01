@@ -31,6 +31,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -129,6 +130,8 @@ public class Pds4TableTransformer extends DefaultTransformer {
     } catch (IOException i) {
       throw new TransformException("Error occurred while resolving the path "
           + "of the label: " + i.getMessage());
+    } catch (URISyntaxException e) {
+      throw new TransformException(e.getMessage());
     }
   }
 
@@ -232,6 +235,8 @@ public class Pds4TableTransformer extends DefaultTransformer {
     } catch (IOException i) {
       throw new TransformException("Error occurred while resolving the path "
           + "of the label: " + i.getMessage());
+    } catch (URISyntaxException ue) {
+      throw new TransformException(ue.getMessage());
     }
   }
 

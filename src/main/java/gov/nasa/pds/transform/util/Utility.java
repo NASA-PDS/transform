@@ -1,4 +1,4 @@
-// Copyright 2006-2015, by the California Institute of Technology.
+// Copyright 2006-2017, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship acknowledged.
 // Any commercial use must be negotiated with the Office of Technology Transfer
 // at the California Institute of Technology.
@@ -40,6 +40,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -118,7 +119,7 @@ public class Utility {
   }
 
   public static List<FileAreaObservational> getFileAreas(File pds4Label)
-  throws ParseException {
+  throws ParseException, MalformedURLException, URISyntaxException {
     List<FileAreaObservational> result = new ArrayList<FileAreaObservational>();
     ObjectProvider objectAccess = new ObjectAccess();
     ProductObservational product = objectAccess.getProduct(pds4Label,
@@ -130,7 +131,8 @@ public class Utility {
   }
 
   public static FileAreaObservational getFileArea(File pds4Label,
-      String dataFile) throws ParseException {
+      String dataFile) throws ParseException, MalformedURLException, 
+  URISyntaxException {
     FileAreaObservational result = null;
     List<FileAreaObservational> fileAreas = getFileAreas(pds4Label);
     if (dataFile.isEmpty()) {

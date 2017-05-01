@@ -1,4 +1,4 @@
-// Copyright 2006-2015, by the California Institute of Technology.
+// Copyright 2006-2017, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship acknowledged.
 // Any commercial use must be negotiated with the Office of Technology Transfer
 // at the California Institute of Technology.
@@ -48,6 +48,7 @@ import java.util.Map;
 
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 /**
@@ -260,7 +261,7 @@ public class ObjectsReport {
         hasTables = true;
         writer.println("  Data file: "
             + fileArea.getFile().getFileName() + "\n");
-        File datafile = new File(objectAccess.getRoot(),
+        File datafile = new File(FileUtils.toFile(objectAccess.getRoot()),
             fileArea.getFile().getFileName());
         int index = 1;
         for (int i = 0; i < tables.size(); i++) {
