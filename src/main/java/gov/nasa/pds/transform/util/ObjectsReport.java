@@ -203,7 +203,49 @@ public class ObjectsReport {
       writer.println("  None Found\n");
     }
     writer.println("Supported Tables: \n");
-    writer.println("  None Found\n");
+    pointerMap.clear();
+    for (PointerStatement pointer : pointers) {
+      if (pointer.getIdentifier().getId().endsWith("TABLE") ||
+          pointer.getIdentifier().getId().endsWith("SPREADSHEET") ||
+          pointer.getIdentifier().getId().endsWith("SERIES")
+          ) {
+        List<FileReference> refs = pointer.getFileRefs();
+        if (!refs.isEmpty()) {
+          FileReference ref = refs.get(0);
+          List<PointerStatement> ptrs = pointerMap.get(ref.getPath());
+          if (ptrs == null) {
+            ptrs = new ArrayList<PointerStatement>();
+            ptrs.add(pointer);
+            pointerMap.put(ref.getPath(), ptrs);
+          } else {
+            ptrs.add(pointer);
+          }
+        }
+      }
+    }
+    index = 1;
+    boolean hasTables = false;
+    for (String datafile : pointerMap.keySet()) {
+      boolean printHeader = true;
+      for (PointerStatement pointer : pointerMap.get(datafile)) {
+        List<ObjectStatement> objects = label.getObjects(
+            pointer.getIdentifier().getId());
+        if (!objects.isEmpty()) {
+          // Assume only 1 object was returned for that identifier
+          ObjectStatement object = objects.get(0);
+          hasTables = true;
+          if (printHeader) {
+            writer.println("  Data file: " + datafile + "\n");
+            printHeader = false;
+          }
+          printTableInfo(object, index);
+        }
+        index++;
+      }
+    }
+    if (!hasTables) {
+      writer.println("  None Found\n");
+    }
     writer.flush();
   }
 
@@ -334,6 +376,34 @@ public class ObjectsReport {
     writer.println("");
   }
 
+  /**
+   * Prints the PDS3 image information.
+   *
+   * @param image Object representation of a PDS3 image object.
+   * @param index The index of the image.
+   */
+  private void printTableInfo(ObjectStatement table, int index) {
+    writer.println("    index = " + index);
+    writer.println("    name = " + table.getIdentifier().getId());
+    if (table.getAttribute("COLUMNS") != null) {
+      writer.println("    columns = "
+        + table.getAttribute("COLUMNS").getValue().toString());
+    }
+    if (table.getAttribute("ROWS") != null) {
+      writer.println("    rows = "
+        + table.getAttribute("ROWS").getValue().toString());
+    }
+    if (table.getAttribute("ROW_BYTES") != null) {
+      writer.println("    row bytes = "
+        + table.getAttribute("ROW_BYTES").getValue().toString());
+    }
+    if (table.getAttribute("INTERCHANGE_FORMAT") != null) {
+      writer.println("    interchange format = "
+        + table.getAttribute("INTERCHANGE_FORMAT").getValue().toString());
+    }
+    writer.println("");
+  }
+  
 
   /**
    * Prints the PDS4 table information.

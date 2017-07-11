@@ -22,6 +22,7 @@ import gov.nasa.pds.imaging.generate.Generator;
 import gov.nasa.pds.imaging.generate.context.ContextMappings;
 import gov.nasa.pds.imaging.generate.label.PDS3Label;
 import gov.nasa.pds.imaging.generate.label.PDSObject;
+import gov.nasa.pds.imaging.generate.readers.ParserType;
 import gov.nasa.pds.objectAccess.ObjectAccess;
 import gov.nasa.pds.objectAccess.ObjectProvider;
 import gov.nasa.pds.objectAccess.ParseException;
@@ -221,6 +222,11 @@ public class Utility {
 
   public static void generate(File target, File outputFile, String templateName)
   throws Exception {
+    generate(target, outputFile, templateName, new ArrayList<String>());
+  }
+  
+  public static void generate(File target, File outputFile, String templateName, List<String> includePaths)
+  throws Exception {
     System.getProperties().setProperty(
         "javax.xml.parsers.DocumentBuilderFactory",
         "com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl");
@@ -230,7 +236,10 @@ public class Utility {
         "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl");
     Generator generator = new Generator();
     generator.setOutputFile(outputFile);
-    PDSObject pdsObject = new PDS3Label(target.toString());
+    PDS3Label pdsLabel = new PDS3Label(target.toString());
+    pdsLabel.setParserType(ParserType.PRODUCT_TOOLS);
+    pdsLabel.setIncludePaths(includePaths);
+    PDSObject pdsObject = pdsLabel;
     pdsObject.setMappings();
     generator.setPDSObject(pdsObject);
     generator.setContextMappings(new ContextMappings(pdsObject));

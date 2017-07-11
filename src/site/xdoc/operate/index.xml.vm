@@ -48,7 +48,7 @@
           <tr><td>20140804T205944Z_MAP_bias_V001.xml</td><td>PDS4 data product label of a FITS image.</td><td>jpg, gif, jp2, tif, png, pnm, pvl, html, html-structure-only</td></tr>
           <tr><td>BA03S183.IMG</td><td>PDS3 attached label of a 16-bit image.</td><td>jpg, gif, jp2, tif, png, pnm</td></tr>
           <tr><td>C000M5232T493378259EDR_F0000_0134M1.xml</td><td>PDS4 data product label of an Array 3D Image.</td><td>jpg, gif, jp2, tif, png, pnm, pvl, html, html-structure-only</td></tr>
-          <tr><td>ELE_MOM.LBL</td><td>PDS3 data product label.</td><td>pds4-label</td></tr>
+          <tr><td>ELE_MOM.LBL</td><td>PDS3 data product label.</td><td>pds4-label, csv</td></tr>
           <tr><td>FF01.LBL</td><td>PDS3 data product label of an 8-bit image.</td><td>jpg, gif, jp2, tif, png, pnm</td></tr>
           <tr><td>FHA01118.LBL</td><td>PDS3 attached label of an 8-bit image.</td><td>jpg, gif, jp2, tif, png, pnm</td></tr>
           <tr><td>N1727539187_1.LBL</td><td>PDS3 data product label of a 16-bit image.</td><td>pds</td></tr>
@@ -107,6 +107,7 @@
         <tr><td>-d, --datafile &lt;file&gt;</td><td>Specify the data file to transform. The default is to transform the first one found. Please see the <a href="#Advanced_Use_Cases">Advanced Use Cases</a> section for details on using this flag option.</td></tr>
         <tr><td>-a, --all</td><td>Specify to transform all images or tables found within a given target PDS label. Please see the <a href="#Advanced_Use_Cases">Advanced Use Cases</a> section for details on using this flag option.</td></tr>
         <tr><td>-O, --list-objects</td><td>List the table and image objects found within a given label that are currently supported by the tool.</td></tr>
+        <tr><td>-I, --include &lt;paths&gt;</td><td>Specify paths to search for files referenced by pointers in a label. This flag is valid only for PDS3 to PDS4 label transformations and PDS3 table to CSV transformations. Separate each path with a comma. Default is to always look in the directory of the label, then search the specified directories.</td></tr>
         <tr><td>-V, --version</td><td>Display the release number and copyright information.</td></tr>
         <tr><td>-h, --help</td><td>Display tool usage.</td></tr>
       </table>
@@ -123,6 +124,7 @@
           <tr><td>png</td><td>Transform an image to a Portable Network Graphics format.</td></tr>
           <tr><td>tif or tiff</td><td>Transform an image to a Tagged Image File Format.</td></tr>
           <tr><td>pnm</td><td>Transform an image to a Portable Any Map format.</td></tr>
+          <tr><td>csv</td><td>Transform a given table into a comma-separated value file.</td></tr>
         </table>
                 
         <p>The following table lists the output formats available to only PDS4 target inputs:
@@ -133,7 +135,6 @@
           <tr><td>pvl</td><td>Transform a given PDS4 label into a Parameter Value Language file.</td></tr>
           <tr><td>html</td><td>Transform a given PDS4 label into an html representation of the label.</td></tr>
           <tr><td>html-structure-only</td><td>Transform a given PDS4 label into an html representation of the label structure. As a result, the element contents are stripped out in the resulting file.</td></tr>
-          <tr><td>csv</td><td>Transform a given table into a comma-separated value file.</td></tr>
         </table>
         
         <p>The following table lists the output formats available to only PDS3 target inputs:
@@ -636,7 +637,7 @@ Array data type is not valid, null, or unsupported
         <li>SPREADSHEET</li>
       </ul>
 
-      <p>Explicit FILE objects, QUBE objects, as well as labels containing pointers to label fragments (i.e. ^STRUCTURE) are not supported by the tool at this time.
+      <p>QUBE objects are not supported by the tool at this time.
       </p>
 
     </section>

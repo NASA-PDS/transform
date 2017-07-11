@@ -1,4 +1,4 @@
-// Copyright 2006-2016, by the California Institute of Technology.
+// Copyright 2006-2017, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship acknowledged.
 // Any commercial use must be negotiated with the Office of Technology Transfer
 // at the California Institute of Technology.
@@ -118,7 +118,11 @@ public enum Flag {
    * Additionally,
    */
   OBJECTS("O", "list-objects", "List the table and image objects found within "
-      + "a given label that are currently supported by the tool.");
+      + "a given label that are currently supported by the tool."),
+  
+  INCLUDES("I", "include", "paths", String.class, "Specify the paths to look"
+      + " for files referenced by pointers in a label. Default is to"
+      + " always look at the same directory as the label.");
 
   /** The short name of the flag. */
   private final String shortName;
@@ -254,6 +258,7 @@ public enum Flag {
     options.addOption(new ToolsOption(DATAFILE));
     options.addOption(new ToolsOption(FORMAT));
     options.addOption(new ToolsOption(HELP));
+    options.addOption(new ToolsOption(INCLUDES));
     options.addOption(new ToolsOption(INDEX));
     options.addOption(new ToolsOption(OBJECTS));
     options.addOption(new ToolsOption(OUTPUTDIR));

@@ -1,4 +1,4 @@
-// Copyright 2006-2015, by the California Institute of Technology.
+// Copyright 2006-2017, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship acknowledged.
 // Any commercial use must be negotiated with the Office of Technology Transfer
 // at the California Institute of Technology.
@@ -30,6 +30,8 @@ import java.util.List;
  */
 public class Pds3LabelTransformer extends DefaultTransformer {
 
+  private List<String> includePaths;
+  
   /**
    * Constructor to set the flag to overwrite outputs.
    *
@@ -37,6 +39,7 @@ public class Pds3LabelTransformer extends DefaultTransformer {
    */
   public Pds3LabelTransformer(boolean overwrite) {
     super(overwrite);
+    includePaths = new ArrayList<String>();
   }
 
   @Override
@@ -52,7 +55,7 @@ public class Pds3LabelTransformer extends DefaultTransformer {
       return outputFile;
     }
     try {
-      Utility.generate(target, outputFile, "generic-pds3_to_pds4.vm");
+      Utility.generate(target, outputFile, "generic-pds3_to_pds4.vm", includePaths);
     } catch (Exception e) {
       e.printStackTrace();
       throw new TransformException("Error occurred while generating "
@@ -78,4 +81,15 @@ public class Pds3LabelTransformer extends DefaultTransformer {
     return outputs;
   }
 
+  /**
+   * Set the paths to search for files referenced by pointers.
+   * <p>
+   * Default is to always look first in the same directory
+   * as the label, then search specified directories.
+   * @param i List of paths
+   */
+  public void setIncludePaths(List<String> i) {
+    this.includePaths = new ArrayList<String> (i);
+    while(this.includePaths.remove(""));
+  }
 }

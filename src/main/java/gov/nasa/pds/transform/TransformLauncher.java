@@ -1,4 +1,4 @@
-// Copyright 2006-2016, by the California Institute of Technology.
+// Copyright 2006-2017, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship acknowledged.
 // Any commercial use must be negotiated with the Office of Technology Transfer
 // at the California Institute of Technology.
@@ -18,6 +18,8 @@ import gov.nasa.pds.transform.logging.ToolsLogRecord;
 import gov.nasa.pds.transform.logging.format.TransformFormatter;
 import gov.nasa.pds.transform.logging.handler.TransformStreamHandler;
 import gov.nasa.pds.transform.product.Pds3ImageTransformer;
+import gov.nasa.pds.transform.product.Pds3LabelTransformer;
+import gov.nasa.pds.transform.product.Pds3TableTransformer;
 import gov.nasa.pds.transform.product.Pds4ImageTransformer;
 import gov.nasa.pds.transform.product.ProductTransformer;
 import gov.nasa.pds.transform.product.ProductTransformerFactory;
@@ -89,6 +91,8 @@ public class TransformLauncher {
   private boolean listObjects;
 
   private List<Integer> bands;
+
+  private List<String> includePaths;
   
   /**
    * Constructor.
@@ -103,6 +107,7 @@ public class TransformLauncher {
     dataFileName = "";
     listObjects = false;
     bands = new ArrayList<Integer>();
+    includePaths = new ArrayList<String>();
   }
 
   /**
@@ -162,7 +167,9 @@ public class TransformLauncher {
         transformAll = true;
       } else if (o.getOpt().equals(Flag.OBJECTS.getShortName())) {
         listObjects = true;
-      }/* else if (o.getOpt().equals(Flag.BANDS.getShortName())) {
+      } else if (o.getOpt().equals(Flag.INCLUDES.getShortName())) {
+        setIncludePaths(o.getValuesList());
+      } /* else if (o.getOpt().equals(Flag.BANDS.getShortName())) {
         setBands(o.getValuesList());
       }*/
     }
@@ -236,6 +243,18 @@ public class TransformLauncher {
     }
   }
 
+  /**
+   * Set the paths to search for files referenced by pointers.
+   * <p>
+   * Default is to always look first in the same directory
+   * as the label, then search specified directories.
+   * @param i List of paths
+   */
+  public void setIncludePaths(List<String> i) {
+    this.includePaths = new ArrayList<String> (i);
+    while(this.includePaths.remove(""));
+  }
+  
   /**
    * Set the output directory.
    *
@@ -351,6 +370,12 @@ public class TransformLauncher {
           if (!bands.isEmpty()) {
             ((Pds4ImageTransformer) pt).setBands(bands);
           }
+        }
+        if (pt instanceof Pds3TableTransformer) {
+          ((Pds3TableTransformer) pt).setIncludePaths(includePaths);
+        }
+        if (pt instanceof Pds3LabelTransformer) {
+          ((Pds3LabelTransformer) pt).setIncludePaths(includePaths);
         }
         if (transformAll) {
           results = pt.transformAll(targets, outputDir, formatType);

@@ -1,4 +1,4 @@
-// Copyright 2006-2013, by the California Institute of Technology.
+// Copyright 2006-2017, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship acknowledged.
 // Any commercial use must be negotiated with the Office of Technology Transfer
 // at the California Institute of Technology.
@@ -58,6 +58,7 @@ public class Constants {
     COMMON_VALID_FORMATS.remove("bmp");
     COMMON_VALID_FORMATS.remove("raw");
     COMMON_VALID_FORMATS.add("jp2");
+    COMMON_VALID_FORMATS.add("csv");
   }
 
   public static Map<String, String> STYLESHEETS = new HashMap<String, String>();
@@ -108,7 +109,6 @@ public class Constants {
     PDS4_ONLY_VALID_FORMATS.add("pvl");
     PDS4_ONLY_VALID_FORMATS.add("html");
     PDS4_ONLY_VALID_FORMATS.add("html-structure-only");
-    PDS4_ONLY_VALID_FORMATS.add("csv");
   }
 
   /**

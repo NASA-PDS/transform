@@ -1,4 +1,4 @@
-// Copyright 2006-2015, by the California Institute of Technology.
+// Copyright 2006-2017, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship acknowledged.
 // Any commercial use must be negotiated with the Office of Technology Transfer
 // at the California Institute of Technology.
@@ -58,6 +58,8 @@ public class Pds4TableTransformer extends DefaultTransformer {
   private String fieldSeparator;
   private String lineSeparator;
   private String[] requestedFields;
+  
+  private String dataFileBasePath;
 
   /**
    * Constructor to set the flag to overwrite outputs.
@@ -71,6 +73,7 @@ public class Pds4TableTransformer extends DefaultTransformer {
     fieldSeparator = ",";
     lineSeparator = System.getProperty("line.separator");
     requestedFields = null;
+    dataFileBasePath = "";
   }
 
   /**
@@ -101,14 +104,23 @@ public class Pds4TableTransformer extends DefaultTransformer {
           if (dataFileName.isEmpty()) {
             fileArea = fileAreas.get(0);
             dataFileName = fileArea.getFile().getFileName();
-          }
-          if (fa.getFile().getFileName().equals(dataFileName)) {
-            fileArea = fa;
+            break;
+          } else {
+            if (fa.getFile().getFileName().equals(dataFileName)) {
+              fileArea = fa;
+              break;
+            }
           }
         }
       }
       if (fileArea != null) {
-        File dataFile = new File(target.getParent(), dataFileName);
+        String base = "";
+        if (!dataFileBasePath.isEmpty()) {
+          base = dataFileBasePath;
+        } else {
+          base = target.getParent();
+        }
+        File dataFile = new File(base, dataFileName);
         File outputFile = Utility.createOutputFile(new File(dataFileName),
             outputDir, format);
         process(target, dataFile, outputFile, objectAccess, fileArea, index);
@@ -170,6 +182,7 @@ public class Pds4TableTransformer extends DefaultTransformer {
           throw new TransformException("Cannot open output file \'"
               + outputFile.toString() + "': " + io.getMessage());
         } catch (Exception e) {
+          e.printStackTrace();
           throw new TransformException(
               "Error occurred while reading table '" + index
               + "' of file '" + dataFile.toString() + "': "
@@ -203,7 +216,13 @@ public class Pds4TableTransformer extends DefaultTransformer {
           if (!tables.isEmpty()) {
             int numTables = tables.size();
             String dataFilename = fileArea.getFile().getFileName();
-            File dataFile = new File(target.getParent(), dataFilename);
+            String base = "";
+            if (!dataFileBasePath.isEmpty()) {
+              base = dataFileBasePath;
+            } else {
+              base = target.getParent();
+            }
+            File dataFile = new File(base, dataFilename);
             for (int i = 0; i < numTables; i++) {
               File outputFile = null;
               if (objectAccess.getTableObjects(fileArea).size() > 1) {
@@ -244,6 +263,10 @@ public class Pds4TableTransformer extends DefaultTransformer {
     if ("csv".equals(format.toLowerCase())) {
       this.format = OutputFormat.CSV;
     }
+  }
+  
+  public void setDataFileBasePath(String base) {
+    this.dataFileBasePath = new File(base).getAbsolutePath();
   }
 
   /**

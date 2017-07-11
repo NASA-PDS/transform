@@ -21,7 +21,7 @@
   #else
      <title>$title</title>
   #end
-     <information_model_version>1.6.0.0</information_model_version>
+     <information_model_version>$generate.model_version</information_model_version>
      <product_class>Product_Observational</product_class>
      <Modification_History>
        <Modification_Detail>
@@ -102,143 +102,76 @@
     </Target_Identification>
   </Observation_Area>
   #set( $objectNames = $label.getPDSObjectNames() )
-  #set( $validTypes = ".*IMAGE|.*TABLE|.*SERIES|.*SPREADSHEET" )
-  #foreach( $objectName in $objectNames )
-    #if ( $objectName.matches($validTypes) && !$objectName.endsWith("PDS4_IMAGE") )
-    <File_Area_Observational>
-    #set ( $value = $label.get("PTR_$objectName").toString() )
-    #set ( $value = $value.replaceAll("[\(\)]","") )
-    #set ( $pointer = [] )
-    #foreach ( $element in $value.split(",") )
+  
+  ## Group the objects by data file name
+  #set ($ptrObjectMap = {})
+  #createPtrToObjectMap ($objectNames $label $ptrObjectMap)
+  
+  #foreach( $key in $ptrObjectMap.keySet() )
+  <File_Area_Observational>
+    <File>
+      <file_name>$key</file_name>
+    </File>
+    #set ($objectNames = $ptrObjectMap.get($key))
+    #foreach( $objectName in $objectNames )
+      #set ( $value = $label.get("PTR_$objectName").toString() )
+      #set ( $value = $value.replaceAll("[\(\)]","") )
+      #set ( $pointer = [] )
+      #foreach ( $element in $value.split(",") )
         #if ($pointer.add($element))
         #end
-    #end
-    #if ( $pointer.size() == 2 )
-      #set ( $dataFile = $pointer[0].toLowerCase() )
-      #if ( $pointer[1].contains("<BYTES>") )
-        #set ( $dataFileOffset = $pointer[1].split(" ")[0] )
-      #else
-        #set( $Integer = 0 )
-        #set ( $offset = $Integer.parseInt($pointer[1].trim()) - 1 )
-        #set ( $dataFileOffset = $offset * $Integer.parseInt($label.RECORD_BYTES.trim()) )
       #end
-    #elseif ( $pointer.size() == 0 )
-
-    #else
-      #if ( !$pointer[0].trim().matches("\d+") )
-        #set ( $dataFile = $pointer[0] )
-        #set ( $dataFileOffset = 0 )
-      #else
-        #set( $Integer = 0 )
-        #if ( $pointer[0].contains("<BYTES>") )
-          #set ( $dataFileOffset = $pointer[0].split(" ")[0] )
+   
+      #if ( $pointer.size() == 2 )
+        #set ( $dataFile = $pointer[0].toLowerCase() )
+        #if ( $pointer[1].contains("<BYTES>") )
+          #set ( $dataFileOffset = $pointer[1].split(" ")[0] )
         #else
-          #set ( $offset = $Integer.parseInt($pointer[0].trim()) - 1 )
+          #set( $Integer = 0 )
+          #set ( $offset = $Integer.parseInt($pointer[1].trim()) - 1 )
           #set ( $dataFileOffset = $offset * $Integer.parseInt($label.RECORD_BYTES.trim()) )
-          #set ( $dataFile = $FilenameUtils.getBaseName($generate.file_name.toString()).concat(".xml") )
+        #end
+      #elseif ( $pointer.size() == 0 )
+      
+      #else
+        #if ( !$pointer[0].trim().matches("\d+") )
+          #set ( $dataFile = $pointer[0] )
+          #set ( $dataFileOffset = 0 )
+        #else
+          #set( $Integer = 0 )
+          #if ( $pointer[0].contains("<BYTES>") )
+            #set ( $dataFileOffset = $pointer[0].split(" ")[0] )
+          #else
+            #set ( $offset = $Integer.parseInt($pointer[0].trim()) - 1 )
+            #set ( $dataFileOffset = $offset * $Integer.parseInt($label.RECORD_BYTES.trim()) )
+            #set ( $dataFile = $FilenameUtils.getBaseName($generate.file_name.toString()).concat(".xml") )
+          #end
         #end
       #end
-    #end
-      <File>
-        <file_name>$dataFile</file_name>
-      </File>
       #set ( $object = $label.get($objectName) )
       #if ( $objectName.endsWith("IMAGE") )
-      <Array_2D_Image>
-        <offset unit="byte">$dataFileOffset</offset>
-        <axes>2</axes>
-        <axis_index_order>Last Index Fastest</axis_index_order>
-        <Element_Array>
-        #if ( $object.SAMPLE_TYPE == "MSB_INTEGER" || $object.SAMPLE_TYPE == "INTEGER" || $object.SAMPLE_TYPE == "SUN_INTEGER" || $object.SAMPLE_TYPE == "MAC_INTEGER" )
-          #if ( $object.SAMPLE_BITS == "8" )
-          <data_type>SignedByte</data_type>
-          #elseif ( $object.SAMPLE_BITS == "16" )
-          <data_type>SignedMSB2</data_type>
-          #elseif ( $object.SAMPLE_BITS == "32" )
-          <data_type>SignedMSB4</data_type>
-          #end
-        #elseif ( $object.SAMPLE_TYPE == "MSB_UNSIGNED_INTEGER" || $object.SAMPLE_TYPE == "SUN_UNSIGNED_INTEGER" || $object.SAMPLE_TYPE == "MAC_UNSIGNED_INTEGER" || $object.SAMPLE_TYPE == "UNSIGNED_INTEGER" )
-          #if ( $object.SAMPLE_BITS == "8" )
-          <data_type>UnsignedByte</data_type>
-          #elseif ( $object.SAMPLE_BITS == "16" )
-          <data_type>UnsignedMSB2</data_type>
-          #elseif ( $object.SAMPLE_BITS == "32" )
-          <data_type>UnsignedMSB4</data_type>
-          #end
-        #elseif ( $object.SAMPLE_TYPE == "LSB_INTEGER" || $object.SAMPLE_TYPE == "PC_INTEGER" || $object.SAMPLE_TYPE == "VAX_INTEGER" )
-          #if ( $object.SAMPLE_BITS == "8" )
-          <data_type>SignedByte</data_type>
-          #elseif ( $object.SAMPLE_BITS == "16" )
-          <data_type>SignedLSB2</data_type>
-          #elseif ( $object.SAMPLE_BITS == "32" )
-          <data_type>SignedLSB4</data_type>
-          #end
-        #elseif ( $object.SAMPLE_TYPE == "LSB_UNSIGNED_INTEGER" || $object.SAMPLE_TYPE == "PC_UNSIGNED_INTEGER" || $object.SAMPLE_TYPE == "VAX_UNSIGNED_INTEGER" )
-          #if ( $object.SAMPLE_BITS == "8" )
-          <data_type>UnsignedByte</data_type>
-          #elseif ( $object.SAMPLE_BITS == "16" )
-          <data_type>UnsignedLSB2</data_type>
-          #elseif ( $object.SAMPLE_BITS == "32" )
-          <data_type>UnsignedLSB4</data_type>
-          #end
-        #elseif ( $object.SAMPLE_TYPE == "IEEE_REAL" || $object.SAMPLE_TYPE == "FLOAT" || $object.SAMPLE_TYPE == "REAL" || $object.SAMPLE_TYPE == "MAC_REAL" || $object.SAMPLE_TYPE == "SUN_REAL" || $object.SAMPLE_TYPE == "VAX_REAL" || $object.SAMPLE_TYPE == "VAXG_REAL" || $object.SAMPLE_TYPE == "VAX_DOUBLE")
-          #if ( $object.SAMPLE_BITS == "4" )
-          <data_type>IEEE754MSBSingle</data_type>
-          #elseif ( $object.SAMPLE_BITS == "8" )
-          <data_type>IEEE754MSBDouble</data_type>
-          #end
-        #elseif ( $object.SAMPLE_TYPE == "PC_REAL" )
-          #if ( $object.SAMPLE_BITS == "4" )
-          <data_type>IEEE754LSBSingle</data_type>
-          #elseif ( $object.SAMPLE_BITS == "8" )
-          <data_type>IEEE754LSBDouble</data_type>
-          #end
-        #elseif ( $object.SAMPLE_TYPE == "PC_COMPLEX" )
-          #if ( $object.SAMPLE_BITS == "8" )
-          <data_type>ComplexLSB8</data_type>
-          #elseif ( $object.SAMPLE_BITS == "16" )
-          <data_type>ComplexLSB16</data_type>
-          #end
-        #elseif ( $object.SAMPLE_TYPE == "VAX_COMPLEX" || $object.SAMPLE_TYPE == "VAXG_COMPLEX" )
-          #if ( $object.SAMPLE_BITS == "8" )
-          <data_type>ComplexMSB8</data_type>
-          #elseif ( $object.SAMPLE_BITS == "16" )
-          <data_type>ComplexMSB16</data_type>
-          #end
-        #elseif ( $object.SAMPLE_TYPE == "MSB_BIT_STRING" || $object.SAMPLE_TYPE == "LSB_BIT_STRING" || $object.SAMPLE_TYPE == "VAX_BIT_STRING" )
-          <data_type>UnsignedBitString</data_type>
-          #end
-        </Element_Array>
-        <Axis_Array>
-          <axis_name>Line</axis_name>
-          <elements>$object.LINES</elements>
-          <sequence_number>1</sequence_number>
-        </Axis_Array>
-        <Axis_Array>
-          <axis_name>Sample</axis_name>
-          <elements>$object.LINE_SAMPLES</elements>
-          <sequence_number>2</sequence_number>
-        </Axis_Array>
-      </Array_2D_Image>
+        #mapImage($object $dataFileOffset)
       #elseif ( $objectName.endsWith("TABLE") || $objectName.endsWith("SERIES") )
         #if ( $object.INTERCHANGE_FORMAT == "ASCII" )
-            #set ( $tableType = "Table_Character" )
+          #set ( $tableType = "Table_Character" )
         #else
-            #set ( $tableType = "Table_Binary" )
+          #set ( $tableType = "Table_Binary" )
         #end
       <$tableType>
         <offset unit="byte">$dataFileOffset</offset>
         <records>$object.ROWS</records>
-      #if ($tableType.equals("Table_Character"))
+        #if ($tableType.equals("Table_Character"))
         <record_delimiter>Carriage-Return Line-Feed</record_delimiter>
-        #set ($recordType = "Record_Character")
-        #set ($fieldType = "Field_Character")
-        #set ($groupType = "Group_Field_Character")
-      #else
-        #set ($recordType = "Record_Binary")
-        #set ($fieldType = "Field_Binary")
-        #set ($groupType = "Group_Field_Binary")
-      #end
+          #set ($recordType = "Record_Character")
+          #set ($fieldType = "Field_Character")
+          #set ($groupType = "Group_Field_Character")
+        #else
+          #set ($recordType = "Record_Binary")
+          #set ($fieldType = "Field_Binary")
+          #set ($groupType = "Group_Field_Binary")
+        #end
+      
+        #set ($totalGroups = 0)
         <$recordType>
         <fields>$object.COLUMNS</fields>
         #set( $value = false )
@@ -249,15 +182,12 @@
           #else
             #set ( $containers = [$value] )
           #end
-        <groups>$containers.size()</groups>
+          #set( $Integer = 0 )
+          #set ( $totalGroups = $containers.size() + $totalGroups )
         #else
           #set ( $containers = [] )
-        <groups>0</groups>
         #end
-        <record_length unit="byte">$object.ROW_BYTES</record_length>
-
-        #mapContainers($containers $fieldType)
-
+        
         #set( $value = false )
         #set ( $value = $object.COLUMN )
         #if ( $!{value} )
@@ -269,9 +199,52 @@
         #else
           #set ( $columns = [] )
         #end
+        
+        #foreach ( $column in $columns )
+          #set ( $items = false )
+          #set ( $value = false )
+          #set ($Integer = 0)
+          #set ( $value = $column.ITEMS )
+          #if ( $!{value} )
+            #set( $items = $Integer.parseInt($value.toString()) )
+          #end
+          #if ( $items > 1 )
+            #set( $Integer = 0 )
+            #set ( $totalGroups = $totalGroups + 1 )
+          #end
+        #end
+        <groups>$totalGroups</groups>
+        #set ( $rowBytes = 0 )
+        #set ( $rowBytes = $object.ROW_BYTES.toString().trim() )
+        #if ( $object.ROW_PREFIX_BYTES )
+          #set ( $rowBytes = $Integer.parseInt($object.ROW_PREFIX_BYTES.toString().trim()) + $Integer.parseInt($rowBytes) )
+        #end
+        #if ( $object.ROW_SUFFIX_BYTES )
+          #set ( $rowBytes = $Integer.parseInt($object.ROW_SUFFIX_BYTES.toString().trim()) + $Integer.parseInt($rowBytes) )
+        #end
+        <record_length unit="byte">$rowBytes</record_length>
+        
         #set ( $index = 0 )
-        #mapColumns($columns, $fieldType)
-
+        #set ( $childObjects = false)
+        #set ( $value = false )
+        #set ( $value = $object.getChildObjects() )
+        #if ( $!{value} )
+          #if ( $value.class.name.contains("List") )
+            #set ( $childObjects = $value )
+          #else
+            #set ( $childObjects = [$value] )
+          #end
+        #else
+          #set ( $childObjects = [] )  
+        #end
+        
+        #foreach ( $childObject in $childObjects )
+          #if ( $childObject.getName().equals("COLUMN") )
+            #mapColumn($childObject, $fieldType, $groupType)
+          #elseif ( $childObject.getName().equals("CONTAINER") )
+            #mapContainer($childObject, $fieldType, $groupType)
+          #end
+        #end        
         </$recordType>
       </$tableType>
       #elseif ( $objectName.endsWith("SPREADSHEET") )
@@ -284,36 +257,37 @@
         <Record_Delimited>
           <fields>$object.FIELDS</fields>
           <groups>0</groups>
-          #set( $value = false )
-          #set ( $value = $object.get("FIELD") )
-          #if ( $!{value} )
-            #if ( $value.class.name.contains("List") )
-              #set ( $fields = $value )
-            #else
-              #set ( $fields = [$value] )
-            #end
+        #set( $value = false )
+        #set ( $value = $object.get("FIELD") )
+        #if ( $!{value} )
+          #if ( $value.class.name.contains("List") )
+            #set ( $fields = $value )
           #else
-            #set ($fields = [] )
+            #set ( $fields = [$value] )
           #end
-          #foreach ( $field in $fields )
+        #else
+          #set ($fields = [] )
+        #end
+        #foreach ( $field in $fields )
           <Field_Delimited>
             <name>$field.NAME.toString().toLowerCase()</name>
             #getDataType($field "Field_Delimited")
             <maximum_field_length unit="byte">$field.BYTES</maximum_field_length>
           </Field_Delimited>
-          #end
+        #end
         </Record_Delimited>
       </Table_Delimited>
       #end
-    </File_Area_Observational>
     #end
-#end
+  </File_Area_Observational>       
+  #end
 </Product_Observational>
 
-#macro( mapContainers $containers $fieldType )
+#macro( mapContainers $containers $fieldType $groupType )
   #foreach ( $container in $containers )
   <$groupType>
     <repetitions>$container.REPETITIONS</repetitions>
+    #set ($totalGroups = 0)
     #set( $value = false )
     #set ( $value = $container.COLUMN )
     #if ( $!{value} )
@@ -332,30 +306,146 @@
     #set ( $value = $container.CONTAINER )
     #if ( $!{value} )
       #if ( $value.class.name.contains("List") )
-        #set ( $containers = $value )
+        #set ( $subContainers = $value )
       #else
-        #set ( $containers = [$value] )
+        #set ( $subContainers = [$value] )
       #end
-      <groups>$containers.size()</groups>
-    #else
-      #set ( $containers = [] )
-      <groups>0</groups>
+      #set( $Integer = 0 )
+      #set ( $totalGroups = $subContainers.size() + $totalGroups )
     #end
+         
+    #foreach ( $column in $columns )
+      #set ( $items = false )
+      #set ( $value = false )
+      #set ($Integer = 0)
+      #set ( $value = $column.ITEMS )
+      #if ( $!{value} )
+        #set( $items = $Integer.parseInt($value.toString()) )
+      #end
+      #if ( $items > 1 )
+        #set( $Integer = 0 )
+        #set ( $totalGroups = $totalGroups + 1 )
+      #end
+    #end
+
+    <groups>$totalGroups</groups>
+    
+    
     <group_location unit="byte">$container.START_BYTE</group_location>
-    <group_length unit="byte">$container.BYTES</group_length>
-    #mapColumns($columns $fieldType)
-    #mapContainers($containers $fieldType)
+    #set ( $value = false )
+    #set ( $Integer = 0 )
+    #set ( $value = $Integer.parseInt($container.BYTES.toString()) * $Integer.parseInt($container.REPETITIONS.toString()) )
+    <group_length unit="byte">$value</group_length>
+    #mapColumns($columns $fieldType $groupType)   
+    #mapContainers($subContainers $fieldType $groupType)
+
   </$groupType>
   #end
 #end
 
+#macro( mapContainer $container $fieldType $groupType )
+  <$groupType>
+    <repetitions>$container.REPETITIONS</repetitions>
+    #set ($totalGroups = 0)
+    #set( $value = false )
+    #set ( $value = $container.COLUMN )
+    #if ( $!{value} )
+      #if ( $value.class.name.contains("List") )
+        #set ( $columns = $value )
+      #else
+        #set ( $columns = [$value] )
+      #end
+      <fields>$columns.size()</fields>
+    #else
+      #set ( $columns = [] )
+      <fields>0</fields>
+    #end
 
-#macro( mapColumns $columns $fieldType )
+    #set( $value = false )
+    #set ( $value = $container.CONTAINER )
+    #if ( $!{value} )
+      #if ( $value.class.name.contains("List") )
+        #set ( $subContainers = $value )
+      #else
+        #set ( $subContainers = [$value] )
+      #end
+      #set( $Integer = 0 )
+      #set ( $totalGroups = $subContainers.size() + $totalGroups )
+    #end
+         
+    #foreach ( $column in $columns )
+      #set ( $items = false )
+      #set ( $value = false )
+      #set ($Integer = 0)
+      #set ( $value = $column.ITEMS )
+      #if ( $!{value} )
+        #set( $items = $Integer.parseInt($value.toString()) )
+      #end
+      #if ( $items > 1 )
+        #set( $Integer = 0 )
+        #set ( $totalGroups = $totalGroups + 1 )
+      #end
+    #end
+
+    <groups>$totalGroups</groups>
+    
+    
+    <group_location unit="byte">$container.START_BYTE</group_location>
+    #set ( $value = false )
+    #set ( $Integer = 0 )
+    #set ( $value = $Integer.parseInt($container.BYTES.toString()) * $Integer.parseInt($container.REPETITIONS.toString()) )
+    <group_length unit="byte">$value</group_length>
+    #mapColumns($columns $fieldType $groupType)   
+    #mapContainers($subContainers $fieldType $groupType)
+
+  </$groupType> 
+#end
+
+
+#macro( mapColumns $columns $fieldType $groupType)
   #foreach ( $column in $columns )
+    #set ( $items = false )
+    #set ( $value = false )
+    #set ($Integer = 0)
+    #set ( $value = $column.ITEMS )
+    #if ( $!{value} )
+      #set( $items = $Integer.parseInt($value.toString()) )
+    #end
+    #if ( $items > 1 )
+    <$groupType>
+      <group_length unit="byte">$column.BYTES</group_length>
+      <group_location unit="byte">$column.START_BYTE</group_location>
+      <groups>0</groups>
+      <repetitions>$column.ITEMS</repetitions>
+      <$fieldType>
+        <name>$column.NAME.toString().toLowerCase()</name>
+        <field_location unit="byte">1</field_location>
+        #getDataType ($column $fieldType $column.ITEM_BYTES)
+        <field_length unit="byte">$column.ITEM_BYTES</field_length>
+        #if ( $fieldType.equals("Field_Binary") )
+          #set( $value = false )
+          #set ( $value = $column.BIT_COLUMN )
+          #if ( $!{value} )
+            #if ( $value.class.name.contains("List") )
+              #set ( $bitColumns = $value )
+            #else
+              #set ( $bitColumns = [$value] )
+            #end
+        <Packed_Data_Fields>
+          <bit_fields>$bitColumns.size()</bit_fields>
+          #mapBitColumns($bitColumns $groupType)
+        </Packed_Data_Fields>
+          #else
+            #set ( $bitColumns = [] )
+          #end
+        #end
+      </$fieldType>
+    </$groupType>
+    #else
     <$fieldType>
       <name>$column.NAME.toString().toLowerCase()</name>
       <field_location unit="byte">$column.START_BYTE</field_location>
-      #getDataType ($column $fieldType)
+      #getDataType ($column $fieldType $column.BYTES)
       <field_length unit="byte">$column.BYTES</field_length>
       #if ( $fieldType.equals("Field_Binary") )
         #set( $value = false )
@@ -374,66 +464,140 @@
          #set ( $bitColumns = [] )
         #end
         #end
+    </$fieldType>
+    #end
+  #end
+#end
+
+#macro( mapColumn $column $fieldType $groupType)
+  #set ( $items = false )
+  #set ( $value = false )
+  #set ($Integer = 0)
+  #set ( $value = $column.ITEMS )
+  #if ( $!{value} )
+    #set( $items = $Integer.parseInt($value.toString()) )
+  #end
+  #if ( $items > 1 )
+  <$groupType>
+    <group_length unit="byte">$column.BYTES</group_length>
+    <group_location unit="byte">$column.START_BYTE</group_location>
+    <groups>0</groups>
+    <repetitions>$column.ITEMS</repetitions>
+    <$fieldType>
+      <name>$column.NAME.toString().toLowerCase()</name>
+      <field_location unit="byte">1</field_location>
+      #getDataType ($column $fieldType $column.ITEM_BYTES)
+      <field_length unit="byte">$column.ITEM_BYTES</field_length>
+      #if ( $fieldType.equals("Field_Binary") )
+        #set( $value = false )
+        #set ( $value = $column.BIT_COLUMN )
+        #if ( $!{value} )
+          #if ( $value.class.name.contains("List") )
+            #set ( $bitColumns = $value )
+          #else
+            #set ( $bitColumns = [$value] )
+          #end
+      <Packed_Data_Fields>
+        <bit_fields>$bitColumns.size()</bit_fields>
+        #mapBitColumns($bitColumns $groupType)
+      </Packed_Data_Fields>
+        #else
+          #set ( $bitColumns = [] )
+        #end
+      #end
+    </$fieldType>
+  </$groupType>
+  #else
+  <$fieldType>
+    <name>$column.NAME.toString().toLowerCase()</name>
+    <field_location unit="byte">$column.START_BYTE</field_location>
+    #getDataType ($column $fieldType $column.BYTES)
+    <field_length unit="byte">$column.BYTES</field_length>
+    #if ( $fieldType.equals("Field_Binary") )
+      #set( $value = false )
+      #set ( $value = $column.BIT_COLUMN )
+      #if ( $!{value} )
+        #if ( $value.class.name.contains("List") )
+          #set ( $bitColumns = $value )
+        #else
+          #set ( $bitColumns = [$value] )
+        #end
+        <Packed_Data_Fields>
+        <bit_fields>$bitColumns.size()</bit_fields>
+        #mapBitColumns($bitColumns)
+        </Packed_Data_Fields>
+      #else
+        #set ( $bitColumns = [] )
+      #end
+    #end
   </$fieldType>
   #end
 #end
 
-#macro( getDataType $column $fieldType )
+#macro( getDataType $column $fieldType $bytes)
   #if ( $fieldType.equals("Field_Binary") )
     #if ( $column.DATA_TYPE == "MSB_INTEGER" || $column.DATA_TYPE == "INTEGER" || $column.DATA_TYPE == "SUN_INTEGER" || $column.DATA_TYPE == "MAC_INTEGER" )
-      #if ( $column.BYTES == "1" )
+      #if ( $bytes == "1" )
       <data_type>SignedByte</data_type>
-      #elseif ( $column.BYTES == "2" )
+      #elseif ( $bytes == "2" )
       <data_type>SignedMSB2</data_type>
-      #elseif ( $column.BYTES == "4" )
+      #elseif ( $bytes == "4" )
       <data_type>SignedMSB4</data_type>
+      #elseif ( $bytes == "8" )
+      <data_type>SignedMSB8</data_type>
       #end
     #elseif ( $column.DATA_TYPE == "MSB_UNSIGNED_INTEGER" || $column.DATA_TYPE == "SUN_UNSIGNED_INTEGER" || $column.DATA_TYPE == "MAC_UNSIGNED_INTEGER" || $column.DATA_TYPE == "UNSIGNED_INTEGER" )
-      #if ( $column.BYTES == "1" )
+      #if ( $bytes == "1" )
       <data_type>UnsignedByte</data_type>
-      #elseif ( $column.BYTES == "2" )
+      #elseif ( $bytes == "2" )
       <data_type>UnsignedMSB2</data_type>
-      #elseif ( $column.BYTES == "4" )
+      #elseif ( $bytes == "4" )
       <data_type>UnsignedMSB4</data_type>
+      #elseif ( $bytes == "8" )
+      <data_type>UnsignedMSB8</data_type>
       #end
     #elseif ( $column.DATA_TYPE == "LSB_INTEGER" || $column.DATA_TYPE == "PC_INTEGER" || $column.DATA_TYPE == "VAX_INTEGER" )
-      #if ( $column.BYTES == "1" )
+      #if ( $bytes == "1" )
       <data_type>SignedByte</data_type>
-      #elseif ( $column.BYTES == "2" )
+      #elseif ( $bytes == "2" )
       <data_type>SignedLSB2</data_type>
-      #elseif ( $column.BYTES == "4" )
+      #elseif ( $bytes == "4" )
       <data_type>SignedLSB4</data_type>
+      #elseif ( $bytes == "8" )
+      <data_type>SignedLSB8</data_type>
       #end
     #elseif ( $column.DATA_TYPE == "LSB_UNSIGNED_INTEGER" || $column.DATA_TYPE == "PC_UNSIGNED_INTEGER" || $column.DATA_TYPE == "VAX_UNSIGNED_INTEGER" )
-      #if ( $column.BYTES == "1" )
+      #if ( $bytes == "1" )
       <data_type>UnsignedByte</data_type>
-      #elseif ( $column.BYTES == "2" )
+      #elseif ( $bytes == "2" )
       <data_type>UnsignedLSB2</data_type>
-      #elseif ( $column.BYTES == "4" )
+      #elseif ( $bytes == "4" )
       <data_type>UnsignedLSB4</data_type>
+      #elseif ( $bytes == "8" )
+      <data_type>UnsignedLSB8</data_type>      
       #end
     #elseif ( $column.DATA_TYPE == "IEEE_REAL" || $column.DATA_TYPE == "FLOAT" || $column.DATA_TYPE == "REAL" || $column.DATA_TYPE == "MAC_REAL" || $column.DATA_TYPE == "SUN_REAL" || $column.DATA_TYPE == "VAX_REAL" || $column.DATA_TYPE == "VAXG_REAL" || $column.DATA_TYPE == "VAX_DOUBLE")
-      #if ( $column.BYTES == "1" )
+      #if ( $bytes == "4" )
       <data_type>IEEE754MSBSingle</data_type>
-      #elseif ( $column.BYTES == "2" )
+      #elseif ( $bytes == "8" )
       <data_type>IEEE754MSBDouble</data_type>
       #end
     #elseif ( $column.DATA_TYPE == "PC_REAL" )
-      #if ( $column.BYTES == "1" )
+      #if ( $bytes == "4" )
       <data_type>IEEE754LSBSingle</data_type>
-      #elseif ( $column.BYTES == "2" )
+      #elseif ( $bytes == "8" )
       <data_type>IEEE754LSBDouble</data_type>
       #end
     #elseif ( $column.DATA_TYPE == "PC_COMPLEX" )
-      #if ( $column.BYTES == "1" )
+      #if ( $bytes == "1" )
       <data_type>ComplexLSB8</data_type>
-      #elseif ( $column.BYTES == "2" )
+      #elseif ( $bytes == "2" )
       <data_type>ComplexLSB16</data_type>
       #end
     #elseif ( $column.DATA_TYPE == "COMPLEX" || $column.DATA_TYPE == "MAC_COMPLEX" || $column.DATA_TYPE == "SUN_COMPLEX" || $column.DATA_TYPE == "VAX_COMPLEX" || $column.DATA_TYPE == "VAXG_COMPLEX" )
-      #if ( $column.BYTES == "1" )
+      #if ( $bytes == "1" )
       <data_type>ComplexMSB8</data_type>
-      #elseif ( $column.BYTES == "2" )
+      #elseif ( $bytes == "2" )
       <data_type>ComplexMSB16</data_type>
       #end
     #end
@@ -448,22 +612,22 @@
   #elseif ($column.DATA_TYPE == "DATE" )
     <data_type>ASCII_Date_Time_YMD_UTC</data_type>
   #elseif ( $column.DATA_TYPE == "BOOLEAN" )
-    <data_type>ASCII_Boolean</data_type>
-  #elseif ( $column.DATA_TYPE == "ASCII_REAL" )
+    <data_type>UnsignedByte</data_type>
+  #elseif ( $column.DATA_TYPE == "ASCII_REAL" || $column.DATA_TYPE == "ASCII REAL")
     <data_type>ASCII_Real</data_type>
-  #elseif ( $column.DATA_TYPE == "ASCII_INTEGER" )
+  #elseif ( $column.DATA_TYPE == "ASCII_INTEGER"|| $column.DATA_TYPE == "ASCII INTEGER" || $column.DATA_TYPE == "INTEGER")
     <data_type>ASCII_Integer</data_type>
   #end
 
 #end
 
-#macro( mapBitColumns $bitColumns )
+#macro( mapBitColumns $bitColumns $groupType)
   #foreach ( $bitColumn in $bitColumns )
   <Field_Bit>
     <name>$bitColumn.NAME.toString().toLowerCase()</name>
     <start_bit>$bitColumn.START_BIT</start_bit>
     #set( $Integer = 0 )
-    #set ( $stopBit = $Integer.parseInt($bitColumn.START_BIT.toString()) + $Integer.parseInt($bitColumn.BITS.toString()) )
+    #set ( $stopBit = $Integer.parseInt($bitColumn.START_BIT.toString()) + $Integer.parseInt($bitColumn.BITS.toString()) - 1 )
     <stop_bit>$stopBit</stop_bit>
     #if ( $bitColumn.BIT_DATA_TYPE.toString().contains("UNSIGNED") )
       <data_type>UnsignedBitString</data_type>
@@ -472,4 +636,133 @@
     #end
   </Field_Bit>
   #end
+#end
+
+#macro( createPtrToObjectMap $objectNames $label $ptrObjectMap )
+  #set( $validTypes = ".*IMAGE|.*TABLE|.*SERIES|.*SPREADSHEET" )
+  #foreach( $objectName in $objectNames )
+    #if ( $objectName.matches($validTypes) && !$objectName.endsWith("PDS4_IMAGE") )
+      #set ( $value = $label.get("PTR_$objectName").toString() )
+      #set ( $value = $value.replaceAll("[\(\)]","") )
+      #set ( $pointer = [] )
+      #foreach ( $element in $value.split(",") )
+        #if ($pointer.add($element))
+        #end
+      #end
+    
+      #if ( $pointer.size() == 2 )
+        #set ( $dataFile = $pointer[0].toLowerCase() )
+        #if ( $pointer[1].contains("<BYTES>") )
+          #set ( $dataFileOffset = $pointer[1].split(" ")[0] )
+        #else
+          #set( $Integer = 0 )
+          #set ( $offset = $Integer.parseInt($pointer[1].trim()) - 1 )
+          #set ( $dataFileOffset = $offset * $Integer.parseInt($label.RECORD_BYTES.trim()) )
+        #end
+      #elseif ( $pointer.size() == 0 )
+    
+      #else
+        #if ( !$pointer[0].trim().matches("\d+") )
+          #set ( $dataFile = $pointer[0] )
+          #set ( $dataFileOffset = 0 )
+        #else
+          #set( $Integer = 0 )
+          #if ( $pointer[0].contains("<BYTES>") )
+            #set ( $dataFileOffset = $pointer[0].split(" ")[0] )
+          #else
+            #set ( $offset = $Integer.parseInt($pointer[0].trim()) - 1 )
+            #set ( $dataFileOffset = $offset * $Integer.parseInt($label.RECORD_BYTES.trim()) )
+            #set ( $dataFile = $FilenameUtils.getBaseName($generate.file_name.toString()).concat(".xml") )
+          #end
+        #end
+      #end
+      #set ( $mapValue = $ptrObjectMap.get($dataFile) )
+      #if ( $!{mapValue} )
+        #set ( $swallow = $mapValue.add($objectName) )
+      #else
+        #set ($list = [])
+        #set ( $swallow = $list.add($objectName) )
+        $!ptrObjectMap.put($dataFile, $list)
+      #end
+    #end
+  #end
+#end
+
+#macro( mapImage $object $dataFileOffset)
+  <Array_2D_Image>
+    <offset unit="byte">$dataFileOffset</offset>
+    <axes>2</axes>
+    <axis_index_order>Last Index Fastest</axis_index_order>
+    <Element_Array>
+    #if ( $object.SAMPLE_TYPE == "MSB_INTEGER" || $object.SAMPLE_TYPE == "INTEGER" || $object.SAMPLE_TYPE == "SUN_INTEGER" || $object.SAMPLE_TYPE == "MAC_INTEGER" )
+      #if ( $object.SAMPLE_BITS == "8" )
+      <data_type>SignedByte</data_type>
+      #elseif ( $object.SAMPLE_BITS == "16" )
+      <data_type>SignedMSB2</data_type>
+      #elseif ( $object.SAMPLE_BITS == "32" )
+      <data_type>SignedMSB4</data_type>
+      #end
+    #elseif ( $object.SAMPLE_TYPE == "MSB_UNSIGNED_INTEGER" || $object.SAMPLE_TYPE == "SUN_UNSIGNED_INTEGER" || $object.SAMPLE_TYPE == "MAC_UNSIGNED_INTEGER" || $object.SAMPLE_TYPE == "UNSIGNED_INTEGER" )
+      #if ( $object.SAMPLE_BITS == "8" )
+      <data_type>UnsignedByte</data_type>
+      #elseif ( $object.SAMPLE_BITS == "16" )
+      <data_type>UnsignedMSB2</data_type>
+      #elseif ( $object.SAMPLE_BITS == "32" )
+      <data_type>UnsignedMSB4</data_type>
+      #end
+    #elseif ( $object.SAMPLE_TYPE == "LSB_INTEGER" || $object.SAMPLE_TYPE == "PC_INTEGER" || $object.SAMPLE_TYPE == "VAX_INTEGER" )
+      #if ( $object.SAMPLE_BITS == "8" )
+      <data_type>SignedByte</data_type>
+      #elseif ( $object.SAMPLE_BITS == "16" )
+      <data_type>SignedLSB2</data_type>
+      #elseif ( $object.SAMPLE_BITS == "32" )
+      <data_type>SignedLSB4</data_type>
+      #end
+    #elseif ( $object.SAMPLE_TYPE == "LSB_UNSIGNED_INTEGER" || $object.SAMPLE_TYPE == "PC_UNSIGNED_INTEGER" || $object.SAMPLE_TYPE == "VAX_UNSIGNED_INTEGER" )
+      #if ( $object.SAMPLE_BITS == "8" )
+      <data_type>UnsignedByte</data_type>
+      #elseif ( $object.SAMPLE_BITS == "16" )
+      <data_type>UnsignedLSB2</data_type>
+      #elseif ( $object.SAMPLE_BITS == "32" )
+      <data_type>UnsignedLSB4</data_type>
+      #end
+    #elseif ( $object.SAMPLE_TYPE == "IEEE_REAL" || $object.SAMPLE_TYPE == "FLOAT" || $object.SAMPLE_TYPE == "REAL" || $object.SAMPLE_TYPE == "MAC_REAL" || $object.SAMPLE_TYPE == "SUN_REAL" || $object.SAMPLE_TYPE == "VAX_REAL" || $object.SAMPLE_TYPE == "VAXG_REAL" || $object.SAMPLE_TYPE == "VAX_DOUBLE")
+      #if ( $object.SAMPLE_BITS == "4" )
+      <data_type>IEEE754MSBSingle</data_type>
+      #elseif ( $object.SAMPLE_BITS == "8" )
+      <data_type>IEEE754MSBDouble</data_type>
+      #end
+    #elseif ( $object.SAMPLE_TYPE == "PC_REAL" )
+      #if ( $object.SAMPLE_BITS == "4" )
+      <data_type>IEEE754LSBSingle</data_type>
+      #elseif ( $object.SAMPLE_BITS == "8" )
+      <data_type>IEEE754LSBDouble</data_type>
+      #end
+    #elseif ( $object.SAMPLE_TYPE == "PC_COMPLEX" )
+      #if ( $object.SAMPLE_BITS == "8" )
+      <data_type>ComplexLSB8</data_type>
+      #elseif ( $object.SAMPLE_BITS == "16" )
+      <data_type>ComplexLSB16</data_type>
+      #end
+    #elseif ( $object.SAMPLE_TYPE == "VAX_COMPLEX" || $object.SAMPLE_TYPE == "VAXG_COMPLEX" )
+      #if ( $object.SAMPLE_BITS == "8" )
+      <data_type>ComplexMSB8</data_type>
+      #elseif ( $object.SAMPLE_BITS == "16" )
+      <data_type>ComplexMSB16</data_type>
+      #end
+    #elseif ( $object.SAMPLE_TYPE == "MSB_BIT_STRING" || $object.SAMPLE_TYPE == "LSB_BIT_STRING" || $object.SAMPLE_TYPE == "VAX_BIT_STRING" )
+      <data_type>UnsignedBitString</data_type>
+    #end
+    </Element_Array>
+    <Axis_Array>
+      <axis_name>Line</axis_name>
+      <elements>$object.LINES</elements>
+      <sequence_number>1</sequence_number>
+    </Axis_Array>
+    <Axis_Array>
+      <axis_name>Sample</axis_name>
+      <elements>$object.LINE_SAMPLES</elements>
+      <sequence_number>2</sequence_number>
+    </Axis_Array>
+  </Array_2D_Image>
 #end
