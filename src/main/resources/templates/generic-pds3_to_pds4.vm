@@ -651,9 +651,8 @@
         #if ($pointer.add($element))
         #end
       #end
-    
       #if ( $pointer.size() == 2 )
-        #set ( $dataFile = $pointer[0].toLowerCase() )
+        #set ( $dataFile = $pointer[0] )
         #if ( $pointer[1].contains("<BYTES>") )
           #set ( $dataFileOffset = $pointer[1].split(" ")[0] )
         #else
@@ -678,6 +677,7 @@
           #end
         #end
       #end
+      #set ( $mapValue = false )
       #set ( $mapValue = $ptrObjectMap.get($dataFile) )
       #if ( $!{mapValue} )
         #set ( $swallow = $mapValue.add($objectName) )
