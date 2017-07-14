@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="https://pds.nasa.gov/pds4/pds/v1/PDS4_PDS_${model-version}.sch"
+  schematypens="http://purl.oclc.org/dsdl/schematron"?>
 <Product_Observational xmlns="http://pds.nasa.gov/pds4/pds/v1"
     xmlns:pds="http://pds.nasa.gov/pds4/pds/v1"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="">
+    xsi:schemaLocation="http://pds.nasa.gov/pds4/pds/v1 https://pds.nasa.gov/pds4/pds/v1/PDS4_PDS_${model-version}.xsd">
 
     <Identification_Area>
         #if ( $label.PRODUCT_ID )
