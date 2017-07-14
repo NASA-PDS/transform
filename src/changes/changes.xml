@@ -25,7 +25,10 @@
   <body>
     <release version="1.6.0" date="TBD" description="TBD">
       <action dev="mcayanan" type="update" issue="PDS-505">
-        Update PDS4 label transformations to the latest model.
+        Update PDS4 label transformations to the latest model. Inherited from generate.
+      </action>
+      action dev="mcayanan" type="update" issue="PDS-505">
+        Update PDS4 label transformations to include the xml-model statement as well as a populated xsi:schemaLocation field that references the latest schema.
       </action>
       <action dev="mcayanan" type="add" issue="PDS-506">
         Add support for transforming PDS3 tables to CSV.
