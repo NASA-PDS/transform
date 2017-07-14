@@ -1,0 +1,62 @@
+PDS_VERSION_ID               = PDS3                                           
+INTERCHANGE_FORMAT           = ASCII                                          
+RECORD_TYPE                  = FIXED_LENGTH                                   
+RECORD_BYTES                 = 195                                            
+FILE_RECORDS                 = 269                                            
+DATA_SET_ID                  = "ODY-M-MAR-2-REDR-RAW-DATA-V1.0"               
+MISSION_PHASE_NAME           = "MAPPING"                                      
+SPACECRAFT_NAME              = "2001 MARS ODYSSEY"                            
+START_TIME                   = 2002-06-24T00:23:01.21Z                        
+STOP_TIME                    = 2002-06-25T00:40:01.72Z                        
+SPACECRAFT_CLOCK_START_COUNT = "UNK"                                          
+SPACECRAFT_CLOCK_STOP_COUNT  = "UNK"                                          
+INSTRUMENT_ID                = "MARIE"                                        
+INSTRUMENT_NAME              = "MARTIAN RADIATION ENVIRONMENT EXPERIMENT"     
+PRODUCT_ID                   = "PWR02176_01.TAB"                              
+PRODUCT_TYPE                 = "ANCILLARY"                                    
+ORIGINAL_PRODUCT_ID          = "N/A"                                          
+FILE_NAME                    = "PWR02176_01.TAB"                              
+NOTE                         = "Ancillary data from the MARIE                 
+      instrument on the 2001 Mars Odyssey spacecraft.  Power                  
+      consumption of circuits in the instrument."                             
+DESCRIPTION                  = "                                              
+      This data file contains ancillary data from the Martian Radiation       
+      Environment Experiment (MARIE) on the 2001 Mars Odyssey                 
+      spacecraft.  MARIE is a radiation measuring instrument that             
+      counts particles in the energy range 15 MeV to 500 MeV/n.               
+                                                                              
+      This data file contains values of the power consumption by              
+      various circuits on the MARIE instrument, in ASCII format.              
+      The file consists of an attached header (1 line) followed by            
+      a data table.  In each row of the data table, the first two             
+      columns represent UTC time, the third column represents Julian          
+      time, and the rest of the columns contain values of the                 
+      power consumption.  Further information on the columns is               
+      provided in the STRUCTURE file referenced below."                       
+                                                                              
+^TABLE_HEADER                = ("PWR02176_01.TAB", 1)                         
+^TABLE                       = ("PWR02176_01.TAB", 2)                         
+OBJECT                       = TABLE_HEADER                                   
+   BYTES                        = 'N/A'                                       
+   RECORDS                      = 1                                           
+    PUBLICATION_DATE             = 2002-01-10                                 
+    NOTE                         = "The first record of this                  
+      file makes up the header.  The header includes column headings          
+      for the data table.  This line ends with a carriage return/             
+      line feed terminator (<CR><LF>)."                                       
+END_OBJECT                   = TABLE_HEADER                                           
+                                                                              
+OBJECT                       = TABLE                                          
+    NAME                         = POWER                                      
+    INTERCHANGE_FORMAT           = ASCII                                      
+    ROWS                         = 268                                        
+    ROW_BYTES                    = 195                                        
+    COLUMNS                      = 11                                         
+    DESCRIPTION                  = "                                          
+The power consumption readings are stored in an ASCII table                   
+structure that immediately follows the attached header.  This file            
+contains rows of time-tagged sets of power values."                           
+    ^STRUCTURE                   = "PWR.FMT"                                  
+END_OBJECT                   = TABLE                                          
+                                                                              
+END                                                                           
