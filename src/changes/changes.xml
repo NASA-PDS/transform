@@ -24,6 +24,9 @@
 
   <body>
     <release version="1.6.0" date="TBD" description="TBD">
+      <action dev="mcayanan" type="update" issue="PDS-505">
+        Update PDS4 label transformations to the latest model.
+      </action>
       <action dev="mcayanan" type="add" issue="PDS-506">
         Add support for transforming PDS3 tables to CSV.
       </action>
