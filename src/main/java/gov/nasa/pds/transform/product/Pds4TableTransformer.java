@@ -182,7 +182,6 @@ public class Pds4TableTransformer extends DefaultTransformer {
           throw new TransformException("Cannot open output file \'"
               + outputFile.toString() + "': " + io.getMessage());
         } catch (Exception e) {
-          e.printStackTrace();
           throw new TransformException(
               "Error occurred while reading table '" + index
               + "' of file '" + dataFile.toString() + "': "
@@ -277,6 +276,9 @@ public class Pds4TableTransformer extends DefaultTransformer {
    */
   private void extractTable(TableReader reader) throws TransformException {
     FieldDescription[] fields = reader.getFields();
+    if (fields.length == 0) {
+      throw new TransformException("No fields found in the table.");
+    }
     int[] displayFields = getSelectedFields(fields);
 
     int[] fieldLengths = getFieldLengths(fields, displayFields);

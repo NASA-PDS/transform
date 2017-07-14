@@ -48,10 +48,11 @@
           <tr><td>20140804T205944Z_MAP_bias_V001.xml</td><td>PDS4 data product label of a FITS image.</td><td>jpg, gif, jp2, tif, png, pnm, pvl, html, html-structure-only</td></tr>
           <tr><td>BA03S183.IMG</td><td>PDS3 attached label of a 16-bit image.</td><td>jpg, gif, jp2, tif, png, pnm</td></tr>
           <tr><td>C000M5232T493378259EDR_F0000_0134M1.xml</td><td>PDS4 data product label of an Array 3D Image.</td><td>jpg, gif, jp2, tif, png, pnm, pvl, html, html-structure-only</td></tr>
-          <tr><td>ELE_MOM.LBL</td><td>PDS3 data product label.</td><td>pds4-label, csv</td></tr>
+          <tr><td>ELE_MOM.LBL</td><td>PDS3 label of an ascii character table.</td><td>pds4-label, csv</td></tr>
           <tr><td>FF01.LBL</td><td>PDS3 data product label of an 8-bit image.</td><td>jpg, gif, jp2, tif, png, pnm</td></tr>
           <tr><td>FHA01118.LBL</td><td>PDS3 attached label of an 8-bit image.</td><td>jpg, gif, jp2, tif, png, pnm</td></tr>
           <tr><td>N1727539187_1.LBL</td><td>PDS3 data product label of a 16-bit image.</td><td>pds</td></tr>
+          <tr><td>PWR02176_01.LBL</td><td>PDS3 label of an ascii character table. Table object includes a ^STRUCTURE pointer to a set of column objects.</td><td>pds4-label, csv</td></tr>
           <tr><td>Product_Table_Binary.xml</td><td>PDS4 data product label of a binary table.</td><td>csv, html, html-structure-only</td></tr>
           <tr><td>Product_Table_Character.xml</td><td>PDS4 data product label of a character table.</td><td>csv, html, html-structure-only</td></tr>
           <tr><td>Product_Table_Delimited.xml</td><td>PDS4 data product label of a delimited table.</td><td>csv, html, html-structure-only</td></tr>
@@ -82,15 +83,29 @@
       
       <p><b><i>Transform a table</i></b></p>
       
-      <p>The command below shows to do a PDS4 table to CSV transformation:
+      <p>The command below shows how to do a PDS4 table to CSV transformation:
       </p>
       
       <source>
 %> transform ../examples/Product_Table_Character.xml -f csv
       </source>
       
-      <p>Note that table transformations only applies to PDS4 data products.
+      <p>The command below shows how to do a PDS3 table to CSV transformation:
       </p>
+      
+      <source>
+%> transform ../examples/ELE_MOM.LBL -f csv       
+      </source>
+      
+      <p>For PDS3 table to CSV transformations, a PDS3 to PDS4 label transformation is performed first. The resulting PDS4 label is then used as the basis for transforming the table data to CSV.
+      </p>
+      
+      <p>If the PDS3 table contains a ^STRUCTURE pointer, then the <i>-I</i> flag option can be used if the label fragment is not co-located with the label. This flag option tell the tool where to look for label fragments. The following command demonstrates transforming a PDS3 table to CSV, where the PDS3 label references a label fragment that is not co-located with the label:
+      </p>
+      
+      <source>
+%> transform ../examples/PWR02176_01.LBL -I ../examples/LABEL
+      </source>
       
     </section>
 

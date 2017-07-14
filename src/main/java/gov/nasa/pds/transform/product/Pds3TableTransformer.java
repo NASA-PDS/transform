@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import gov.nasa.pds.transform.TransformException;
+import gov.nasa.pds.transform.logging.ToolsLevel;
+import gov.nasa.pds.transform.logging.ToolsLogRecord;
 
 /**
  * Class that supports PDS3 table transformations.
@@ -53,8 +55,11 @@ public class Pds3TableTransformer extends DefaultTransformer {
       outputFile = tableTransformer.transform(pds4Label, outputDir, format, 
           dataFile, index);
     } catch (TransformException te) {
-      throw new TransformException("Error occurred while transforming table: "
-          + te.getMessage());
+      log.log(new ToolsLogRecord(ToolsLevel.SEVERE, 
+          "Error occurred while transforming table: " + te.getMessage(),
+          pds4Label));
+      throw new TransformException("Unsuccessful table transformation. "
+          + "Check transformed PDS4 label for possible errors.");
     }
     return outputFile;
   }
@@ -68,8 +73,11 @@ public class Pds3TableTransformer extends DefaultTransformer {
       tableTransformer.setDataFileBasePath(target.getParent());
       outputFiles = tableTransformer.transformAll(pds4Label, outputDir, format);
     } catch (TransformException te) {
-      throw new TransformException("Error occurred while transforming tables: "
-          + te.getMessage());
+      log.log(new ToolsLogRecord(ToolsLevel.SEVERE, 
+          "Error occurred while transforming table: " + te.getMessage(),
+          pds4Label));
+      throw new TransformException("Unsuccessful table transformation. "
+          + "Check transformed PDS4 label for possible errors.");
     }
     return outputFiles;
   }
