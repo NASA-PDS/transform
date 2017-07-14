@@ -100,7 +100,7 @@
       <p>For PDS3 table to CSV transformations, a PDS3 to PDS4 label transformation is performed first. The resulting PDS4 label is then used as the basis for transforming the table data to CSV.
       </p>
       
-      <p>If the PDS3 table contains a ^STRUCTURE pointer, then the <i>-I</i> flag option can be used if the label fragment is not co-located with the label. This flag option tell the tool where to look for label fragments. The following command demonstrates transforming a PDS3 table to CSV, where the PDS3 label references a label fragment that is not co-located with the label:
+      <p>If the PDS3 table contains a ^STRUCTURE pointer, then the <i>-I</i> flag option can be used if the label fragment is not co-located with the label. This flag option tells the tool where to look for label fragments. The following command demonstrates transforming a PDS3 table to CSV, where the PDS3 label references a label fragment that is not co-located with the label:
       </p>
       
       <source>
