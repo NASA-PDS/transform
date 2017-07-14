@@ -673,7 +673,7 @@
           #else
             #set ( $offset = $Integer.parseInt($pointer[0].trim()) - 1 )
             #set ( $dataFileOffset = $offset * $Integer.parseInt($label.RECORD_BYTES.trim()) )
-            #set ( $dataFile = $FilenameUtils.getBaseName($generate.file_name.toString()).concat(".xml") )
+            #set ( $dataFile = $generate.file_name.toString() )
           #end
         #end
       #end

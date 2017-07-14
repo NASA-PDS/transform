@@ -50,7 +50,7 @@
           <tr><td>C000M5232T493378259EDR_F0000_0134M1.xml</td><td>PDS4 data product label of an Array 3D Image.</td><td>jpg, gif, jp2, tif, png, pnm, pvl, html, html-structure-only</td></tr>
           <tr><td>ELE_MOM.LBL</td><td>PDS3 label of an ascii character table.</td><td>pds4-label, csv</td></tr>
           <tr><td>FF01.LBL</td><td>PDS3 data product label of an 8-bit image.</td><td>jpg, gif, jp2, tif, png, pnm</td></tr>
-          <tr><td>FHA01118.LBL</td><td>PDS3 attached label of an 8-bit image.</td><td>jpg, gif, jp2, tif, png, pnm</td></tr>
+          <tr><td>FHA01118.IMG</td><td>PDS3 attached label of an 8-bit image.</td><td>jpg, gif, jp2, tif, png, pnm</td></tr>
           <tr><td>N1727539187_1.LBL</td><td>PDS3 data product label of a 16-bit image.</td><td>pds</td></tr>
           <tr><td>PWR02176_01.LBL</td><td>PDS3 label of an ascii character table. Table object includes a ^STRUCTURE pointer to a set of column objects.</td><td>pds4-label, csv</td></tr>
           <tr><td>Product_Table_Binary.xml</td><td>PDS4 data product label of a binary table.</td><td>csv, html, html-structure-only</td></tr>
@@ -220,11 +220,11 @@
 
         <p><b><i>Transform a Single 8-Bit PDS3 Image</i></b></p>
 
-        <p>The following command demonstrates transforming a PDS3, 8-bit image referenced in the associated attached label, <i>FHA01118.LBL</i>, into a gif image file named <i>FHA01118.gif</i>:
+        <p>The following command demonstrates transforming a PDS3, 8-bit image referenced in the associated attached label, <i>FHA01118.IMG</i>, into a gif image file named <i>FHA01118.gif</i>:
         </p>
 
         <source>
-% transform ../examples/FHA01118.LBL -f gif
+% transform ../examples/FHA01118.IMG -f gif
         </source>
 
         <p>The following command demonstrates transforming a PDS3, 8-bit image referenced in the associated detached label, <i>FF01.LBL</i>, into a portable network graphics file named <i>FF01.png</i>:
