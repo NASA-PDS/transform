@@ -31,6 +31,7 @@ import gov.nasa.pds.tools.label.Label;
 import gov.nasa.pds.tools.label.ManualPathResolver;
 import gov.nasa.pds.tools.label.parser.DefaultLabelParser;
 import gov.nasa.pds.tools.util.MessageUtils;
+import gov.nasa.pds.transform.TransformLauncher;
 import gov.nasa.pds.transform.constants.Constants;
 
 import java.io.BufferedReader;
@@ -49,6 +50,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 import nom.tam.fits.BasicHDU;
 import nom.tam.fits.Fits;
@@ -252,6 +254,7 @@ public class Utility {
         engine.getTemplate("/gov/nasa/pds/transform/util/" + templateName));
     generator.setContext();
     generator.getContext().put("FilenameUtils", FilenameUtils.class);
+    generator.getContext().put("log", Logger.getLogger(Utility.class.getName()));
     generator.generate(false);
   }
 

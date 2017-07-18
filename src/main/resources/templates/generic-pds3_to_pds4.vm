@@ -442,6 +442,9 @@
       <data_type>SignedMSB4</data_type>
       #elseif ( $bytes == "8" )
       <data_type>SignedMSB8</data_type>
+      #else
+      <data_type>Unknown</data_type>
+      $log.severe("Could not map a $bytes byte, $column.DATA_TYPE type to its equivalent PDS4 type for column '$column.NAME.toString()'. Setting 'data_type' element to 'Unknown'.")
       #end
     #elseif ( $column.DATA_TYPE == "MSB_UNSIGNED_INTEGER" || $column.DATA_TYPE == "SUN_UNSIGNED_INTEGER" || $column.DATA_TYPE == "MAC_UNSIGNED_INTEGER" || $column.DATA_TYPE == "UNSIGNED_INTEGER" )
       #if ( $bytes == "1" )
@@ -452,6 +455,9 @@
       <data_type>UnsignedMSB4</data_type>
       #elseif ( $bytes == "8" )
       <data_type>UnsignedMSB8</data_type>
+      #else
+      <data_type>Unknown</data_type>
+      $log.severe("Could not map a $bytes byte, $column.DATA_TYPE type to its equivalent PDS4 type for column '$column.NAME.toString()'. Setting 'data_type' element to 'Unknown'.")
       #end
     #elseif ( $column.DATA_TYPE == "LSB_INTEGER" || $column.DATA_TYPE == "PC_INTEGER" || $column.DATA_TYPE == "VAX_INTEGER" )
       #if ( $bytes == "1" )
@@ -462,6 +468,9 @@
       <data_type>SignedLSB4</data_type>
       #elseif ( $bytes == "8" )
       <data_type>SignedLSB8</data_type>
+      #else
+      <data_type>Unknown</data_type>
+      $log.severe("Could not map a $bytes byte, $column.DATA_TYPE type to its equivalent PDS4 type for column '$column.NAME.toString()'. Setting 'data_type' element to 'Unknown'.")  
       #end
     #elseif ( $column.DATA_TYPE == "LSB_UNSIGNED_INTEGER" || $column.DATA_TYPE == "PC_UNSIGNED_INTEGER" || $column.DATA_TYPE == "VAX_UNSIGNED_INTEGER" )
       #if ( $bytes == "1" )
@@ -471,49 +480,80 @@
       #elseif ( $bytes == "4" )
       <data_type>UnsignedLSB4</data_type>
       #elseif ( $bytes == "8" )
-      <data_type>UnsignedLSB8</data_type>      
+      <data_type>UnsignedLSB8</data_type>
+      #else
+      <data_type>Unknown</data_type>
+      $log.severe("Could not map a $bytes byte, $column.DATA_TYPE type to its equivalent PDS4 type for column '$column.NAME.toString()'. Setting 'data_type' element to 'Unknown'.")
       #end
     #elseif ( $column.DATA_TYPE == "IEEE_REAL" || $column.DATA_TYPE == "FLOAT" || $column.DATA_TYPE == "REAL" || $column.DATA_TYPE == "MAC_REAL" || $column.DATA_TYPE == "SUN_REAL" || $column.DATA_TYPE == "VAX_REAL" || $column.DATA_TYPE == "VAXG_REAL" || $column.DATA_TYPE == "VAX_DOUBLE")
       #if ( $bytes == "4" )
       <data_type>IEEE754MSBSingle</data_type>
       #elseif ( $bytes == "8" )
       <data_type>IEEE754MSBDouble</data_type>
+      #else
+      <data_type>Unknown</data_type>
+      $log.severe("Could not map a $bytes byte, $column.DATA_TYPE type to its equivalent PDS4 type for column '$column.NAME.toString()'. Setting 'data_type' element to 'Unknown'.") 
       #end
     #elseif ( $column.DATA_TYPE == "PC_REAL" )
       #if ( $bytes == "4" )
       <data_type>IEEE754LSBSingle</data_type>
       #elseif ( $bytes == "8" )
       <data_type>IEEE754LSBDouble</data_type>
+      #else
+      <data_type>Unknown</data_type>
+      $log.severe("Could not map a $bytes byte, $column.DATA_TYPE type to its equivalent PDS4 type for column '$column.NAME.toString()'. Setting 'data_type' element to 'Unknown'.")
       #end
     #elseif ( $column.DATA_TYPE == "PC_COMPLEX" )
       #if ( $bytes == "1" )
       <data_type>ComplexLSB8</data_type>
       #elseif ( $bytes == "2" )
       <data_type>ComplexLSB16</data_type>
+      #else
+      <data_type>Unknown</data_type>
+      $log.severe("Could not map a $bytes byte, $column.DATA_TYPE type to its equivalent PDS4 type for column '$column.NAME.toString()'. Setting 'data_type' element to 'Unknown'.")
       #end
     #elseif ( $column.DATA_TYPE == "COMPLEX" || $column.DATA_TYPE == "MAC_COMPLEX" || $column.DATA_TYPE == "SUN_COMPLEX" || $column.DATA_TYPE == "VAX_COMPLEX" || $column.DATA_TYPE == "VAXG_COMPLEX" )
       #if ( $bytes == "1" )
       <data_type>ComplexMSB8</data_type>
       #elseif ( $bytes == "2" )
       <data_type>ComplexMSB16</data_type>
+      #else
+      <data_type>Unknown</data_type>
+      $log.severe("Could not map a $bytes byte, $column.DATA_TYPE type to its equivalent PDS4 type for column '$column.NAME.toString()'. Setting 'data_type' element to 'Unknown'.")
       #end
+    #elseif ( $column.DATA_TYPE == "MSB_BIT_STRING" || $column.DATA_TYPE == "LSB_BIT_STRING" || $column.DATA_TYPE == "VAX_BIT_STRING" || $column.DATA_TYPE == "BCD" || $column.DATA_TYPE == "BINARY_CODED_DECIMAL" || $column.DATA_TYPE == "BINARY CODED DECIMAL")
+      <data_type>SignedBitString</data_type>
+    #elseif ( $column.DATA_TYPE == "CHARACTER" )
+      <data_type>ASCII_String</data_type>
+    #elseif ($column.DATA_TYPE == "TIME" )
+      <data_type>ASCII_Date_Time_YMD_UTC</data_type>
+    #elseif ($column.DATA_TYPE == "DATE" )
+      <data_type>ASCII_Date_Time_YMD_UTC</data_type>
+    #elseif ( $column.DATA_TYPE == "BOOLEAN" )
+      <data_type>UnsignedByte</data_type>
+    #else
+      <data_type>Unknown</data_type>
+      $log.severe("Could not map a $bytes byte, $column.DATA_TYPE type to its equivalent PDS4 type for column '$column.NAME.toString()'. Setting 'data_type' element to 'Unknown'.")
     #end
-  #end
-
-  #if ( $column.DATA_TYPE == "MSB_BIT_STRING" || $column.DATA_TYPE == "LSB_BIT_STRING" || $column.DATA_TYPE == "VAX_BIT_STRING" )
+  #else
+    #if ( $column.DATA_TYPE == "MSB_BIT_STRING" || $column.DATA_TYPE == "LSB_BIT_STRING" || $column.DATA_TYPE == "VAX_BIT_STRING" )
     <data_type>SignedBitString</data_type>
-  #elseif ( $column.DATA_TYPE == "CHARACTER" )
+    #elseif ( $column.DATA_TYPE == "CHARACTER" )
     <data_type>ASCII_String</data_type>
-  #elseif ($column.DATA_TYPE == "TIME" )
+    #elseif ($column.DATA_TYPE == "TIME" )
     <data_type>ASCII_Date_Time_YMD_UTC</data_type>
-  #elseif ($column.DATA_TYPE == "DATE" )
+    #elseif ($column.DATA_TYPE == "DATE" )
     <data_type>ASCII_Date_Time_YMD_UTC</data_type>
-  #elseif ( $column.DATA_TYPE == "BOOLEAN" )
+    #elseif ( $column.DATA_TYPE == "BOOLEAN" )
     <data_type>UnsignedByte</data_type>
-  #elseif ( $column.DATA_TYPE == "ASCII_REAL" || $column.DATA_TYPE == "ASCII REAL")
+    #elseif ( $column.DATA_TYPE == "ASCII_REAL" || $column.DATA_TYPE == "ASCII REAL")
     <data_type>ASCII_Real</data_type>
-  #elseif ( $column.DATA_TYPE == "ASCII_INTEGER"|| $column.DATA_TYPE == "ASCII INTEGER" || $column.DATA_TYPE == "INTEGER")
+    #elseif ( $column.DATA_TYPE == "ASCII_INTEGER"|| $column.DATA_TYPE == "ASCII INTEGER" || $column.DATA_TYPE == "INTEGER")
     <data_type>ASCII_Integer</data_type>
+    #else
+    <data_type>Unknown</data_type>
+      $log.severe("Could not map a $column.DATA_TYPE type to its equivalent PDS4 type for column '$column.NAME.toString()'. Setting 'data_type' element to 'Unknown'.")
+    #end  
   #end
 
 #end

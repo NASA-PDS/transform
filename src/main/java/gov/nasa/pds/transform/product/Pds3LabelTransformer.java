@@ -57,12 +57,11 @@ public class Pds3LabelTransformer extends DefaultTransformer {
     try {
       Utility.generate(target, outputFile, "generic-pds3_to_pds4.vm", includePaths);
     } catch (Exception e) {
-      e.printStackTrace();
       throw new TransformException("Error occurred while generating "
           + "PDS4 label: " + e.getMessage());
     }
     log.log(new ToolsLogRecord(ToolsLevel.INFO,
-        "Successfully transformed PDS3 label '" + target
+        "Finished transforming PDS3 label '" + target
         + "' to a PDS4 label '" + outputFile + "'", target));
     return outputFile;
   }
