@@ -31,7 +31,6 @@ import gov.nasa.pds.tools.label.Label;
 import gov.nasa.pds.tools.label.ManualPathResolver;
 import gov.nasa.pds.tools.label.parser.DefaultLabelParser;
 import gov.nasa.pds.tools.util.MessageUtils;
-import gov.nasa.pds.transform.TransformLauncher;
 import gov.nasa.pds.transform.constants.Constants;
 
 import java.io.BufferedReader;
@@ -165,6 +164,9 @@ public class Utility {
     } else if ("pds4-label".equals(format)) {
       fileExtension = "xml";
       baseFilename = baseFilename.toLowerCase();
+    } else if ("pds3-label".equals(format)) {
+      fileExtension = "LBL";
+      baseFilename = baseFilename.toUpperCase();
     }
     if (index != -1) {
       baseFilename += "_" + index;
@@ -330,11 +332,13 @@ public class Utility {
     DisciplineArea disciplineArea = null;
     List<DisplaySettings> displaySettings = new ArrayList<DisplaySettings>();
     try {
-      disciplineArea = product.getObservationArea().getDisciplineArea();
-      if (disciplineArea != null) {
-        for (Object object : disciplineArea.getAnies()) {
-          if (object instanceof DisplaySettings) {
-            displaySettings.add((DisplaySettings) object);
+      if (product.getObservationArea() != null) {
+        disciplineArea = product.getObservationArea().getDisciplineArea();
+        if (disciplineArea != null) {
+          for (Object object : disciplineArea.getAnies()) {
+            if (object instanceof DisplaySettings) {
+              displaySettings.add((DisplaySettings) object);
+            }
           }
         }
       }

@@ -219,7 +219,7 @@ public class TransformLauncher {
     this.targets.clear();
     while (targets.remove(""));
     for (String t : targets) {
-      this.targets.add(new File(t));
+      this.targets.add(new File(t).getAbsoluteFile());
     }
   }
   
@@ -338,8 +338,12 @@ public class TransformLauncher {
       log.log(new ToolsLogRecord(ToolsLevel.CONFIGURATION,
           "Selected Bands              " + bands.toString()));
     }
+    if (!includePaths.isEmpty()) {
+      log.log(new ToolsLogRecord(ToolsLevel.CONFIGURATION,
+        "Include Paths                  " + includePaths.toString()));
+    } 
     log.log(new ToolsLogRecord(ToolsLevel.CONFIGURATION,
-        "Format Type                 " + formatType + "\n"));
+        "Format Type                 " + formatType + "\n"));   
   }
 
   /**
@@ -409,6 +413,7 @@ public class TransformLauncher {
         doTransformation();
       }
     } catch (Exception e) {
+      e.printStackTrace();
       System.err.println(e.getMessage());
       System.exit(1);
     }

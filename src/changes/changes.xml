@@ -33,6 +33,9 @@
       <action dev="mcayanan" type="add" issue="PDS-506">
         Add support for transforming PDS3 tables to CSV.
       </action>
+      <action dev="mcayanan" type="add" issue="PDS-507">
+        Add initial support for transforming a PDS4 label to a PDS3 label.
+      </action>
       <action dev="mcayanan" type="update">
         Support PDS3 labels with ^STRUCTURE pointers when performing PDS3 to PDS4 label transformations. Inherited from generate.
       </action>

@@ -33,6 +33,7 @@
         <li><a href="#Command-Line Options">Command-Line Options</a></li>
         <li><a href="#Advanced_Usage">Advanced Usage</a></li>
         <li><a href="#PDS3_to_PDS4_Label_Transformation">PDS3 to PDS4 Label Transformation</a></li>
+        <li><a href="#PDS4_to_PDS3_Label_Transformation">PDS4 to PDS3 Label Transformation</a></li>
         <li><a href="#Known_Issues">Known Issues</a></li>
       </ul>
 
@@ -45,21 +46,21 @@
         
         <table>
           <tr><th>Target Input</th><th>Description</th><th>Valid Format Types</th></tr>
-          <tr><td>20140804T205944Z_MAP_bias_V001.xml</td><td>PDS4 data product label of a FITS image.</td><td>jpg, gif, jp2, tif, png, pnm, pvl, html, html-structure-only</td></tr>
+          <tr><td>20140804T205944Z_MAP_bias_V001.xml</td><td>PDS4 data product label of a FITS image.</td><td>jpg, gif, jp2, tif, png, pnm, pvl, html, html-structure-only, pds3-label</td></tr>
           <tr><td>BA03S183.IMG</td><td>PDS3 attached label of a 16-bit image.</td><td>jpg, gif, jp2, tif, png, pnm</td></tr>
-          <tr><td>C000M5232T493378259EDR_F0000_0134M1.xml</td><td>PDS4 data product label of an Array 3D Image.</td><td>jpg, gif, jp2, tif, png, pnm, pvl, html, html-structure-only</td></tr>
+          <tr><td>C000M5232T493378259EDR_F0000_0134M1.xml</td><td>PDS4 data product label of an Array 3D Image.</td><td>jpg, gif, jp2, tif, png, pnm, pvl, html, html-structure-only, pds3-label</td></tr>
           <tr><td>ELE_MOM.LBL</td><td>PDS3 label of an ascii character table.</td><td>pds4-label, csv</td></tr>
           <tr><td>FF01.LBL</td><td>PDS3 data product label of an 8-bit image.</td><td>jpg, gif, jp2, tif, png, pnm</td></tr>
           <tr><td>FHA01118.IMG</td><td>PDS3 attached label of an 8-bit image.</td><td>jpg, gif, jp2, tif, png, pnm</td></tr>
-          <tr><td>N1727539187_1.LBL</td><td>PDS3 data product label of a 16-bit image.</td><td>pds</td></tr>
+          <tr><td>N1727539187_1.LBL</td><td>PDS3 data product label of a 16-bit image.</td><td>pds, pds4-label</td></tr>
           <tr><td>PWR02176_01.LBL</td><td>PDS3 label of an ascii character table. Table object includes a ^STRUCTURE pointer to a set of column objects.</td><td>pds4-label, csv</td></tr>
-          <tr><td>Product_Table_Binary.xml</td><td>PDS4 data product label of a binary table.</td><td>csv, html, html-structure-only</td></tr>
-          <tr><td>Product_Table_Character.xml</td><td>PDS4 data product label of a character table.</td><td>csv, html, html-structure-only</td></tr>
-          <tr><td>Product_Table_Delimited.xml</td><td>PDS4 data product label of a delimited table.</td><td>csv, html, html-structure-only</td></tr>
-          <tr><td>Product_Table_Multiple_Datafiles.xml</td><td>PDS4 data product label that references multiple table data files.</td><td>csv, html, html-structure-only</td></tr>
-          <tr><td>Product_Table_Multiple_Tables.xml</td><td>PDS4 data product label containing multiple table objects.</td><td>csv, html, html-structure-only</td></tr>
-          <tr><td>b0090_p243401_01_01v02.xml</td><td>PDS4 data product label containing an Array 3D Specturm object followed by multiple Array 2D Image objects.</td><td>jpg, gif, jp2, tif, png, pnm, pvl, html, html-structure-only</td></tr>
-          <tr><td>i943630r.xml</td><td>PDS4 data product label of an Array 2D Image.</td><td>jpg, gif, jp2, tif, png, pnm, pvl, html, html-structure-only</td></tr>
+          <tr><td>Product_Table_Binary.xml</td><td>PDS4 data product label of a binary table.</td><td>csv, html, html-structure-only, pds3-label</td></tr>
+          <tr><td>Product_Table_Character.xml</td><td>PDS4 data product label of a character table.</td><td>csv, html, html-structure-only, pds3-label</td></tr>
+          <tr><td>Product_Table_Delimited.xml</td><td>PDS4 data product label of a delimited table.</td><td>csv, html, html-structure-only, pds3-label</td></tr>
+          <tr><td>Product_Table_Multiple_Datafiles.xml</td><td>PDS4 data product label that references multiple table data files.</td><td>csv, html, html-structure-only, pds3-label</td></tr>
+          <tr><td>Product_Table_Multiple_Tables.xml</td><td>PDS4 data product label containing multiple table objects.</td><td>csv, html, html-structure-only, pds3-label</td></tr>
+          <tr><td>b0090_p243401_01_01v02.xml</td><td>PDS4 data product label containing an Array 3D Specturm object followed by multiple Array 2D Image objects.</td><td>jpg, gif, jp2, tif, png, pnm, pvl, html, html-structure-only, pds3-label</td></tr>
+          <tr><td>i943630r.xml</td><td>PDS4 data product label of an Array 2D Image.</td><td>jpg, gif, jp2, tif, png, pnm, pvl, html, html-structure-only, pds3-label</td></tr>
         </table>
         
       </subsection>
@@ -150,6 +151,7 @@
           <tr><td>pvl</td><td>Transform a given PDS4 label into a Parameter Value Language file.</td></tr>
           <tr><td>html</td><td>Transform a given PDS4 label into an html representation of the label.</td></tr>
           <tr><td>html-structure-only</td><td>Transform a given PDS4 label into an html representation of the label structure. As a result, the element contents are stripped out in the resulting file.</td></tr>
+          <tr><td>pds3-label</td><td>Transform a given PDS4 label into a PDS3 label. Please see the <a href="#PDS4_to_PDS3_Label_Transformation">PDS4 to PDS3 Label Transformation</a> section for more details on how the tool performs a PDS3 to PDS4 label transformation.</td></tr>
         </table>
         
         <p>The following table lists the output formats available to only PDS3 target inputs:
@@ -584,6 +586,43 @@ urn:nasa:pds:data:${DATA_SET_ID}:${labelFilename}
       </subsection>
     </section>
 
+    <section name="PDS4 to PDS3 Label Transformation">
+      <p>The intent of the PDS4 to PDS3 label transformation is to provide a capability where the resulting product could be read into a tool that supports PDS3 (e.g., VTool, NASAView, etc.). Therefore, the tool will only transform the minimum set needed in order to be compliant with PDS3 standards. This section details how the Transform tool populates some of the required elements of a PDS3 label. Please see the <a href="#Known_Issues">Known Issues</a> section for details on the limitations with PDS4 to PDS3 label transformations.
+      </p>
+      
+      <subsection name="Naming Convention of PDS3 Objects">
+        <p>In order to support multiple table and image objects in a label, the tool uses the following naming convention for objects:
+        </p>
+        
+        <source>
+ TRANSFORM&lt;int value&gt;_&lt;object type&gt;
+        </source>
+        
+        <p>where <i>int value</i> represents an integer value and <i>object type</i> represents the type of object (e.g. IMAGE, TABLE, SPREADSHEET). As an example, if a PDS4 label contains multiple table objects, then the objects will have the following names:
+        </p>
+        
+        <ul>
+          <li>TRANSFORM1_TABLE</li>
+          <li>TRANSFORM2_TABLE</li>
+          <li>TRANSFORM3_TABLE</li>
+          <li>...</li>
+        </ul>
+      </subsection>
+      
+      <subsection name="Populating PDS3 Objects">
+        <p>Mapping from a PDS4 object to its PDS3 equivalent is mostly a straightforward process. However, it has been discovered that there are some non-required elements of a PDS4 object that are found to be required for its PDS3 equivalent object. This section details what those inconsistencies are and what the tool does to populate those required attributes.
+        </p>
+        
+        <p><b><i>Delimited Tables</i></b></p>
+        
+        <p>For PDS4 Delimited Tables, if the <i>Record_Delimited</i> area is missing the optional <i>maximum_record_length</i> element, the tool will default to populating the required <i>ROW_BYTES</i> attribute to <i>10000</i> in the equivalent PDS3 <i>SPREADSHEET</i> object. Furthermore, if a <i>Field_Delimited</i> area is missing its optional <i>maximum_field_length</i> element, then the tool will default to populating the required <i>BYTES</i> attribute to <i>256</i> in the equivalent PDS3 <i>FIELD</i> object.
+        </p>
+        
+        <p>Mapping of <i>Group_Field_Delimited</i> elements is not supported at this time as it is missing elements needed to calculate the required <i>BYTES</i> attribute value for a PDS3 <i>CONTAINER</i> object.
+        </p>
+      </subsection>
+    </section>
+
     <section name="Known Issues">
       <p>This section describes some of the known issues and limitations with the Transform Tool.
       </p>
@@ -652,9 +691,19 @@ Array data type is not valid, null, or unsupported
         <li>SPREADSHEET</li>
       </ul>
 
-      <p>QUBE objects are not supported by the tool at this time.
+      <p>Explicit FILE objects and QUBE objects are not supported by the tool at this time.
       </p>
 
+      <p><b><i>PDS4 to PDS3 Label Transformations</i></b></p>
+      
+      <p>At this time, the tool will not support label transformations where the PDS4 label contains the following:
+      </p>
+      
+      <ul>
+        <li>File references to multiple data files (e.g. multiple File_Area_Observational elements where each one contains a different file reference)</li>
+        <li><i>Group_Field_Delimited</i> elements</li>
+        <li>QUBE data files</li>
+      </ul>
     </section>
   </body>
 </document>

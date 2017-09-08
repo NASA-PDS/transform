@@ -73,6 +73,8 @@ public class ProductTransformerFactory {
           return new Pds4TableTransformer(overwrite);
         } else if (Constants.STYLESHEETS.containsKey(format)) {
           return new StylesheetTransformer(overwrite);
+        } else if ("pds3-label".equals(format)) {
+          return new Pds4LabelTransformer(overwrite);
         } else {
           return new Pds4ImageTransformer(overwrite);
         }

@@ -126,7 +126,7 @@
    
       #if ( $pointer.size() == 2 )
         #set ( $dataFile = $pointer[0].toLowerCase() )
-        #if ( $pointer[1].contains("<BYTES>") )
+        #if ( $pointer[1].contains("BYTES") )
           #set ( $dataFileOffset = $pointer[1].split(" ")[0] )
         #else
           #set( $Integer = 0 )
@@ -141,7 +141,7 @@
           #set ( $dataFileOffset = 0 )
         #else
           #set( $Integer = 0 )
-          #if ( $pointer[0].contains("<BYTES>") )
+          #if ( $pointer[0].contains("BYTES") )
             #set ( $dataFileOffset = $pointer[0].split(" ")[0] )
           #else
             #set ( $offset = $Integer.parseInt($pointer[0].trim()) - 1 )
@@ -588,7 +588,7 @@
       #end
       #if ( $pointer.size() == 2 )
         #set ( $dataFile = $pointer[0] )
-        #if ( $pointer[1].contains("<BYTES>") )
+        #if ( $pointer[1].contains("BYTES") )
           #set ( $dataFileOffset = $pointer[1].split(" ")[0] )
         #else
           #set( $Integer = 0 )
@@ -603,7 +603,7 @@
           #set ( $dataFileOffset = 0 )
         #else
           #set( $Integer = 0 )
-          #if ( $pointer[0].contains("<BYTES>") )
+          #if ( $pointer[0].contains("BYTES") )
             #set ( $dataFileOffset = $pointer[0].split(" ")[0] )
           #else
             #set ( $offset = $Integer.parseInt($pointer[0].trim()) - 1 )
@@ -626,9 +626,26 @@
 #end
 
 #macro( mapImage $object $dataFileOffset)
-  <Array_2D_Image>
+  #set ($type = "Array_2D_Image" )
+  #set ( $value = false )
+  #set ( $value = $object.BANDS.toString() )
+  #if ( $!{value} )
+    #set ( $bands = false )
+    #set ($Integer = 0)
+    #set ( $bands = $Integer.parseInt($value) )
+    #if ( $bands == 3 )
+      #set ( $type = "Array_3D_Image" )
+    #elseif ( $bands > 3 )
+      #set ( $type = "Array_3D_Spectrum" )
+    #end
+  #end
+  <$type>
     <offset unit="byte">$dataFileOffset</offset>
+    #if ( $type == "Array_2D_Image" )
     <axes>2</axes>
+    #else
+    <axes>3</axes>
+    #end
     <axis_index_order>Last Index Fastest</axis_index_order>
     <Element_Array>
     #if ( $object.SAMPLE_TYPE == "MSB_INTEGER" || $object.SAMPLE_TYPE == "INTEGER" || $object.SAMPLE_TYPE == "SUN_INTEGER" || $object.SAMPLE_TYPE == "MAC_INTEGER" )
@@ -691,6 +708,23 @@
       <data_type>UnsignedBitString</data_type>
     #end
     </Element_Array>
+    #if ( $type == "Array_3D_Spectrum" || $type == "Array_3D_Image" )
+    <Axis_Array>
+      <axis_name>Band</axis_name>
+      <elements>$bands</elements>
+      <sequence_number>1</sequence_number>
+    </Axis_Array>
+    <Axis_Array>
+      <axis_name>Line</axis_name>
+      <elements>$object.LINES</elements>
+      <sequence_number>2</sequence_number>
+    </Axis_Array>
+    <Axis_Array>
+      <axis_name>Sample</axis_name>
+      <elements>$object.LINE_SAMPLES</elements>
+      <sequence_number>3</sequence_number>
+    </Axis_Array>    
+    #else   
     <Axis_Array>
       <axis_name>Line</axis_name>
       <elements>$object.LINES</elements>
@@ -701,5 +735,6 @@
       <elements>$object.LINE_SAMPLES</elements>
       <sequence_number>2</sequence_number>
     </Axis_Array>
-  </Array_2D_Image>
+    #end
+  </$type>
 #end
