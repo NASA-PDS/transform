@@ -1,4 +1,4 @@
-// Copyright 2006-2015, by the California Institute of Technology.
+// Copyright 2006-2017, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship acknowledged.
 // Any commercial use must be negotiated with the Office of Technology Transfer
 // at the California Institute of Technology.
@@ -13,11 +13,11 @@
 // $Id$
 package gov.nasa.pds.transform.product;
 
-
 import gov.nasa.pds.transform.TransformException;
 import gov.nasa.pds.transform.TransformLauncher;
 import gov.nasa.pds.transform.logging.ToolsLevel;
 import gov.nasa.pds.transform.logging.ToolsLogRecord;
+import gov.nasa.pds.transform.util.Utility;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+import java.net.URL;
+import java.net.URISyntaxException;
 
 /**
  * Default implementation of the ProductTransformer interface.
@@ -75,38 +77,56 @@ public abstract class DefaultTransformer implements ProductTransformer {
     return result;
   }
 
+  @Override
+  public File transform(URL url, File outputDir, String format)
+		  throws TransformException, URISyntaxException, Exception {
+	  File result = null;
+	  try {
+		  result = transform(url, outputDir, format, "", 1);
+	  } catch (TransformException te) {
+		  log.log(new ToolsLogRecord(ToolsLevel.SEVERE, te.getMessage(), url.toString()));
+	  }
+	  return result;
+  }
+   
   public abstract File transform(File target, File outputDir, String format,
       String dataFile, int index) throws TransformException;
-
+  
+  public abstract File transform(URL url, File outputDir, String format,
+	      String dataFile, int index) throws TransformException, URISyntaxException, Exception;
+  
   @Override
-  public List<File> transform(List<File> targets, File outputDir, String format)
-      throws TransformException {
+  public List<File> transform(List<URL> targets, File outputDir, String format)
+      throws TransformException, URISyntaxException, Exception {
     List<File> results = new ArrayList<File>();
-    for (File target : targets) {
+    for (URL target : targets) {
       try {
         results.add(transform(target, outputDir, format));
       } catch (TransformException te) {
-        log.log(new ToolsLogRecord(ToolsLevel.SEVERE, te.getMessage(), target));
+        log.log(new ToolsLogRecord(ToolsLevel.SEVERE, te.getMessage(), target.toString()));
       }
     }
     return results;
   }
-
-
+  
   @Override
   public abstract List<File> transformAll(File target, File outputDir, String format)
   throws TransformException;
-
-  public List<File> transformAll(List<File> targets, File outputDir,
-      String format) throws TransformException {
-    List<File> results = new ArrayList<File>();
-    for (File target : targets) {
-      try {
-        results.addAll(transformAll(target, outputDir, format));
-      } catch (TransformException te) {
-        log.log(new ToolsLogRecord(ToolsLevel.SEVERE, te.getMessage(), target));
-      }
-    }
-    return results;
+ 
+  @Override
+  public abstract List<File> transformAll(URL url, File outputDir, String format)
+  throws TransformException, URISyntaxException, Exception;
+ 
+  public List<File> transformAll(List<URL> targets, File outputDir,
+		  String format) throws TransformException, URISyntaxException, Exception {
+	  List<File> results = new ArrayList<File>();
+	  for (URL target : targets) {
+		  try {
+			  results.addAll(transformAll(target, outputDir, format));
+		  } catch (TransformException te) {
+			  log.log(new ToolsLogRecord(ToolsLevel.SEVERE, te.getMessage(), target.toString()));
+		  }
+	  }
+	  return results;
   }
 }

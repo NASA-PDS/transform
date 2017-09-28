@@ -14,6 +14,8 @@
 package gov.nasa.pds.transform.product;
 
 import java.io.File;
+import java.net.URL;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -47,7 +49,7 @@ public class Pds3ImageTransformer extends DefaultTransformer {
   public Pds3ImageTransformer(boolean overwrite) {
     super(overwrite);
   }
-
+  
   public File transform(File target, File outputDir, String format,
       String dataFile, int index) throws TransformException {
     Label label = null;
@@ -89,6 +91,61 @@ public class Pds3ImageTransformer extends DefaultTransformer {
       process(target, imageFile, outputFile, format, index);
       return outputFile;
     }
+  }
+  
+  public File transform(URL url, File outputDir, String format, String dataFile, int index) 
+  throws TransformException, URISyntaxException, Exception {
+	  Label label = null;
+	  File target = null;  
+	  try {
+		  label = Utility.parsePds3Label(url);
+	  } catch (Exception e) {
+		  throw new TransformException(e.getMessage());
+	  }
+	  // Get Image Pointers
+	  Map<String, List<PointerStatement>> imagePtrs = getImagePointers(label);
+	  if (imagePtrs.isEmpty()) {
+		  throw new TransformException("No image objects found in the label.");
+	  }
+	  if (dataFile.isEmpty()) {
+		  for (String key : imagePtrs.keySet()) {
+			  dataFile = key;
+			  break;
+		  }
+	  } else {
+		  if (!imagePtrs.keySet().contains(dataFile)) {
+			  throw new TransformException("Cannot find data file '" + dataFile
+					  + "' in the label.");
+		  }
+	  }
+	  // Check to see that the given index is valid
+	  if ( index > imagePtrs.get(dataFile).size() ) {
+		  throw new TransformException("Image index '" + index
+				  + "' is greater than the max number of images found for the "
+				  + "label '" + imagePtrs.get(dataFile).size() + "' for data file '"
+				  + dataFile + "'");
+	  }
+	  // to copy dataFile from URL to outputDir before the transformation
+	  if (url.getProtocol().startsWith("http")) {
+		  // need to get fileArea from URL
+		  String urlStr = url.toString(); 
+		  String urlLocation = urlStr.substring(0, urlStr.lastIndexOf('/'));
+		  File fileA = Utility.getFileFromURL(new URL(urlLocation+"/"+dataFile), outputDir);
+		  target = Utility.getFileFromURL(url, outputDir);
+	  } 
+	  else target = new File(url.toURI());
+	  
+	  File imageFile = new File(target.getParent(), dataFile);
+	    
+	  if (!imageFile.exists()) {
+		  throw new TransformException("Image file does not exist: "
+				  + imageFile.toString());
+	  } else {
+		  File outputFile = Utility.createOutputFile(imageFile, outputDir,
+				  format);
+		  process(target, imageFile, outputFile, format, index);
+		  return outputFile;
+	  }
   }
 
   private void process(File target, File imageFile, File outputFile,
@@ -156,7 +213,6 @@ public class Pds3ImageTransformer extends DefaultTransformer {
       //Transform the label to PDS4 using the Generate library
       Utility.generate(target, pds4Label, "generic-pds3_to_pds4.vm");
     } catch (Exception e) {
-      e.printStackTrace();
       throw new TransformException("Error occurred while "
           + "generating PDS4 label: " + e.getMessage());
     }
@@ -232,5 +288,44 @@ public class Pds3ImageTransformer extends DefaultTransformer {
       }
     }
     return outputFiles;
+  }
+
+  public List<File> transformAll(URL url, File outputDir, String format)
+		  throws TransformException {
+	  Label label = null;
+	  List<File> outputFiles = new ArrayList<File>();
+	  File target = null;
+	  try {
+		  target = Utility.getFileFromURL(url, outputDir);
+		  label = Utility.parsePds3Label(url);
+	  } catch (Exception e) {
+		  throw new TransformException(e.getMessage());
+	  }
+	  // Get Image Pointers
+	  Map<String, List<PointerStatement>> imagePtrMap = getImagePointers(label);
+
+	  for (String dataFile : imagePtrMap.keySet()) {
+		  List<PointerStatement> images = imagePtrMap.get(dataFile);
+		  int numImages = images.size();
+		  File imageFile = new File(url.getPath(), dataFile);
+		  for (int i = 0; i < numImages; i++) {
+			  File outputFile = null;
+			  if (numImages > 1) {
+				  outputFile = Utility.createOutputFile(imageFile, outputDir,
+						  format, (i+1));
+			  } else {
+				  outputFile = Utility.createOutputFile(imageFile, outputDir,
+						  format);
+			  }
+			  try {
+				  process(target, imageFile, outputFile, format, (i+1));
+				  outputFiles.add(outputFile);
+			  } catch (Exception e) {
+				  log.log(new ToolsLogRecord(ToolsLevel.SEVERE, e.getMessage(),
+						  target));
+			  }
+		  }
+	  }
+	  return outputFiles;
   }
 }

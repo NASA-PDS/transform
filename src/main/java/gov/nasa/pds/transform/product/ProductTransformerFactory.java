@@ -17,6 +17,7 @@ import gov.nasa.pds.transform.TransformException;
 import gov.nasa.pds.transform.constants.Constants;
 
 import java.io.File;
+import java.net.URL;
 
 import org.apache.commons.io.FilenameUtils;
 
@@ -98,5 +99,41 @@ public class ProductTransformerFactory {
             + Constants.PDS3_VALID_FORMATS);
       }
     }
+  }
+  
+  public ProductTransformer newInstance(URL target, String format)
+		  throws TransformException {
+	  boolean overwrite = Boolean.parseBoolean(
+			  System.getProperty(OVERWRITE_PROP));
+	  String extension = FilenameUtils.getExtension(target.toString());
+	  if (extension.equalsIgnoreCase("xml")) {
+		  if (Constants.PDS4_VALID_FORMATS.contains(format)) {
+			  if ("csv".equals(format)) {
+				  return new Pds4TableTransformer(overwrite);
+			  } else if (Constants.STYLESHEETS.containsKey(format)) {
+				  return new StylesheetTransformer(overwrite);
+			  } else {
+				  return new Pds4ImageTransformer(overwrite);
+			  }
+		  } else {
+			  throw new TransformException("Format value '" + format
+					  + "' is not one of the valid formats for a PDS4 transformation: "
+					  + Constants.PDS4_VALID_FORMATS);
+		  }
+	  } else {
+		  if (Constants.PDS3_VALID_FORMATS.contains(format)) {
+			  if ("pds4-label".equals(format)) {
+				  return new Pds3LabelTransformer(overwrite);
+			  } else if ("csv".equals(format)) {
+				  return new Pds3TableTransformer(overwrite);
+			  }  else {
+				  return new Pds3ImageTransformer(overwrite);
+			  }
+		  } else {
+			  throw new TransformException("Format value '" + format
+					  + "' is not one of the valid formats for a PDS3 transformation: "
+					  + Constants.PDS3_VALID_FORMATS);
+		  }
+	  }
   }
 }

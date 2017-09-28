@@ -51,13 +51,23 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
+import java.io.OutputStream;
+import java.io.FileOutputStream;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+
 import nom.tam.fits.BasicHDU;
 import nom.tam.fits.Fits;
 import nom.tam.fits.FitsException;
 import nom.tam.fits.ImageHDU;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.velocity.app.VelocityEngine;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import org.w3c.dom.Document;
 
 /**
  * Utility class.
@@ -119,34 +129,76 @@ public class Utility {
     }
     return l;
   }
+  
+  public static Label parsePds3Label(URL label) throws Exception {
+	  try {
+		  SSLContext context = SSLContext.getInstance("TLSv1.2");
+		  context.init(null, null, new java.security.SecureRandom());
+		  HttpsURLConnection.setDefaultSSLSocketFactory(context.getSocketFactory());
+	  } catch (Exception e) {
+		  throw new IOException ("Error while setting SSLSocket connection to TLSv1.2: " + e.getMessage());
+	  }
+	  ManualPathResolver resolver = new ManualPathResolver();
+	  DefaultLabelParser parser = new DefaultLabelParser(false, true, resolver);
+	  Label l = null;
+	  try {
+		  l = parser.parseLabel(label);
+	  } catch (LabelParserException lp) {
+		  throw new Exception("Problem while parsing input label: "
+				  + MessageUtils.getProblemMessage(lp));
+	  } catch (Exception e) {
+		  throw new Exception("Problem while parsing input label: "
+				  + e.getMessage());
+	  }
+	  return l;
+  }
 
   public static List<FileAreaObservational> getFileAreas(File pds4Label)
-  throws ParseException, MalformedURLException, URISyntaxException {
-    List<FileAreaObservational> result = new ArrayList<FileAreaObservational>();
-    ObjectProvider objectAccess = new ObjectAccess();
-    ProductObservational product = objectAccess.getProduct(pds4Label,
-        ProductObservational.class);
-    if (product.getFileAreaObservationals() != null) {
-      result.addAll(product.getFileAreaObservationals());
-    }
-    return result;
+		  throws ParseException, MalformedURLException, URISyntaxException {
+	  List<FileAreaObservational> result = new ArrayList<FileAreaObservational>();
+	  ObjectProvider objectAccess = new ObjectAccess();
+	  ProductObservational product = objectAccess.getProduct(pds4Label,
+			  ProductObservational.class);
+	  if (product.getFileAreaObservationals() != null) {
+		  result.addAll(product.getFileAreaObservationals());
+	  }
+	  return result;
+  }
+  
+  public static List<FileAreaObservational> getFileAreas(URL pds4Label)
+		  throws ParseException, MalformedURLException, URISyntaxException, IOException {
+	  try {
+		  SSLContext context = SSLContext.getInstance("TLSv1.2");
+		  context.init(null, null, new java.security.SecureRandom());
+		  HttpsURLConnection.setDefaultSSLSocketFactory(context.getSocketFactory());
+	  } catch (Exception e) {
+		  throw new IOException ("Error while setting SSLSocket connection to TLSv1.2: " + e.getMessage());
+	  }
+	  List<FileAreaObservational> result = new ArrayList<FileAreaObservational>();
+	  ObjectProvider objectAccess = new ObjectAccess(pds4Label);
+	  ProductObservational product = objectAccess.getProduct(pds4Label,
+			  ProductObservational.class);
+	  if (product.getFileAreaObservationals() != null) {
+		  result.addAll(product.getFileAreaObservationals());
+	  }
+	  return result;
   }
 
   public static FileAreaObservational getFileArea(File pds4Label,
-      String dataFile) throws ParseException, MalformedURLException, 
-  URISyntaxException {
-    FileAreaObservational result = null;
-    List<FileAreaObservational> fileAreas = getFileAreas(pds4Label);
-    if (dataFile.isEmpty()) {
-      result = fileAreas.get(0);
-    } else {
-      for (FileAreaObservational fa : fileAreas) {
-        if (fa.getFile().getFileName().equals(dataFile)) {
-          result = fa;
-        }
-      }
-    }
-    return result;
+		  String dataFile) throws ParseException, MalformedURLException, 
+		  URISyntaxException {
+	  FileAreaObservational result = null;
+	  List<FileAreaObservational> fileAreas = getFileAreas(pds4Label);
+	  if (dataFile.isEmpty()) {
+		  result = fileAreas.get(0);
+	  } else {
+		  for (FileAreaObservational fa : fileAreas) {
+			  if (fa.getFile().getFileName().equals(dataFile)) {
+				  result = fa;
+			  }
+		  }
+	  }
+	  return result;
   }
 
   public static File createOutputFile(File file, File outputDir, String format) {
@@ -259,7 +311,7 @@ public class Utility {
     generator.getContext().put("log", Logger.getLogger(Utility.class.getName()));
     generator.generate(false);
   }
-
+  
   /**
    * Gets the HDU index that corresponds to the given index.
    *
@@ -348,5 +400,65 @@ public class Utility {
     }
     return new ImageProperties(product.getFileAreaObservationals(), 
         displaySettings);
+  }
+  
+  public static ImageProperties getImageProperties(URL pds4Label) 
+		  throws Exception {
+	  try {
+		  SSLContext context = SSLContext.getInstance("TLSv1.2");
+		  context.init(null, null, new java.security.SecureRandom());
+		  HttpsURLConnection.setDefaultSSLSocketFactory(context.getSocketFactory());
+	  } catch (Exception e) {
+		  throw new IOException ("Error while setting SSLSocket connection to TLSv1.2: " + e.getMessage());
+	  }
+	  ObjectProvider objectAccess = new ObjectAccess();
+	  ProductObservational product = objectAccess.getProduct(pds4Label,
+			  ProductObservational.class);
+	  DisciplineArea disciplineArea = null;
+	  List<DisplaySettings> displaySettings = new ArrayList<DisplaySettings>();
+	  try {
+		  if (product.getObservationArea() != null) {
+			  disciplineArea = product.getObservationArea().getDisciplineArea();
+			  if (disciplineArea != null) {
+				  for (Object object : disciplineArea.getAnies()) {
+					  if (object instanceof DisplaySettings) {
+						  displaySettings.add((DisplaySettings) object);
+					  }
+				  }
+			  }
+		  }
+	  } catch (IndexOutOfBoundsException e) {
+		  String message = "Label has no such ObservationalArea";
+		  throw new Exception(message);
+	  }
+	  return new ImageProperties(product.getFileAreaObservationals(), 
+			  displaySettings);
+  }
+ 
+  public static File getFileFromURL(URL url, File outputDir) throws Exception {
+	  try {
+		  SSLContext context = SSLContext.getInstance("TLSv1.2");
+		  context.init(null, null, new java.security.SecureRandom());
+		  HttpsURLConnection.setDefaultSSLSocketFactory(context.getSocketFactory());
+	  } catch (Exception e) {
+		  throw new IOException ("Error while setting SSLSocket connection to TLSv1.2: " + e.getMessage());
+	  }
+	  if (url.getProtocol().startsWith("http")) {
+		  String urlFilename = url.toString(); 
+		  String fileName = urlFilename.substring(urlFilename.lastIndexOf('/') + 1);
+		  InputStream in = url.openStream();
+		  byte[] buffer = IOUtils.toByteArray(in);   		
+		  in.close();
+
+		  File targetFile = new File(outputDir + File.separator + fileName);
+		  OutputStream outStream = new FileOutputStream(targetFile);
+		  outStream.write(buffer);
+		  outStream.close();
+		  
+		  return targetFile;        
+	  } else {
+		  // for "file:" or local file
+		  return new File(url.toURI());
+	  }
   }
 }

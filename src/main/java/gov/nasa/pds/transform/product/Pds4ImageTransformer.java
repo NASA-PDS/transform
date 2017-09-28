@@ -17,6 +17,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.net.URL;
+import java.net.URISyntaxException;
 
 import org.apache.commons.io.FilenameUtils;
 
@@ -74,7 +76,7 @@ public class Pds4ImageTransformer extends DefaultTransformer {
       } else {
         FileAreaObservational fileArea = null;
         if (dataFile.isEmpty()) {
-          fileArea = fileAreas.get(0);
+          fileArea = fileAreas.get(0);       
         } else {
           for (FileAreaObservational fa : fileAreas) {
             if (fa.getFile().getFileName().equals(dataFile)) {
@@ -103,6 +105,50 @@ public class Pds4ImageTransformer extends DefaultTransformer {
     return result;
   }
 
+  @Override
+  public File transform(URL url, File outputDir, String format,
+		  String dataFile, int index) throws TransformException, URISyntaxException, Exception {
+	  File result = null;
+	  File target = null;
+	  try {
+		  ObjectProvider objectAccess = new ObjectAccess(url);
+		  ImageProperties imageProperties = Utility.getImageProperties(url);
+		  List<FileAreaObservational> fileAreas = imageProperties.getFileAreas();
+		  if (fileAreas.isEmpty()) {
+			  throw new TransformException("Cannot find File_Area_Observational "
+					  + "area in the label: " + url.toString());
+		  } else {
+			  FileAreaObservational fileArea = null;
+			  if (dataFile.isEmpty()) {
+				  fileArea = fileAreas.get(0);
+			  } else {
+				  for (FileAreaObservational fa : fileAreas) {
+					  if (fa.getFile().getFileName().equals(dataFile)) {
+						  fileArea = fa;
+					  }
+				  }
+			  }
+			  if (fileArea != null) {
+				  File outputFile = Utility.createOutputFile(
+						  new File(fileArea.getFile().getFileName()), outputDir, format);
+				  process(new File(url.getFile()), objectAccess, fileArea, outputFile, format, index, 
+						  imageProperties.getDisplaySettings());
+				  result = outputFile;
+			  } else {
+				  throw new TransformException("Cannot find data file '" + dataFile
+						  + "' in the given label.");
+			  }
+		  }
+	  } catch (ParseException pe) {
+		  throw new TransformException("Problems parsing label: "
+				  + pe.getMessage());
+	  } catch (Exception e) {
+		  throw new TransformException("Problem occurred during "
+				  + "transformation: " + e.getMessage());
+	  }
+	  return result;
+  }
+  
   private void process(File target, ObjectProvider objectAccess,
       FileAreaObservational fileArea, File outputFile, String format, 
       int index, List<DisplaySettings> displaySettings)
@@ -131,35 +177,46 @@ public class Pds4ImageTransformer extends DefaultTransformer {
           fileArea.getFile().getFileName());
       // Call the Transcoder if we're transforming a FITS file
       if ("fits".equalsIgnoreCase(extension)
-          || "fit".equalsIgnoreCase(extension)) {
-        File imageFile = new File(target.getParent(),
-            fileArea.getFile().getFileName());
-        Transcoder transcoder = new Transcoder();
-        try {
-          // For FITS, we need to map the selected index to the
-          // actual HDU index in the file since the Transcoder
-          // requires this.
-          int hduIndex = Utility.getHDUIndex(imageFile, index-1);
-          transcoder.transcode(imageFile, outputFile, format, hduIndex,
-            true);
-        } catch (Exception e) {
-          throw new TransformException(e.getMessage());
-        }
+    		  || "fit".equalsIgnoreCase(extension)) {
+    	  File imageFile = null;
+    	  // need to copy over the imageFile from the URL
+    	  URL url = objectAccess.getRoot();
+    	  if (url.getProtocol().startsWith("http")) {
+    		  String urlStr = url.toString(); 
+    		  String urlLocation = urlStr.substring(0, urlStr.lastIndexOf('/'));
+    		  imageFile = Utility.getFileFromURL(new URL(urlLocation+"/"+fileArea.getFile().getFileName()), outputFile.getParentFile());
+    	  }
+    	  else 
+    		  imageFile = new File(target.getParent(), fileArea.getFile().getFileName());
+    	  
+    	  Transcoder transcoder = new Transcoder();
+    	  try {
+    		  // For FITS, we need to map the selected index to the
+    		  // actual HDU index in the file since the Transcoder
+    		  // requires this.
+    		  int hduIndex = Utility.getHDUIndex(imageFile, index-1);
+    		  transcoder.transcode(imageFile, outputFile, format, hduIndex,
+    				  true);
+    		  
+    		  // TODO TODO TODO: delete copied image file 
+    	  } catch (Exception e) {
+    		  throw new TransformException(e.getMessage());
+    	  }
       } else {
-        Exporter exporter = getImageExporter(selectedArray, fileArea, 
-            objectAccess, displaySettings); 
-        if ("jp2".equalsIgnoreCase(format)) {
-          exporter.setExportType("jpeg2000");
-        } else {
-          exporter.setExportType(format);
-        }
-        exporter.convert(selectedArray, new FileOutputStream(outputFile));           
+    	  Exporter exporter = getImageExporter(selectedArray, fileArea, 
+    			  objectAccess, displaySettings); 
+    	  if ("jp2".equalsIgnoreCase(format)) {
+    		  exporter.setExportType("jpeg2000");
+    	  } else {
+    		  exporter.setExportType(format);
+    	  }
+    	  exporter.convert(selectedArray, new FileOutputStream(outputFile));           
       }
       log.log(new ToolsLogRecord(ToolsLevel.INFO,
-          "Successfully transformed image '" + index + "' of file '"
-          + fileArea.getFile().getFileName()
-          + "' to the following output: "
-          + outputFile.toString(), target));
+    		  "Successfully transformed image '" + index + "' of file '"
+    				  + fileArea.getFile().getFileName()
+    				  + "' to the following output: "
+    				  + outputFile.toString(), target));
     }
   }
   
@@ -221,6 +278,55 @@ public class Pds4ImageTransformer extends DefaultTransformer {
             }
             try {
               process(target, objectAccess, fao, outputFile, format, (i+1), 
+                  imageProperties.getDisplaySettings());
+              results.add(outputFile);
+            } catch (Exception e) {
+              log.log(new ToolsLogRecord(ToolsLevel.SEVERE, e.getMessage(),
+                  target));
+            }            
+          }
+        }
+        return results;
+      }
+    } catch (ParseException pe) {
+      throw new TransformException("Problems parsing label: "
+          + pe.getMessage());
+    } catch (Exception e) {
+      throw new TransformException("Problem occurred during "
+          + "transformation: " + e.getMessage());
+    }
+  }
+ 
+  @Override
+  public List<File> transformAll(URL url, File outputDir, String format)
+      throws TransformException {
+    List<File> results = new ArrayList<File>();
+    File target = null;
+    try {
+      ObjectProvider objectAccess = new ObjectAccess(url);      
+      ImageProperties imageProperties = Utility.getImageProperties(url);
+      List<FileAreaObservational> fileAreas = imageProperties.getFileAreas();
+      if (fileAreas.isEmpty()) {
+        throw new TransformException("Cannot find File_Area_Observational "
+            + "area in the label: " + url.toString());
+      } else {
+        for (FileAreaObservational fao : fileAreas) {
+          List<Array> arrays = objectAccess.getArrays(fao);
+          //Filter list to only the objects we support
+          arrays = Utility.getSupportedImages(arrays);
+          int numImages = arrays.size();
+          for (int i = 0; i < numImages; i++) {
+            File outputFile = null;
+            if (numImages > 1) {
+              outputFile = Utility.createOutputFile(
+                  new File(fao.getFile().getFileName()), outputDir, format,
+                  (i+1));
+            } else {
+              outputFile = Utility.createOutputFile(
+                  new File(fao.getFile().getFileName()), outputDir, format);
+            }
+            try {
+              process(new File(url.getFile()), objectAccess, fao, outputFile, format, (i+1), 
                   imageProperties.getDisplaySettings());
               results.add(outputFile);
             } catch (Exception e) {

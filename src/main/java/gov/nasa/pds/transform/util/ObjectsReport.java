@@ -39,6 +39,8 @@ import java.io.File;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.lang.annotation.Annotation;
+import java.net.URL;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -122,7 +124,7 @@ public class ObjectsReport {
       }
       ObjectProvider objectAccess = new ObjectAccess(
           label.getCanonicalFile().getParent());
-      list(objectAccess, fileAreas);
+      list(objectAccess, fileAreas, null);
     } else {
       Label pds3Label = null;
       try {
@@ -133,6 +135,30 @@ public class ObjectsReport {
       }
       list(pds3Label);
     }
+  }
+  
+  public void list(URL url, File outputDir) throws Exception {
+	  if ("xml".equalsIgnoreCase(FilenameUtils.getExtension(url.toString()))) {
+		  List<FileAreaObservational> fileAreas =
+				  new ArrayList<FileAreaObservational>();
+		  try {
+			  fileAreas = Utility.getFileAreas(url);
+		  } catch (ParseException pe) {
+			  throw new Exception("Exception occurred while parsing label: "
+					  + pe.getMessage());
+		  }
+		  ObjectProvider objectAccess = new ObjectAccess(url);
+		  list(objectAccess, fileAreas, outputDir);
+	  } else {
+		  Label pds3Label = null;
+		  try {
+			  pds3Label = Utility.parsePds3Label(url);
+		  } catch (Exception e) {
+			  throw new Exception("Exception occurred while parsing label: "
+					  + e.getMessage());
+		  }
+		  list(pds3Label);
+	  }
   }
 
   /**
@@ -258,7 +284,7 @@ public class ObjectsReport {
    * @throws Exception
    */
   private void list(ObjectProvider objectAccess,
-      List<FileAreaObservational> fileAreas) throws Exception {
+      List<FileAreaObservational> fileAreas, File outputDir) throws Exception {
     writer.println("Supported Images: \n");
     boolean hasImages = false;
     for (FileAreaObservational fileArea : fileAreas) {
@@ -303,15 +329,27 @@ public class ObjectsReport {
         hasTables = true;
         writer.println("  Data file: "
             + fileArea.getFile().getFileName() + "\n");
-        File datafile = new File(FileUtils.toFile(objectAccess.getRoot()),
-            fileArea.getFile().getFileName());
+
+        String datafileName = null;
         int index = 1;
         for (int i = 0; i < tables.size(); i++) {
           TableReader reader = null;
           try {
-            reader = ExporterFactory.getTableReader(tables.get(i), datafile);
+        	  URL url= objectAccess.getRoot();
+        	  if (url.getProtocol().startsWith("http")) {
+        		  String urlStr = url.toString(); 
+        		  String urlLocation = urlStr.substring(0, urlStr.lastIndexOf('/'));
+        		  URL datafileUrl = new URL(urlLocation+"/"+fileArea.getFile().getFileName());
+        		  reader = ExporterFactory.getTableReader(tables.get(i), datafileUrl);
+        		  datafileName = datafileUrl.toString();
+        	  }
+        	  else {
+        		  File datafile = new File(FileUtils.toFile(objectAccess.getRoot()), fileArea.getFile().getFileName());
+        		  reader = ExporterFactory.getTableReader(tables.get(i), datafile);
+        		  datafileName = datafile.toString();
+        	  }
           } catch (Exception ex) {
-            throw new Exception("Error reading table in file '" + datafile
+            throw new Exception("Error reading table in file '" + datafileName
                 + "': " + ex.getMessage());
           }
           printTableInfo(tables.get(i), index, reader.getFields());

@@ -30,7 +30,14 @@ import gov.nasa.pds.transform.commandline.options.Flag;
 import gov.nasa.pds.transform.commandline.options.InvalidOptionException;
 
 import java.io.File;
+//import java.io.InputStream;
+//import java.io.OutputStream;
+//import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.FileNotFoundException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -38,6 +45,9 @@ import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+//import javax.net.ssl.HttpsURLConnection;
+//import javax.net.ssl.SSLContext;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -66,7 +76,7 @@ public class TransformLauncher {
   private File outputDir;
 
   /** A list of targets to transform. */
-  private List<File> targets;
+  private List<URL> targets;
 
   private String dataFileName;
 
@@ -100,7 +110,7 @@ public class TransformLauncher {
    */
   public TransformLauncher() throws IOException {
     outputDir = new File(".").getCanonicalFile();
-    targets = new ArrayList<File>();
+    targets = new ArrayList<URL>();
     formatType = "";
     index = 1;
     transformAll = false;
@@ -209,17 +219,26 @@ public class TransformLauncher {
     System.err.println("Release Date: " + ToolInfo.getReleaseDate());
     System.err.println(ToolInfo.getCopyright() + "\n");
   }
-
+  
   /**
-   * Set the targets.
+   * Set the target.
    *
    * @param targets A list of targets.
+   * @throws MalformedURLException
    */
-  private void setTargets(List<String> targets) {
+  public void setTargets(List<String> targets)
+  throws MalformedURLException {
     this.targets.clear();
     while (targets.remove(""));
     for (String t : targets) {
-      this.targets.add(new File(t).getAbsoluteFile());
+      URL url = null;
+      try {
+        url = new URL(t);
+        this.targets.add(url);
+      } catch (MalformedURLException u) {
+        File file = new File(t);
+        this.targets.add(file.toURI().normalize().toURL());
+      }
     }
   }
   
@@ -350,24 +369,27 @@ public class TransformLauncher {
    *
    * Do the transformation.
    */
-  private void doTransformation() {
+  //private void doTransformation() throws Exception {
+  private List<File> doTransformation() throws Exception {
+
     ProductTransformerFactory factory = ProductTransformerFactory.getInstance();
     List<File> results = new ArrayList<File>();
     try {
-      ProductTransformer pt = factory.newInstance(targets.get(0), formatType);
+      ProductTransformer pt = factory.newInstance(targets.get(0), formatType);      
       if (pt instanceof Pds3ImageTransformer) {
         Pds3ImageTransformer pds3Transformer = (Pds3ImageTransformer) pt;
         if (transformAll) {
+        	// need to write in Pds3ImageTransformer
           results = pds3Transformer.transformAll(targets, outputDir, formatType);
         } else {
-          for (File target : targets) {
-            try {
-              results.add(pds3Transformer.transform(target, outputDir, formatType,
-                dataFileName, index));
-            } catch (TransformException t) {
-              log.log(new ToolsLogRecord(ToolsLevel.SEVERE, t.getMessage(), target));
-            }
-          }
+        	for (URL target: targets) {
+        		try {
+        			results.add(pds3Transformer.transform(target, outputDir, formatType,
+        					dataFileName, index));
+        		} catch (TransformException t) {
+        			log.log(new ToolsLogRecord(ToolsLevel.SEVERE, t.getMessage(), target.toString()));
+        		}
+        	}
         }
       } else {
         if (pt instanceof Pds4ImageTransformer) {
@@ -382,41 +404,50 @@ public class TransformLauncher {
           ((Pds3LabelTransformer) pt).setIncludePaths(includePaths);
         }
         if (transformAll) {
-          results = pt.transformAll(targets, outputDir, formatType);
+        	// write in Pds4ImageTransformer, Pds3TableTransformer, Pds3LabelTransformer
+        	results = pt.transformAll(targets, outputDir, formatType);      	
         } else {
-          for (File target : targets) {
+        	for (URL target: targets) {
             try {
               results.add(pt.transform(target, outputDir, formatType,
                 dataFileName, index));
             } catch (TransformException t) {
-              log.log(new ToolsLogRecord(ToolsLevel.SEVERE, t.getMessage(), target));
+              log.log(new ToolsLogRecord(ToolsLevel.SEVERE, t.getMessage(), target.toString()));
             }
           }
         }
       }
     } catch (TransformException t) {
+    	t.printStackTrace();
       log.log(new ToolsLogRecord(ToolsLevel.SEVERE, t.getMessage()));
+    } 
+    catch (Exception ex) {
+    	ex.printStackTrace();
     }
+    return results;
   }
 
-  private void processMain(String[] args) {
+  //private void processMain(String[] args) {
+  private List<File> processMain(String[] args) {
+	List<File> results = null;
     try {
       CommandLine cmdLine = parse(args);
       query(cmdLine);
       if (listObjects) {
         ObjectsReport objects = new ObjectsReport();
-        for (File target : targets) {
-          objects.list(target);
+        for (URL url: targets) {
+        	objects.list(url, outputDir);
         }
       } else {
         logHeader();
-        doTransformation();
+        results = doTransformation();
       }
     } catch (Exception e) {
       e.printStackTrace();
       System.err.println(e.getMessage());
       System.exit(1);
     }
+    return results;
   }
 
   public static void main(String[] args) throws IOException {
@@ -428,6 +459,9 @@ public class TransformLauncher {
       System.out.println("\nType 'transform -h' for usage");
       System.exit(0);
     }
-    new TransformLauncher().processMain(args);
+    List<File> results = new TransformLauncher().processMain(args);
+    
+    // TODO TODO TODO: how to send output info when executing the transform tool via Tool-Service
+    System.out.println("outputs = " + results.toString());
   }
 }

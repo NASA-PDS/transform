@@ -17,6 +17,9 @@ import gov.nasa.pds.transform.TransformException;
 
 import java.io.File;
 import java.util.List;
+import java.net.URL;
+import java.net.URISyntaxException;
+
 
 /**
  * Interface to perform transformations on PDS data products.
@@ -42,6 +45,9 @@ public interface ProductTransformer {
    */
   public File transform(File target, File outputDir, String format)
   throws TransformException;
+  
+  public File transform(URL url, File outputDir, String format)
+		  throws TransformException, URISyntaxException, Exception;
 
   /**
    * Transform a single target.
@@ -63,13 +69,17 @@ public interface ProductTransformer {
    */
   public File transform(File target, File outputDir, String format,
       String dataFile, int index) throws TransformException;
+  
+  public File transform(URL target, File outputDir, String format,
+	      String dataFile, int index) 
+  throws TransformException, URISyntaxException, Exception;
 
   /**
    * Transform multiple targets. This will transform
    * the first image/table found within the first data file found in
    * each target.
    *
-   * @param targets a list of file specifications to the PDS labels.
+   * @param targets a list of URL specifications to the PDS labels.
    * @param outputDir directory where the output file will be
    * written.
    * @param format Valid format file type.
@@ -79,8 +89,8 @@ public interface ProductTransformer {
    * @throws TransformException If an error occurred during the
    * transformation process.
    */
-  public List<File> transform(List<File> targets, File outputDir, String format)
-  throws TransformException;
+  public List<File> transform(List<URL> targets, File outputDir, String format)
+		  throws TransformException, URISyntaxException, Exception;
 
 
   /**
@@ -97,11 +107,14 @@ public interface ProductTransformer {
    */
   public List<File> transformAll(File target, File outputDir, String format)
       throws TransformException;
+  
+  public List<File> transformAll(URL url, File outputDir, String format)
+	      throws TransformException, URISyntaxException, Exception;
 
   /**
    * Transform all images/tables found in each target.
    *
-   * @param targets a list of file specifications to the PDS labels.
+   * @param targets a list of URL specifications to the PDS labels.
    * @param outputDir directory where the output file will be written.
    * @param format Valid format file type.
    *
@@ -110,6 +123,6 @@ public interface ProductTransformer {
    * @throws TransformException If an error occurred during the
    * transformation process.
    */
-  public List<File> transformAll(List<File> targets, File outputDir, String format)
-      throws TransformException;
+  public List<File> transformAll(List<URL> targets, File outputDir, String format)
+	      throws TransformException, URISyntaxException, Exception;
 }

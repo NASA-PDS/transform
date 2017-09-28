@@ -31,6 +31,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.net.URL;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
@@ -75,7 +76,7 @@ public class Pds4TableTransformer extends DefaultTransformer {
     requestedFields = null;
     dataFileBasePath = "";
   }
-
+  
   /**
    * Transform the given label.
    *
@@ -146,6 +147,128 @@ public class Pds4TableTransformer extends DefaultTransformer {
       throw new TransformException(e.getMessage());
     }
   }
+  
+  
+  public File transform(URL url, File outputDir, String format,
+		  String dataFileName, int index) throws TransformException, URISyntaxException, Exception {
+	  setFormat(format);
+	  File result = null;
+	  try {
+		  ObjectProvider objectAccess = new ObjectAccess(url);
+	      List<FileAreaObservational> fileAreas = Utility.getFileAreas(url);
+	      FileAreaObservational fileArea = null;
+	      if (fileAreas.isEmpty()) {
+	        throw new TransformException("Cannot find File_Area_Observational "
+	            + "area in the label: " + url.toString());
+	      } else {
+	        for (FileAreaObservational fa : fileAreas) {
+	          if (dataFileName.isEmpty()) {
+	            fileArea = fileAreas.get(0);
+	            dataFileName = fileArea.getFile().getFileName();
+	            break;
+	          } else {
+	            if (fa.getFile().getFileName().equals(dataFileName)) {
+	              fileArea = fa;
+	              break;
+	            }
+	          }
+	        }
+	      }
+	      if (fileArea != null) {
+	        String base = "";
+	        if (!dataFileBasePath.isEmpty()) {
+	          base = dataFileBasePath;
+	        } else {
+	          base = url.getPath();
+	        }
+	        
+	        File dataFile = new File(base, dataFileName);
+	        File outputFile = Utility.createOutputFile(new File(dataFileName),
+	            outputDir, format);
+	  
+	        process(new File(url.getFile()), dataFile, outputFile, objectAccess, fileArea, index);
+	        // fix for PDS-353 (PDS4_TO_CSV)
+	        result = outputFile;
+	      } else {
+	        String message = "";
+	        if (dataFileName.isEmpty()) {
+	          message = "No data file(s) found in label.";
+	        } else {
+	          message = "No data file '" + dataFileName + "' found in label.";
+	        }
+	        throw new TransformException(message);
+	      }
+	      return result;
+	    } catch (ParseException p) {
+	      throw new TransformException("Error occurred while parsing label '"
+	          + url.toString() + "': " + p.getMessage());
+	    } catch (IOException i) {
+	      throw new TransformException("Error occurred while resolving the path "
+	          + "of the label: " + i.getMessage());
+	    } catch (URISyntaxException e) {
+	      throw new TransformException(e.getMessage());
+	    }
+  }
+  
+  @Override
+  public List<File> transformAll(URL url, File outputDir, String format)
+      throws TransformException {
+    setFormat(format);
+    List<File> outputs = new ArrayList<File>();
+    try {
+      ObjectProvider objectAccess = new ObjectAccess(url);
+      List<FileAreaObservational> fileAreas = Utility.getFileAreas(url);
+      if (fileAreas.isEmpty()) {
+        throw new TransformException("Cannot find File_Area_Observational "
+            + "area in the label: " + url.toString());
+      } else {
+        for (FileAreaObservational fileArea : fileAreas) {
+          List<Object> tables = objectAccess.getTableObjects(fileArea);
+          if (!tables.isEmpty()) {
+            int numTables = tables.size();
+            String dataFilename = fileArea.getFile().getFileName();
+            String base = "";
+            if (!dataFileBasePath.isEmpty()) {
+              base = dataFileBasePath;
+            } else {
+              base = url.getPath();
+            }
+            File dataFile = new File(base, dataFilename);
+            for (int i = 0; i < numTables; i++) {
+              File outputFile = null;
+              if (objectAccess.getTableObjects(fileArea).size() > 1) {
+                outputFile = Utility.createOutputFile(new File(dataFilename),
+                    outputDir, format, (i+1));
+              } else {
+                outputFile = Utility.createOutputFile(new File(dataFilename),
+                    outputDir, format);
+              }
+              try {
+              process(new File(url.getFile()), dataFile, outputFile, objectAccess, fileArea,
+                  (i+1));
+              outputs.add(outputFile);
+              } catch (Exception e) {
+                log.log(new ToolsLogRecord(ToolsLevel.SEVERE, e.getMessage(),
+                    url.toString()));
+              }
+            }
+          } else {
+            log.log(new ToolsLogRecord(ToolsLevel.INFO,
+                "No table objects are found in the label.", url.toString()));
+          }
+        }
+      }
+      return outputs;
+    } catch (ParseException p) {
+      throw new TransformException("Error occurred while parsing label '"
+          + url.toString() + "': " + p.getMessage());
+    } catch (IOException i) {
+      throw new TransformException("Error occurred while resolving the path "
+          + "of the label: " + i.getMessage());
+    } catch (URISyntaxException ue) {
+      throw new TransformException(ue.getMessage());
+    }
+  }
 
   private void process(File target, File dataFile, File outputFile,
       ObjectProvider objectAccess, FileAreaObservational fileArea, int index)
@@ -175,8 +298,18 @@ public class Pds4TableTransformer extends DefaultTransformer {
         log.log(new ToolsLogRecord(ToolsLevel.INFO,
             "Transforming table '" + index + "' of file: "
             + dataFile.toString(), target));
-        TableReader reader = ExporterFactory.getTableReader(tableObject,
-            dataFile);
+        
+        TableReader reader = null;
+        URL url = objectAccess.getRoot();
+        if (url.getProtocol().startsWith("http")) {
+        	String urlStr = url.toString(); 
+        	String urlLocation = urlStr.substring(0, urlStr.lastIndexOf('/'));
+        	URL datafileUrl = new URL(urlLocation+"/"+dataFile.getName());
+        	reader = ExporterFactory.getTableReader(tableObject, datafileUrl);
+        }
+        else 
+           reader = ExporterFactory.getTableReader(tableObject, dataFile);
+        
         extractTable(reader);
         } catch (IOException io) {
           throw new TransformException("Cannot open output file \'"

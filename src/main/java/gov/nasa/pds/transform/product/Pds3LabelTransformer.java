@@ -21,6 +21,8 @@ import gov.nasa.pds.transform.util.Utility;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.net.URL;
+import java.net.URISyntaxException;
 
 /**
  * Class to support transformations given a PDS3 label.
@@ -40,6 +42,35 @@ public class Pds3LabelTransformer extends DefaultTransformer {
   public Pds3LabelTransformer(boolean overwrite) {
     super(overwrite);
     includePaths = new ArrayList<String>();
+  }
+
+  public File transform(URL url, File outputDir, String format)
+		  throws TransformException, URISyntaxException, Exception {
+	  File target = null;
+	  log.log(new ToolsLogRecord(ToolsLevel.INFO,
+			  "Transforming label file: " + url.toString(), url.toString()));
+	  File outputFile = Utility.createOutputFile(new File(url.getFile()), outputDir, format);
+	  if ((outputFile.exists() && outputFile.length() != 0) && !overwriteOutput) {
+		  log.log(new ToolsLogRecord(ToolsLevel.INFO,
+				  "Output file already exists. No transformation will occur: "
+						  + outputFile.toString(), url.toString()));
+		  return outputFile;
+	  }
+	 
+      if (url.getProtocol().startsWith("http")) {
+		  target = Utility.getFileFromURL(url, outputDir);
+	  } 
+	  else target = new File(url.toURI());         
+	  try {
+		  Utility.generate(target, outputFile, "generic-pds3_to_pds4.vm", includePaths);
+	  } catch (Exception e) {
+		  throw new TransformException("Error occurred while generating "
+				  + "PDS4 label: " + e.getMessage());
+	  }
+	  log.log(new ToolsLogRecord(ToolsLevel.INFO,
+			  "Finished transforming PDS3 label '" + url.toString()
+			  + "' to a PDS4 label '" + outputFile + "'", url.toString()));
+	  return outputFile;
   }
 
   @Override
@@ -73,11 +104,25 @@ public class Pds3LabelTransformer extends DefaultTransformer {
   }
 
   @Override
+  public File transform(URL url, File outputDir, String format, String dataFile, int index) 
+  throws TransformException, URISyntaxException, Exception {
+	  return transform(url, outputDir, format);
+  }
+  
+  @Override
   public List<File> transformAll(File target, File outputDir, String format)
       throws TransformException {
     List<File> outputs = new ArrayList<File>();
     outputs.add(transform(target, outputDir, format));
     return outputs;
+  }
+  
+  @Override
+  public List<File> transformAll(URL url, File outputDir, String format)
+		  throws TransformException, URISyntaxException, Exception {
+     List<File> outputs = new ArrayList<File>();
+	 outputs.add(transform(url, outputDir, format));
+	 return outputs;
   }
 
   /**

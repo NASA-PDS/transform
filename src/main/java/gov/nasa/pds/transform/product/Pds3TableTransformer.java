@@ -16,10 +16,13 @@ package gov.nasa.pds.transform.product;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.net.URL;
+import java.net.URISyntaxException;
 
 import gov.nasa.pds.transform.TransformException;
 import gov.nasa.pds.transform.logging.ToolsLevel;
 import gov.nasa.pds.transform.logging.ToolsLogRecord;
+import gov.nasa.pds.transform.util.Utility;
 
 /**
  * Class that supports PDS3 table transformations.
@@ -63,6 +66,25 @@ public class Pds3TableTransformer extends DefaultTransformer {
     }
     return outputFile;
   }
+  
+  @Override
+  public File transform(URL url, File outputDir, String format,
+      String dataFile, int index) throws TransformException, URISyntaxException, Exception {
+    File outputFile = null;  
+    File pds4Label = toPds4Label(url, outputDir);
+    try {
+      tableTransformer.setDataFileBasePath(pds4Label.getParent());
+      outputFile = tableTransformer.transform(pds4Label, outputDir, format, 
+          dataFile, index);
+    } catch (TransformException te) {
+      log.log(new ToolsLogRecord(ToolsLevel.SEVERE, 
+          "Error occurred while transforming table: " + te.getMessage(),
+          pds4Label));
+      throw new TransformException("Unsuccessful table transformation. "
+          + "Check transformed PDS4 label for possible errors.");
+    }
+    return outputFile;
+  }
 
   @Override
   public List<File> transformAll(File target, File outputDir, String format)
@@ -71,6 +93,24 @@ public class Pds3TableTransformer extends DefaultTransformer {
     List<File> outputFiles = new ArrayList<File>();
     try {
       tableTransformer.setDataFileBasePath(target.getParent());
+      outputFiles = tableTransformer.transformAll(pds4Label, outputDir, format);
+    } catch (TransformException te) {
+      log.log(new ToolsLogRecord(ToolsLevel.SEVERE, 
+          "Error occurred while transforming table: " + te.getMessage(),
+          pds4Label));
+      throw new TransformException("Unsuccessful table transformation. "
+          + "Check transformed PDS4 label for possible errors.");
+    }
+    return outputFiles;
+  }
+  
+  @Override
+  public List<File> transformAll(URL url, File outputDir, String format)
+      throws TransformException, URISyntaxException, Exception {
+    File pds4Label = toPds4Label(url, outputDir);
+    List<File> outputFiles = new ArrayList<File>();
+    try {
+      tableTransformer.setDataFileBasePath(url.getPath());
       outputFiles = tableTransformer.transformAll(pds4Label, outputDir, format);
     } catch (TransformException te) {
       log.log(new ToolsLogRecord(ToolsLevel.SEVERE, 
@@ -105,6 +145,20 @@ public class Pds3TableTransformer extends DefaultTransformer {
               + te.getMessage());
     }
     return pds4Label;
+  }
+  
+  private File toPds4Label(URL pds3Label, File outputDir)
+		  throws TransformException, URISyntaxException, Exception {
+	  File pds4Label = null;
+	  try {
+		  pds4Label = labelTransformer.transform(pds3Label, outputDir, 
+				  "pds4-label");
+	  } catch (TransformException te) {
+		  throw new TransformException(
+				  "Error occurred while transforming to a pds4 label: "
+						  + te.getMessage());
+	  }
+	  return pds4Label;
   }
   
   /**
