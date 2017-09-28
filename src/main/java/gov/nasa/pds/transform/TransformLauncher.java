@@ -369,14 +369,13 @@ public class TransformLauncher {
    *
    * Do the transformation.
    */
-  //private void doTransformation() throws Exception {
   private List<File> doTransformation() throws Exception {
-
     ProductTransformerFactory factory = ProductTransformerFactory.getInstance();
     List<File> results = new ArrayList<File>();
     try {
       ProductTransformer pt = factory.newInstance(targets.get(0), formatType);      
       if (pt instanceof Pds3ImageTransformer) {
+      	//System.out.println("Pds3ImageTransformer.....");
         Pds3ImageTransformer pds3Transformer = (Pds3ImageTransformer) pt;
         if (transformAll) {
         	// need to write in Pds3ImageTransformer
@@ -384,8 +383,14 @@ public class TransformLauncher {
         } else {
         	for (URL target: targets) {
         		try {
-        			results.add(pds3Transformer.transform(target, outputDir, formatType,
-        					dataFileName, index));
+        			if (target.getProtocol().startsWith("http")) {
+        				results.add(pds3Transformer.transform(target, outputDir, formatType,
+        						dataFileName, index));
+        			}
+        			else {
+        				results.add(pds3Transformer.transform(new File(target.toURI()), outputDir,
+        						formatType, dataFileName, index));
+        			}
         		} catch (TransformException t) {
         			log.log(new ToolsLogRecord(ToolsLevel.SEVERE, t.getMessage(), target.toString()));
         		}
@@ -393,14 +398,17 @@ public class TransformLauncher {
         }
       } else {
         if (pt instanceof Pds4ImageTransformer) {
+        	//System.out.println("Pds3ImageTransformer.....");
           if (!bands.isEmpty()) {
             ((Pds4ImageTransformer) pt).setBands(bands);
           }
         }
         if (pt instanceof Pds3TableTransformer) {
+        	//System.out.println("Pds3TableTransformer.....");
           ((Pds3TableTransformer) pt).setIncludePaths(includePaths);
         }
         if (pt instanceof Pds3LabelTransformer) {
+        	//System.out.println("Pds3LabelTransformer.....");
           ((Pds3LabelTransformer) pt).setIncludePaths(includePaths);
         }
         if (transformAll) {
@@ -408,13 +416,20 @@ public class TransformLauncher {
         	results = pt.transformAll(targets, outputDir, formatType);      	
         } else {
         	for (URL target: targets) {
-            try {
-              results.add(pt.transform(target, outputDir, formatType,
-                dataFileName, index));
-            } catch (TransformException t) {
-              log.log(new ToolsLogRecord(ToolsLevel.SEVERE, t.getMessage(), target.toString()));
-            }
-          }
+        		try {
+        			if (target.getProtocol().startsWith("http")) {
+        				results.add(pt.transform(target, outputDir, formatType,
+        					dataFileName, index));
+        			}
+        			else {
+        				results.add(pt.transform(new File(target.toURI()), outputDir, formatType,
+            					dataFileName, index));
+        			}
+        		} catch (TransformException t) {
+        			t.printStackTrace();
+        			log.log(new ToolsLogRecord(ToolsLevel.SEVERE, t.getMessage(), target.toString()));
+        		}
+        	}
         }
       }
     } catch (TransformException t) {
@@ -427,7 +442,6 @@ public class TransformLauncher {
     return results;
   }
 
-  //private void processMain(String[] args) {
   private List<File> processMain(String[] args) {
 	List<File> results = null;
     try {
@@ -436,7 +450,10 @@ public class TransformLauncher {
       if (listObjects) {
         ObjectsReport objects = new ObjectsReport();
         for (URL url: targets) {
-        	objects.list(url, outputDir);
+        	if (url.getProtocol().startsWith("http"))
+        		objects.list(url, outputDir);
+        	else
+        		objects.list(new File(url.toURI()));
         }
       } else {
         logHeader();
@@ -462,6 +479,7 @@ public class TransformLauncher {
     List<File> results = new TransformLauncher().processMain(args);
     
     // TODO TODO TODO: how to send output info when executing the transform tool via Tool-Service
-    System.out.println("outputs = " + results.toString());
+    if (results != null)
+    	System.out.println("outputs = " + results.toString());
   }
 }
