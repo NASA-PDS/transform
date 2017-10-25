@@ -42,6 +42,9 @@
       <action dev="hyunlee" type="add" issue="PDS-511">
         Add support for transforming to read targets from URLs.
       </action>
+      <action dev="mcayanan" type="fix" issue="PDS-523">
+        Fixed issue with transformation of character table product to PDS3 label failing.
+      </action>
       <action dev="mcayanan" type="update">
         Support PDS3 labels with ^STRUCTURE pointers when performing PDS3 to PDS4 label transformations. Inherited from generate.
       </action>

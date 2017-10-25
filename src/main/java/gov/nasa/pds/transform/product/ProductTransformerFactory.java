@@ -112,9 +112,11 @@ public class ProductTransformerFactory {
 				  return new Pds4TableTransformer(overwrite);
 			  } else if (Constants.STYLESHEETS.containsKey(format)) {
 				  return new StylesheetTransformer(overwrite);
-			  } else {
-				  return new Pds4ImageTransformer(overwrite);
-			  }
+			  } else if ("pds3-label".equals(format)) {
+          return new Pds4LabelTransformer(overwrite);
+        } else {
+          return new Pds4ImageTransformer(overwrite);
+        }
 		  } else {
 			  throw new TransformException("Format value '" + format
 					  + "' is not one of the valid formats for a PDS4 transformation: "
