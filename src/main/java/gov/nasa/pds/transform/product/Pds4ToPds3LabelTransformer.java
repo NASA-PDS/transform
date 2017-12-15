@@ -785,7 +785,7 @@ public class Pds4ToPds3LabelTransformer {
       if (offset != 0) {
         Sequence sequence = new Sequence();
         sequence.add(new TextString(dataFile));
-        sequence.add(new Numeric(Integer.toString(offset.intValue()), "BYTES"));
+        sequence.add(new Numeric(Integer.toString(offset.intValue() + 1), "BYTES"));
         value = sequence;
       } else {
         value = new TextString(dataFile);
@@ -796,7 +796,7 @@ public class Pds4ToPds3LabelTransformer {
       if (offset != 0) {
         Sequence sequence = new Sequence();
         sequence.add(new TextString(dataFile));
-        sequence.add(new Numeric(Integer.toString(offset.intValue()), "BYTES"));
+        sequence.add(new Numeric(Integer.toString(offset.intValue() + 1), "BYTES"));
         value = sequence;
       } else {
         value = new TextString(dataFile);
@@ -807,7 +807,7 @@ public class Pds4ToPds3LabelTransformer {
       if (offset != 0) {
         Sequence sequence = new Sequence();
         sequence.add(new TextString(dataFile));
-        sequence.add(new Numeric(Integer.toString(offset.intValue()), "BYTES"));
+        sequence.add(new Numeric(Integer.toString(offset.intValue() + 1), "BYTES"));
         value = sequence;
       } else {
         value = new TextString(dataFile);

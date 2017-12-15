@@ -24,6 +24,12 @@
 
   <body>
     <release version="1.7.0" date="TBD" description="TBD">
+      <action dev="mcayanan" type="fix" issue="PDS-533">
+        Fixed support for groups when doing PDS3 to PDS4 label transformations.
+      </action>
+      <action dev="mcayanan" type="fix" issue="PDS-534">
+        Fixed setting of offsets for PDS3 to PDS4 label transformations and vice versa.
+      </action>
     </release>
 
     <release version="1.6.0" date="2017-09-29" description="This release of the Transform Tool is a component of the integrated release 8.0.0 of the PDS4 System. This is an operational release of the system components to date.">

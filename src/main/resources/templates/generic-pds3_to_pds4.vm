@@ -127,7 +127,8 @@
       #if ( $pointer.size() == 2 )
         #set ( $dataFile = $pointer[0].toLowerCase() )
         #if ( $pointer[1].contains("BYTES") )
-          #set ( $dataFileOffset = $pointer[1].split(" ")[0] )
+          #set( $Integer = 0 )
+          #set ( $dataFileOffset = $Integer.parseInt($pointer[1].split(" ")[0].trim()) - 1 )
         #else
           #set( $Integer = 0 )
           #set ( $offset = $Integer.parseInt($pointer[1].trim()) - 1 )
@@ -142,7 +143,8 @@
         #else
           #set( $Integer = 0 )
           #if ( $pointer[0].contains("BYTES") )
-            #set ( $dataFileOffset = $pointer[0].split(" ")[0] )
+            #set( $Integer = 0 )
+            #set ( $dataFileOffset = $Integer.parseInt($pointer[1].split(" ")[0].trim()) - 1 )
           #else
             #set ( $offset = $Integer.parseInt($pointer[0].trim()) - 1 )
             #set ( $dataFileOffset = $offset * $Integer.parseInt($label.RECORD_BYTES.trim()) )
@@ -174,8 +176,8 @@
         #end
       
         #set ($totalGroups = 0)
+        #set ($totalColumns = 0)
         <$recordType>
-        <fields>$object.COLUMNS</fields>
         #set( $value = false )
         #set ( $value = $object.CONTAINER )
         #if ( $!{value} )
@@ -215,8 +217,11 @@
           #if ( $items > 1 )
             #set( $Integer = 0 )
             #set ( $totalGroups = $totalGroups + 1 )
+          #else
+            #set ($totalColumns = $totalColumns + 1)
           #end
         #end
+        <fields>$totalColumns</fields>
         <groups>$totalGroups</groups>
         #set ( $rowBytes = 0 )
         #set ( $rowBytes = $object.ROW_BYTES.toString().trim() )
@@ -376,10 +381,11 @@
   #end
   #if ( $items > 1 )
   <$groupType>
-    <group_length unit="byte">$column.BYTES</group_length>
-    <group_location unit="byte">$column.START_BYTE</group_location>
-    <groups>0</groups>
     <repetitions>$column.ITEMS</repetitions>
+    <fields>1</fields>
+    <groups>0</groups>
+    <group_location unit="byte">$column.START_BYTE</group_location>
+    <group_length unit="byte">$column.BYTES</group_length>
     <$fieldType>
       <name>$column.NAME.toString().toLowerCase()</name>
       <field_location unit="byte">1</field_location>
