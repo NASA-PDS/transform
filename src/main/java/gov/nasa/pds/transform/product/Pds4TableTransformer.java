@@ -32,11 +32,14 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.URL;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.commons.io.FileUtils;
 
 
 /**
@@ -60,7 +63,7 @@ public class Pds4TableTransformer extends DefaultTransformer {
   private String lineSeparator;
   private String[] requestedFields;
   
-  private String dataFileBasePath;
+  private URL dataFileBasePath;
 
   /**
    * Constructor to set the flag to overwrite outputs.
@@ -74,7 +77,7 @@ public class Pds4TableTransformer extends DefaultTransformer {
     fieldSeparator = ",";
     lineSeparator = System.getProperty("line.separator");
     requestedFields = null;
-    dataFileBasePath = "";
+    dataFileBasePath = null;
   }
   
   /**
@@ -115,16 +118,16 @@ public class Pds4TableTransformer extends DefaultTransformer {
         }
       }
       if (fileArea != null) {
-        String base = "";
-        if (!dataFileBasePath.isEmpty()) {
+        URL base = null;
+        if (dataFileBasePath != null) {
           base = dataFileBasePath;
         } else {
-          base = target.getParent();
+          base = target.getParentFile().toURI().toURL();
         }
-        File dataFile = new File(base, dataFileName);
+        URL dataFile = new URL(base, dataFileName);
         File outputFile = Utility.createOutputFile(new File(dataFileName),
             outputDir, format);
-        process(target, dataFile, outputFile, objectAccess, fileArea, index);
+        process(target.toURI().toURL(), dataFile, outputFile, objectAccess, fileArea, index);
         // fix for PDS-353 (PDS4_TO_CSV)
         result = outputFile;
       } else {
@@ -175,18 +178,18 @@ public class Pds4TableTransformer extends DefaultTransformer {
 	        }
 	      }
 	      if (fileArea != null) {
-	        String base = "";
-	        if (!dataFileBasePath.isEmpty()) {
+	        URL base = null;
+	        if (dataFileBasePath != null) {
 	          base = dataFileBasePath;
 	        } else {
-	          base = url.getPath();
+	          base = Utility.getParent(url);
 	        }
 	        
-	        File dataFile = new File(base, dataFileName);
+	        URL dataFile = new URL(base, dataFileName);
 	        File outputFile = Utility.createOutputFile(new File(dataFileName),
 	            outputDir, format);
 	  
-	        process(new File(url.getFile()), dataFile, outputFile, objectAccess, fileArea, index);
+	        process(url, dataFile, outputFile, objectAccess, fileArea, index);
 	        // fix for PDS-353 (PDS4_TO_CSV)
 	        result = outputFile;
 	      } else {
@@ -227,13 +230,13 @@ public class Pds4TableTransformer extends DefaultTransformer {
           if (!tables.isEmpty()) {
             int numTables = tables.size();
             String dataFilename = fileArea.getFile().getFileName();
-            String base = "";
-            if (!dataFileBasePath.isEmpty()) {
+            URL base = null;
+            if (dataFileBasePath != null) {
               base = dataFileBasePath;
             } else {
-              base = url.getPath();
+              base = Utility.getParent(url);
             }
-            File dataFile = new File(base, dataFilename);
+            URL dataFile = new URL(base, dataFilename);
             for (int i = 0; i < numTables; i++) {
               File outputFile = null;
               if (objectAccess.getTableObjects(fileArea).size() > 1) {
@@ -244,7 +247,7 @@ public class Pds4TableTransformer extends DefaultTransformer {
                     outputDir, format);
               }
               try {
-              process(new File(url.getFile()), dataFile, outputFile, objectAccess, fileArea,
+              process(url, dataFile, outputFile, objectAccess, fileArea,
                   (i+1));
               outputs.add(outputFile);
               } catch (Exception e) {
@@ -270,19 +273,19 @@ public class Pds4TableTransformer extends DefaultTransformer {
     }
   }
 
-  private void process(File target, File dataFile, File outputFile,
+  private void process(URL target, URL dataFile, File outputFile,
       ObjectProvider objectAccess, FileAreaObservational fileArea, int index)
           throws TransformException {
     if ((outputFile.exists() && outputFile.length() != 0)
         && !overwriteOutput) {
       log.log(new ToolsLogRecord(ToolsLevel.INFO,
           "Output file already exists. No transformation will occur: "
-          + outputFile.toString(), target));
+          + outputFile.toString(), target.toString()));
     } else {
       List<Object> tableObjects = objectAccess.getTableObjects(fileArea);
       if (objectAccess.getTableObjects(fileArea).isEmpty()) {
         log.log(new ToolsLogRecord(ToolsLevel.INFO,
-            "No table objects are found in the label.", target));
+            "No table objects are found in the label.", target.toString()));
       } else {
         Object tableObject = null;
         try {
@@ -297,15 +300,16 @@ public class Pds4TableTransformer extends DefaultTransformer {
         out = new PrintWriter(new FileWriter(outputFile));
         log.log(new ToolsLogRecord(ToolsLevel.INFO,
             "Transforming table '" + index + "' of file: "
-            + dataFile.toString(), target));
+            + dataFile.toString(), target.toString()));
         
         TableReader reader = null;
         URL url = objectAccess.getRoot();
         if (url.getProtocol().startsWith("http")) {
         	String urlStr = url.toString(); 
         	String urlLocation = urlStr.substring(0, urlStr.lastIndexOf('/'));
-        	URL datafileUrl = new URL(urlLocation+"/"+dataFile.getName());
-        	reader = ExporterFactory.getTableReader(tableObject, datafileUrl);
+        //	URL datafileUrl = new URL(urlLocation+"/"+dataFile.getName());
+        //	reader = ExporterFactory.getTableReader(tableObject, datafileUrl);
+        	reader = ExporterFactory.getTableReader(tableObject, dataFile);
         }
         else 
            reader = ExporterFactory.getTableReader(tableObject, dataFile);
@@ -325,7 +329,7 @@ public class Pds4TableTransformer extends DefaultTransformer {
         log.log(new ToolsLogRecord(ToolsLevel.INFO,
             "Successfully transformed table '" + index
               + "' to the following output: " + outputFile.toString(),
-              target));
+              target.toString()));
       }
     }
   }
@@ -348,13 +352,13 @@ public class Pds4TableTransformer extends DefaultTransformer {
           if (!tables.isEmpty()) {
             int numTables = tables.size();
             String dataFilename = fileArea.getFile().getFileName();
-            String base = "";
-            if (!dataFileBasePath.isEmpty()) {
+            URL base = null;
+            if (dataFileBasePath != null) {
               base = dataFileBasePath;
             } else {
-              base = target.getParent();
+              base = target.getParentFile().toURI().toURL();
             }
-            File dataFile = new File(base, dataFilename);
+            URL dataFile = new URL(base, dataFilename);
             for (int i = 0; i < numTables; i++) {
               File outputFile = null;
               if (objectAccess.getTableObjects(fileArea).size() > 1) {
@@ -365,7 +369,7 @@ public class Pds4TableTransformer extends DefaultTransformer {
                     outputDir, format);
               }
               try {
-              process(target, dataFile, outputFile, objectAccess, fileArea,
+              process(target.toURI().toURL(), dataFile.toURI().toURL(), outputFile, objectAccess, fileArea,
                   (i+1));
               outputs.add(outputFile);
               } catch (Exception e) {
@@ -397,8 +401,15 @@ public class Pds4TableTransformer extends DefaultTransformer {
     }
   }
   
-  public void setDataFileBasePath(String base) {
-    this.dataFileBasePath = new File(base).getAbsolutePath();
+  public void setDataFileBasePath(String base) 
+      throws MalformedURLException {
+    try {
+      URL b = new URL(base);
+      this.dataFileBasePath = b;
+    } catch (MalformedURLException e) {
+      File file = new File(base);
+      this.dataFileBasePath = file.toURI().normalize().toURL(); 
+    }
   }
 
   /**

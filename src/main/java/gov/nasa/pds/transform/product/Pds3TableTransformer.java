@@ -54,10 +54,10 @@ public class Pds3TableTransformer extends DefaultTransformer {
     File pds4Label = toPds4Label(target, outputDir);
     File outputFile = null;
     try {
-      tableTransformer.setDataFileBasePath(target.getParent());
+      tableTransformer.setDataFileBasePath(target.getParentFile().toURI().toURL().toString());
       outputFile = tableTransformer.transform(pds4Label, outputDir, format, 
           dataFile, index);
-    } catch (TransformException te) {
+    } catch (Exception te) {
       log.log(new ToolsLogRecord(ToolsLevel.SEVERE, 
           "Error occurred while transforming table: " + te.getMessage(),
           pds4Label));
@@ -73,7 +73,7 @@ public class Pds3TableTransformer extends DefaultTransformer {
     File outputFile = null;  
     File pds4Label = toPds4Label(url, outputDir);
     try {
-      tableTransformer.setDataFileBasePath(pds4Label.getParent());
+      tableTransformer.setDataFileBasePath(Utility.getParent(url).toString());
       outputFile = tableTransformer.transform(pds4Label, outputDir, format, 
           dataFile, index);
     } catch (TransformException te) {
@@ -92,9 +92,9 @@ public class Pds3TableTransformer extends DefaultTransformer {
     File pds4Label = toPds4Label(target, outputDir);
     List<File> outputFiles = new ArrayList<File>();
     try {
-      tableTransformer.setDataFileBasePath(target.getParent());
+      tableTransformer.setDataFileBasePath(target.getParentFile().toURI().toURL().toString());
       outputFiles = tableTransformer.transformAll(pds4Label, outputDir, format);
-    } catch (TransformException te) {
+    } catch (Exception te) {
       log.log(new ToolsLogRecord(ToolsLevel.SEVERE, 
           "Error occurred while transforming table: " + te.getMessage(),
           pds4Label));
@@ -110,7 +110,7 @@ public class Pds3TableTransformer extends DefaultTransformer {
     File pds4Label = toPds4Label(url, outputDir);
     List<File> outputFiles = new ArrayList<File>();
     try {
-      tableTransformer.setDataFileBasePath(url.getPath());
+      tableTransformer.setDataFileBasePath(Utility.getParent(url).toString());
       outputFiles = tableTransformer.transformAll(pds4Label, outputDir, format);
     } catch (TransformException te) {
       log.log(new ToolsLogRecord(ToolsLevel.SEVERE, 

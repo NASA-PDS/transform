@@ -24,6 +24,9 @@
 
   <body>
     <release version="1.7.0" date="TBD" description="TBD">
+      <action dev="mcaynanan" type="fix" issue="PDS-532">
+        Fixed table transformations using the -a flag option.
+      </action>    
       <action dev="mcayanan" type="fix" issue="PDS-533">
         Fixed support for groups when doing PDS3 to PDS4 label transformations.
       </action>

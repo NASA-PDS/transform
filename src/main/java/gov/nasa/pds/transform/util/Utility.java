@@ -461,4 +461,12 @@ public class Utility {
 		  return new File(url.toURI());
 	  }
   }
+  
+  public static URL getParent(URL url) throws MalformedURLException, 
+  URISyntaxException {
+    URL parent = url.toURI().getPath().endsWith("/") ?
+        url.toURI().resolve("..").toURL() :
+          url.toURI().resolve(".").toURL();
+    return parent;
+  }
 }
