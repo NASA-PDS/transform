@@ -23,7 +23,7 @@
   </properties>
 
   <body>
-    <release version="1.7.0" date="TBD" description="TBD">
+    <release version="1.6.1" date="TBD" description="TBD">
       <action dev="mcaynanan" type="fix" issue="PDS-532">
         Fixed table transformations using the -a flag option.
       </action>    
