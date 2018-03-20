@@ -1,4 +1,4 @@
-// Copyright 2006-2017, by the California Institute of Technology.
+// Copyright 2006-2018, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship acknowledged.
 // Any commercial use must be negotiated with the Office of Technology Transfer
 // at the California Institute of Technology.
@@ -17,6 +17,7 @@ import java.io.File;
 import java.net.URL;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,7 +51,7 @@ public class Pds3ImageTransformer extends DefaultTransformer {
     super(overwrite);
   }
   
-  public File transform(File target, File outputDir, String format,
+  public List<File> transform(File target, File outputDir, String format,
       String dataFile, int index) throws TransformException {
     Label label = null;
     try {
@@ -89,11 +90,11 @@ public class Pds3ImageTransformer extends DefaultTransformer {
       File outputFile = Utility.createOutputFile(imageFile, outputDir,
           format);
       process(target, imageFile, outputFile, format, index);
-      return outputFile;
+      return Arrays.asList(outputFile);
     }
   }
   
-  public File transform(URL url, File outputDir, String format, String dataFile, int index) 
+  public List<File> transform(URL url, File outputDir, String format, String dataFile, int index) 
   throws TransformException, URISyntaxException, Exception {
 	  Label label = null;
 	  File target = null;  
@@ -144,7 +145,7 @@ public class Pds3ImageTransformer extends DefaultTransformer {
 		  File outputFile = Utility.createOutputFile(imageFile, outputDir,
 				  format);
 		  process(target, imageFile, outputFile, format, index);
-		  return outputFile;
+		  return Arrays.asList(outputFile);
 	  }
   }
 

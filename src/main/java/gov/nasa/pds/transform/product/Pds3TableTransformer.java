@@ -1,4 +1,4 @@
-// Copyright 2006-2017, by the California Institute of Technology.
+// Copyright 2006-2018, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship acknowledged.
 // Any commercial use must be negotiated with the Office of Technology Transfer
 // at the California Institute of Technology.
@@ -17,6 +17,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.net.URL;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 
 import gov.nasa.pds.transform.TransformException;
@@ -49,52 +50,25 @@ public class Pds3TableTransformer extends DefaultTransformer {
   }
   
   @Override
-  public File transform(File target, File outputDir, String format,
+  public List<File> transform(File target, File outputDir, String format,
       String dataFile, int index) throws TransformException {
-    File pds4Label = toPds4Label(target, outputDir);
-    File outputFile = null;
     try {
-      tableTransformer.setDataFileBasePath(target.getParentFile().toURI().toURL().toString());
-      outputFile = tableTransformer.transform(pds4Label, outputDir, format, 
-          dataFile, index);
-    } catch (Exception te) {
-      log.log(new ToolsLogRecord(ToolsLevel.SEVERE, 
-          "Error occurred while transforming table: " + te.getMessage(),
-          pds4Label));
-      throw new TransformException("Unsuccessful table transformation. "
-          + "Check transformed PDS4 label for possible errors.");
+      return transform(target.toURI().toURL(), outputDir, format, dataFile, index);
+    } catch (Exception e) {
+      throw new TransformException(e.getMessage());
     }
-    return outputFile;
   }
   
   @Override
-  public File transform(URL url, File outputDir, String format,
+  public List<File> transform(URL url, File outputDir, String format,
       String dataFile, int index) throws TransformException, URISyntaxException, Exception {
-    File outputFile = null;  
+    List<File> outputFiles = new ArrayList<File>();  
     File pds4Label = toPds4Label(url, outputDir);
     try {
       tableTransformer.setDataFileBasePath(Utility.getParent(url).toString());
-      outputFile = tableTransformer.transform(pds4Label, outputDir, format, 
+      outputFiles = tableTransformer.transform(pds4Label, outputDir, format, 
           dataFile, index);
     } catch (TransformException te) {
-      log.log(new ToolsLogRecord(ToolsLevel.SEVERE, 
-          "Error occurred while transforming table: " + te.getMessage(),
-          pds4Label));
-      throw new TransformException("Unsuccessful table transformation. "
-          + "Check transformed PDS4 label for possible errors.");
-    }
-    return outputFile;
-  }
-
-  @Override
-  public List<File> transformAll(File target, File outputDir, String format)
-      throws TransformException {
-    File pds4Label = toPds4Label(target, outputDir);
-    List<File> outputFiles = new ArrayList<File>();
-    try {
-      tableTransformer.setDataFileBasePath(target.getParentFile().toURI().toURL().toString());
-      outputFiles = tableTransformer.transformAll(pds4Label, outputDir, format);
-    } catch (Exception te) {
       log.log(new ToolsLogRecord(ToolsLevel.SEVERE, 
           "Error occurred while transforming table: " + te.getMessage(),
           pds4Label));
@@ -135,24 +109,23 @@ public class Pds3TableTransformer extends DefaultTransformer {
    */
   private File toPds4Label(File pds3Label, File outputDir)
       throws TransformException {
-    File pds4Label = null;
     try {
-      pds4Label = labelTransformer.transform(pds3Label, outputDir, 
-          "pds4-label");
-    } catch (TransformException te) {
-      throw new TransformException(
-          "Error occurred while transforming to a pds4 label: "
-              + te.getMessage());
+      return toPds4Label(pds3Label.toURI().toURL(), outputDir);
+    } catch (Exception e) {
+      throw new TransformException(e.getMessage());
     }
-    return pds4Label;
   }
   
   private File toPds4Label(URL pds3Label, File outputDir)
 		  throws TransformException, URISyntaxException, Exception {
 	  File pds4Label = null;
 	  try {
-		  pds4Label = labelTransformer.transform(pds3Label, outputDir, 
+		  List<File> results = labelTransformer.transform(pds3Label, outputDir, 
 				  "pds4-label");
+		  if (!results.isEmpty()) {
+		    //Should only return 1 result
+		    pds4Label = results.get(0);
+		  }
 	  } catch (TransformException te) {
 		  throw new TransformException(
 				  "Error occurred while transforming to a pds4 label: "

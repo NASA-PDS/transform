@@ -259,10 +259,27 @@
       #elseif ( $objectName.endsWith("SPREADSHEET") )
       <Table_Delimited>
         <offset unit="byte">$dataFileOffset</offset>
-        <parsing_standard_id>PDS DV 1</parsing_standard_id>
+        <parsing_standard_id>PDS DSV 1</parsing_standard_id>
         <records>$object.ROWS</records>
         <record_delimiter>Carriage-Return Line-Feed</record_delimiter>
-        <field_delimiter>$object.FIELD_DELIMITER.toString().toLowerCase()</field_delimiter>
+        #set ( $delimiter = false )
+        #set( $value = false )
+        #set ( $delimiter = $object.FIELD_DELIMITER )
+        #if ( $!{delimiter} )
+          #set ( $delimiter = $delimiter.toString().toUpperCase() )
+          #if ( $delimiter.equals("COMMA") )
+            #set ( $value = "Comma" )
+          #elseif ( $delimiter.equals("SEMICOLON") )
+            #set ( $value = "Semicolon" )
+          #elseif ( $delimiter.equals("TAB") )
+            #set ( $value = "Horizontal Tab" )
+          #elseif ( $delimiter.equals("VERTICAL_BAR") )
+            #set ( $value = "Vertical Bar" )
+          #else
+            #set ( $value = $delimiter )
+          #end
+        <field_delimiter>$value</field_delimiter>    
+        #end
         <Record_Delimited>
           <fields>$object.FIELDS</fields>
           <groups>0</groups>

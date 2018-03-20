@@ -1,4 +1,4 @@
-// Copyright 2006-2017, by the California Institute of Technology.
+// Copyright 2006-2018, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship acknowledged.
 // Any commercial use must be negotiated with the Office of Technology Transfer
 // at the California Institute of Technology.
@@ -14,8 +14,8 @@
 package gov.nasa.pds.transform.product;
 
 import gov.nasa.arc.pds.xml.generated.FileAreaObservational;
-import gov.nasa.pds.label.object.FieldDescription;
-import gov.nasa.pds.label.object.TableRecord;
+import gov.nasa.arc.pds.xml.generated.ProductObservational;
+import gov.nasa.arc.pds.xml.generated.TableDelimited;
 import gov.nasa.pds.objectAccess.ExporterFactory;
 import gov.nasa.pds.objectAccess.ObjectAccess;
 import gov.nasa.pds.objectAccess.ObjectProvider;
@@ -24,22 +24,24 @@ import gov.nasa.pds.objectAccess.TableReader;
 import gov.nasa.pds.transform.TransformException;
 import gov.nasa.pds.transform.logging.ToolsLevel;
 import gov.nasa.pds.transform.logging.ToolsLogRecord;
+import gov.nasa.pds.transform.product.label.TableLabelTransformer;
+import gov.nasa.pds.transform.product.label.TableLabelTransformerFactory;
+import gov.nasa.pds.transform.table.TableExtractor;
 import gov.nasa.pds.transform.util.Utility;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 
 
 /**
@@ -49,21 +51,12 @@ import org.apache.commons.io.FileUtils;
  *
  */
 public class Pds4TableTransformer extends DefaultTransformer {
-
-  /**
-   * Defines an enumeration for the different output formats.
-   */
-  private static enum OutputFormat {
-    CSV, FIXED_WIDTH;
-  }
-
-  private OutputFormat format;
-  private PrintWriter out;
-  private String fieldSeparator;
-  private String lineSeparator;
-  private String[] requestedFields;
   
-  private URL dataFileBasePath;
+  protected URL dataFileBasePath;
+  
+  protected TableExtractor tableExtractor;
+  
+  protected boolean displayHeaders;
 
   /**
    * Constructor to set the flag to overwrite outputs.
@@ -72,12 +65,9 @@ public class Pds4TableTransformer extends DefaultTransformer {
    */
   public Pds4TableTransformer(boolean overwrite) {
     super(overwrite);
-    format = OutputFormat.CSV;
-    out = new PrintWriter(new OutputStreamWriter(System.out));
-    fieldSeparator = ",";
-    lineSeparator = System.getProperty("line.separator");
-    requestedFields = null;
     dataFileBasePath = null;
+    this.tableExtractor = new TableExtractor();
+    displayHeaders = true;
   }
   
   /**
@@ -90,13 +80,20 @@ public class Pds4TableTransformer extends DefaultTransformer {
    * @throws TransformException If an error occurred during transformation.
    * @throws ParseException If there were errors parsing the given label.
    */
-  public File transform(File target, File outputDir, String format,
+  /*
+  public List<File> transform(File target, File outputDir, String format,
       String dataFileName, int index)
   throws TransformException {
-    setFormat(format);
+    try {
+      return transform(target.toURI().toURL(), outputDir, format, dataFileName, index);
+    } catch (Exception e) {
+      throw new TransformException(e.getMessage());
+    }
+    
+    tableExtractor.setFormat(format);
     File result = null;
     try {
-      ObjectProvider objectAccess = new ObjectAccess(
+      ObjectAccess objectAccess = new ObjectAccess(
           target.getCanonicalFile().getParent());
       List<FileAreaObservational> fileAreas = Utility.getFileAreas(target);
       FileAreaObservational fileArea = null;
@@ -127,9 +124,12 @@ public class Pds4TableTransformer extends DefaultTransformer {
         URL dataFile = new URL(base, dataFileName);
         File outputFile = Utility.createOutputFile(new File(dataFileName),
             outputDir, format);
-        process(target.toURI().toURL(), dataFile, outputFile, objectAccess, fileArea, index);
+        Object tableObject = process(target.toURI().toURL(), dataFile, outputFile, objectAccess, fileArea, index);
         // fix for PDS-353 (PDS4_TO_CSV)
         result = outputFile;
+        Map<File, Object> outputsToTables = new LinkedHashMap<File, Object>();
+        outputsToTables.put(outputFile, tableObject);
+        create_delimited_table_label(objectAccess, target.toURI().toURL(), outputsToTables, outputDir);
       } else {
         String message = "";
         if (dataFileName.isEmpty()) {
@@ -148,16 +148,19 @@ public class Pds4TableTransformer extends DefaultTransformer {
           + "of the label: " + i.getMessage());
     } catch (URISyntaxException e) {
       throw new TransformException(e.getMessage());
+    } catch (Exception e) {
+      throw new TransformException(e.getMessage());
     }
+    
   }
+  */
   
-  
-  public File transform(URL url, File outputDir, String format,
+  public List<File> transform(URL url, File outputDir, String format,
 		  String dataFileName, int index) throws TransformException, URISyntaxException, Exception {
-	  setFormat(format);
-	  File result = null;
+    tableExtractor.setFormat(format);
+	  List<File> results = new ArrayList<File>();
 	  try {
-		  ObjectProvider objectAccess = new ObjectAccess(url);
+		  ObjectAccess objectAccess = new ObjectAccess(url);
 	      List<FileAreaObservational> fileAreas = Utility.getFileAreas(url);
 	      FileAreaObservational fileArea = null;
 	      if (fileAreas.isEmpty()) {
@@ -189,9 +192,20 @@ public class Pds4TableTransformer extends DefaultTransformer {
 	        File outputFile = Utility.createOutputFile(new File(dataFileName),
 	            outputDir, format);
 	  
-	        process(url, dataFile, outputFile, objectAccess, fileArea, index);
+	        Object tableObject = process(url, dataFile, outputFile, objectAccess, fileArea, index);
 	        // fix for PDS-353 (PDS4_TO_CSV)
-	        result = outputFile;
+	        results.add(outputFile);
+	        Map<File, Object> outputsToTables = new LinkedHashMap<File, Object>();
+	        if (tableObject != null) {
+	          outputsToTables.put(outputFile, tableObject);
+	        }
+	        try {
+	          if (!outputsToTables.isEmpty()) {
+	            results.add(create_delimited_table_label(objectAccess, url, outputsToTables, outputDir));
+	          }
+	        } catch (Exception e) {
+	          throw new TransformException("Error while creating Table_Delimited label: " + e.getMessage());
+	        }
 	      } else {
 	        String message = "";
 	        if (dataFileName.isEmpty()) {
@@ -201,7 +215,7 @@ public class Pds4TableTransformer extends DefaultTransformer {
 	        }
 	        throw new TransformException(message);
 	      }
-	      return result;
+	      return results;
 	    } catch (ParseException p) {
 	      throw new TransformException("Error occurred while parsing label '"
 	          + url.toString() + "': " + p.getMessage());
@@ -216,15 +230,16 @@ public class Pds4TableTransformer extends DefaultTransformer {
   @Override
   public List<File> transformAll(URL url, File outputDir, String format)
       throws TransformException {
-    setFormat(format);
+    tableExtractor.setFormat(format);
     List<File> outputs = new ArrayList<File>();
     try {
-      ObjectProvider objectAccess = new ObjectAccess(url);
+      ObjectAccess objectAccess = new ObjectAccess(url);
       List<FileAreaObservational> fileAreas = Utility.getFileAreas(url);
       if (fileAreas.isEmpty()) {
         throw new TransformException("Cannot find File_Area_Observational "
             + "area in the label: " + url.toString());
       } else {
+        Map<File, Object> outputsToTables = new LinkedHashMap<File, Object>();
         for (FileAreaObservational fileArea : fileAreas) {
           List<Object> tables = objectAccess.getTableObjects(fileArea);
           if (!tables.isEmpty()) {
@@ -247,9 +262,12 @@ public class Pds4TableTransformer extends DefaultTransformer {
                     outputDir, format);
               }
               try {
-              process(url, dataFile, outputFile, objectAccess, fileArea,
-                  (i+1));
-              outputs.add(outputFile);
+                Object tableObject = process(url, dataFile, outputFile, objectAccess, fileArea,
+                    (i+1));
+                outputs.add(outputFile);
+                if (tableObject != null) {
+                  outputsToTables.put(outputFile, tableObject);
+                }
               } catch (Exception e) {
                 log.log(new ToolsLogRecord(ToolsLevel.SEVERE, e.getMessage(),
                     url.toString()));
@@ -259,6 +277,15 @@ public class Pds4TableTransformer extends DefaultTransformer {
             log.log(new ToolsLogRecord(ToolsLevel.INFO,
                 "No table objects are found in the label.", url.toString()));
           }
+        }
+        try {
+          if (!outputsToTables.isEmpty()) {
+            outputs.add(create_delimited_table_label(
+              objectAccess, url, outputsToTables, outputDir));
+          }
+        } catch (Exception e) {
+          throw new TransformException("Error while creating Table_Delimited label: "
+              + e.getMessage());
         }
       }
       return outputs;
@@ -273,9 +300,10 @@ public class Pds4TableTransformer extends DefaultTransformer {
     }
   }
 
-  private void process(URL target, URL dataFile, File outputFile,
+  protected Object process(URL target, URL dataFile, File outputFile,
       ObjectProvider objectAccess, FileAreaObservational fileArea, int index)
           throws TransformException {
+    Object tableObject = null;
     if ((outputFile.exists() && outputFile.length() != 0)
         && !overwriteOutput) {
       log.log(new ToolsLogRecord(ToolsLevel.INFO,
@@ -287,7 +315,6 @@ public class Pds4TableTransformer extends DefaultTransformer {
         log.log(new ToolsLogRecord(ToolsLevel.INFO,
             "No table objects are found in the label.", target.toString()));
       } else {
-        Object tableObject = null;
         try {
           tableObject = tableObjects.get(index-1);
         } catch (IndexOutOfBoundsException ie) {
@@ -295,26 +322,30 @@ public class Pds4TableTransformer extends DefaultTransformer {
               + "' is greater than the maximum number of tables found '"
               + "for data file '" + fileArea.getFile().getFileName() + "': "
               + tableObjects.size());
+        } catch (IllegalArgumentException ae) {
+          
         }
+        PrintWriter fileWriter = null;
         try {
-        out = new PrintWriter(new FileWriter(outputFile));
-        log.log(new ToolsLogRecord(ToolsLevel.INFO,
-            "Transforming table '" + index + "' of file: "
-            + dataFile.toString(), target.toString()));
-        
-        TableReader reader = null;
-        URL url = objectAccess.getRoot();
-        if (url.getProtocol().startsWith("http")) {
-        	String urlStr = url.toString(); 
-        	String urlLocation = urlStr.substring(0, urlStr.lastIndexOf('/'));
-        //	URL datafileUrl = new URL(urlLocation+"/"+dataFile.getName());
-        //	reader = ExporterFactory.getTableReader(tableObject, datafileUrl);
-        	reader = ExporterFactory.getTableReader(tableObject, dataFile);
-        }
-        else 
-           reader = ExporterFactory.getTableReader(tableObject, dataFile);
-        
-        extractTable(reader);
+          fileWriter = new PrintWriter(new FileWriter(outputFile));
+          tableExtractor.setOutput(fileWriter);
+          log.log(new ToolsLogRecord(ToolsLevel.INFO,
+              "Transforming table '" + index + "' of file: "
+              + dataFile.toString(), target.toString()));
+          
+          TableReader reader = null;
+          URL url = objectAccess.getRoot();
+          if (url.getProtocol().startsWith("http")) {
+          	String urlStr = url.toString(); 
+          	String urlLocation = urlStr.substring(0, urlStr.lastIndexOf('/'));
+          //	URL datafileUrl = new URL(urlLocation+"/"+dataFile.getName());
+          //	reader = ExporterFactory.getTableReader(tableObject, datafileUrl);
+          	reader = ExporterFactory.getTableReader(tableObject, dataFile);
+          }
+          else 
+             reader = ExporterFactory.getTableReader(tableObject, dataFile);
+          
+          tableExtractor.extractTable(reader, false);
         } catch (IOException io) {
           throw new TransformException("Cannot open output file \'"
               + outputFile.toString() + "': " + io.getMessage());
@@ -324,7 +355,7 @@ public class Pds4TableTransformer extends DefaultTransformer {
               + "' of file '" + dataFile.toString() + "': "
               + e.getMessage());
         } finally {
-          out.close();
+          fileWriter.close();
         }
         log.log(new ToolsLogRecord(ToolsLevel.INFO,
             "Successfully transformed table '" + index
@@ -332,74 +363,20 @@ public class Pds4TableTransformer extends DefaultTransformer {
               target.toString()));
       }
     }
+    return tableObject;
   }
 
+  /*
   @Override
   public List<File> transformAll(File target, File outputDir, String format)
       throws TransformException {
-    setFormat(format);
-    List<File> outputs = new ArrayList<File>();
     try {
-      ObjectProvider objectAccess = new ObjectAccess(
-          target.getCanonicalFile().getParent());
-      List<FileAreaObservational> fileAreas = Utility.getFileAreas(target);
-      if (fileAreas.isEmpty()) {
-        throw new TransformException("Cannot find File_Area_Observational "
-            + "area in the label: " + target.toString());
-      } else {
-        for (FileAreaObservational fileArea : fileAreas) {
-          List<Object> tables = objectAccess.getTableObjects(fileArea);
-          if (!tables.isEmpty()) {
-            int numTables = tables.size();
-            String dataFilename = fileArea.getFile().getFileName();
-            URL base = null;
-            if (dataFileBasePath != null) {
-              base = dataFileBasePath;
-            } else {
-              base = target.getParentFile().toURI().toURL();
-            }
-            URL dataFile = new URL(base, dataFilename);
-            for (int i = 0; i < numTables; i++) {
-              File outputFile = null;
-              if (objectAccess.getTableObjects(fileArea).size() > 1) {
-                outputFile = Utility.createOutputFile(new File(dataFilename),
-                    outputDir, format, (i+1));
-              } else {
-                outputFile = Utility.createOutputFile(new File(dataFilename),
-                    outputDir, format);
-              }
-              try {
-              process(target.toURI().toURL(), dataFile.toURI().toURL(), outputFile, objectAccess, fileArea,
-                  (i+1));
-              outputs.add(outputFile);
-              } catch (Exception e) {
-                log.log(new ToolsLogRecord(ToolsLevel.SEVERE, e.getMessage(),
-                    target));
-              }
-            }
-          } else {
-            log.log(new ToolsLogRecord(ToolsLevel.INFO,
-                "No table objects are found in the label.", target));
-          }
-        }
-      }
-      return outputs;
-    } catch (ParseException p) {
-      throw new TransformException("Error occurred while parsing label '"
-          + target.toString() + "': " + p.getMessage());
-    } catch (IOException i) {
-      throw new TransformException("Error occurred while resolving the path "
-          + "of the label: " + i.getMessage());
-    } catch (URISyntaxException ue) {
-      throw new TransformException(ue.getMessage());
+      return transformAll(target.toURI().toURL(), outputDir, format);
+    } catch (MalformedURLException u) {
+      throw new TransformException(u.getMessage());
     }
   }
-
-  private void setFormat(String format) {
-    if ("csv".equals(format.toLowerCase())) {
-      this.format = OutputFormat.CSV;
-    }
-  }
+  */
   
   public void setDataFileBasePath(String base) 
       throws MalformedURLException {
@@ -411,193 +388,54 @@ public class Pds4TableTransformer extends DefaultTransformer {
       this.dataFileBasePath = file.toURI().normalize().toURL(); 
     }
   }
-
-  /**
-   * Extracts a table to the output file.
-   *
-   * @param reader the table reader to use for reading data
-   * @throws TransformException
-   */
-  private void extractTable(TableReader reader) throws TransformException {
-    FieldDescription[] fields = reader.getFields();
-    if (fields.length == 0) {
-      throw new TransformException("No fields found in the table.");
-    }
-    int[] displayFields = getSelectedFields(fields);
-
-    int[] fieldLengths = getFieldLengths(fields, displayFields);
-
-    displayHeaders(fields, displayFields, fieldLengths);
-    displayRows(reader, fields, displayFields, fieldLengths);
+  
+  public void setDisplayHeaders(boolean flag) {
+    this.displayHeaders = flag;
   }
-
+  
   /**
-   * Gets an array of field lengths to use for output.
-   *
-   * @param fields an array of field descriptions
-   * @param displayFields an array of field indices to display
-   * @return An array of field lengths.
+   * Creates the Table_Delimited label.
+   * 
+   * @param objectAccess The ObjectAccess object.
+   * @param target The target label.
+   * @param outputsToTables A mapping of the outputs to table objects.
+   * @param outputDir The directory where to write the label.
+   * 
+   * @return A PDS4 Table_Delimited product label.
+   * 
+   * @throws Exception If an error occurred during the label creation
+   * process.
    */
-  private int[] getFieldLengths(FieldDescription[] fields, int[] displayFields) {
-    int[] fieldLengths = new int[displayFields.length];
-    for (int i=0; i < displayFields.length; ++i) {
-      int fieldIndex = displayFields[i];
-      if (format == OutputFormat.CSV) {
-        fieldLengths[i] = 0;
-      } else {
-        fieldLengths[i] = Math.max(fields[fieldIndex].getName().length(),
-            fields[fieldIndex].getLength());
-      }
+  private File create_delimited_table_label(ObjectAccess objectAccess, 
+      URL target, Map<File, Object> outputsToTables, File outputDir)
+          throws Exception {
+    ProductObservational product = objectAccess.getObservationalProduct(
+        FilenameUtils.getName(target.toString()));
+    product.getFileAreaObservationals().clear();
+    TableLabelTransformerFactory factory = TableLabelTransformerFactory.getInstance();
+    for (Map.Entry<File, Object> entry : outputsToTables.entrySet()) {
+      File output = entry.getKey();
+      Object table = entry.getValue();
+      TableLabelTransformer<?> labelTransformer = factory.newInstance(table);
+      TableDelimited tableDelimited = labelTransformer.toTableDelimited(table);
+      FileAreaObservational fao = new FileAreaObservational();
+      fao.getDataObjects().add(tableDelimited);
+      gov.nasa.arc.pds.xml.generated.File file = 
+          new gov.nasa.arc.pds.xml.generated.File();
+      file.setFileName(FilenameUtils.getName(output.toString()));
+      fao.setFile(file);
+      product.getFileAreaObservationals().add(fao);
     }
-    return fieldLengths;
-  }
-
-  /**
-   * Displays the headers of the table.
-   *
-   * @param fields an array of field descriptions
-   * @param displayFields an array of field indices to display
-   * @param fieldLengths an array of field lengths to use for output
-   */
-  private void displayHeaders(FieldDescription[] fields, int[] displayFields, int[] fieldLengths) {
-    for (int i=0; i < displayFields.length; ++i) {
-      if (i > 0) {
-        out.append(fieldSeparator);
-      }
-      FieldDescription field = fields[displayFields[i]];
-      displayJustified(field.getName(), fieldLengths[i], field.getType().isRightJustified());
-    }
-    out.append(lineSeparator);
-  }
-
-  /**
-   * Displays the rows from the table.
-   *
-   * @param reader the table reader for reading rows
-   * @param fields an array of field descriptions
-   * @param displayFields an array of field indices to display
-   * @param fieldLengths an array of field lengths to use for output
-   * @throws TransformException
-   * @throws IOException
-   */
-  private void displayRows(TableReader reader, FieldDescription[] fields,
-      int[] displayFields, int[] fieldLengths) throws TransformException {
-    TableRecord record;
-    try {
-      while ((record = reader.readNext()) != null) {
-        for (int i=0; i < displayFields.length; ++i) {
-          if (i > 0) {
-            out.append(fieldSeparator);
-          }
-          int index = displayFields[i];
-          FieldDescription field = fields[index];
-          displayJustified(record.getString(index+1).trim(), fieldLengths[i],
-              field.getType().isRightJustified());
-        }
-        out.append(lineSeparator);
-      }
-    } catch (IOException e) {
-      throw new TransformException("Cannot read the next table record: "
-          + e.getMessage());
-    }
-  }
-
-  /**
-   * Gets an array of field indices to display. Uses the
-   * field indices specified on the command line, if any,
-   * otherwise all fields will be displayed.
-   *
-   * @param totalFields the total number of fields in the table
-   * @return an array of fields to display
-   * @throws TransformException
-   */
-  private int[] getSelectedFields(FieldDescription[] fields)
-  throws TransformException {
-    int[] displayFields;
-    if (requestedFields == null) {
-      displayFields = new int[fields.length];
-      for (int i=0; i < fields.length; ++i) {
-        displayFields[i] = i;
-      }
-    } else {
-      displayFields = new int[requestedFields.length];
-      for (int i=0; i < requestedFields.length; ++i) {
-        displayFields[i] = findField(requestedFields[i], fields);
-      }
-    }
-    return displayFields;
-  }
-
-  /**
-   * Try to convert a field name or index into a field index.
-   * Prints an error message and exits if the field is not
-   * present in the table.
-   *
-   * @param nameOrIndex the string form of the name or index requested
-   * @param fields the field descriptions for the table fields
-   * @return the index of the requested field
-   * @throws TransformException
-   */
-  private int findField(String nameOrIndex, FieldDescription[] fields)
-  throws TransformException {
-    // First try to convert as an integer.
-    try {
-      return Integer.parseInt(nameOrIndex) - 1;
-    } catch (NumberFormatException ex) {
-      // ignore
-    }
-    // Now try to find a matching field name, ignoring case.
-    for (int i=0; i < fields.length; ++i) {
-      if (nameOrIndex.equalsIgnoreCase(fields[i].getName())) {
-        return i;
-      }
-    }
-    // If we get here, then we couldn't find a matching field.
-    throw new TransformException("Requested field not present in table: "
-        + nameOrIndex);
-  }
-
-  /**
-   * Displays a string, justified in a field.
-   *
-   * @param s the string to display
-   * @param length the field length
-   * @param isRightJustified true, if the value should be right-justified, else left-justified
-   */
-  private void displayJustified(String s, int length, boolean isRightJustified) {
-    String quoteCharacter = "\"";
-    Pattern quoteCharacterPattern = Pattern.compile("\\Q" + quoteCharacter + "\\E");
-    // Double any quote characters.
-    if (s.contains(quoteCharacter)) {
-      Matcher matcher = quoteCharacterPattern.matcher(s);
-      s = matcher.replaceAll(quoteCharacter + quoteCharacter);
-    }
-
-    // If the value is all whitespace or contains the field separator, quote the value.
-    if (s.trim().isEmpty() || s.contains(fieldSeparator)) {
-      s = quoteCharacter + s + quoteCharacter;
-    }
-
-
-    int padding = length - s.length();
-
-    if (isRightJustified) {
-      displayPadding(padding);
-    }
-    out.append(s);
-    if (!isRightJustified) {
-      displayPadding(padding);
-    }
-  }
-
-  /**
-   * Displays a number of padding spaces.
-   *
-   * @param n the number of spaces
-   */
-  private void displayPadding(int n) {
-    for (int i=0; i < n; ++i) {
-      out.append(' ');
-    }
+    // transform the label
+    String labelname = FilenameUtils.getBaseName(target.toString())
+        + "_delimited_csv.xml";
+    ObjectAccess outputProduct = new ObjectAccess(outputDir.toString());
+    outputProduct.setObservationalProduct(labelname.toString(), product, 
+        objectAccess.getXMLLabelContext());
+    File delimitedLabel = new File(outputDir, labelname);
+    log.log(new ToolsLogRecord(ToolsLevel.INFO,
+        "Successfully created Table_Delimited label: "
+            + delimitedLabel.toString(), target.toString()));
+    return delimitedLabel;
   }
 }

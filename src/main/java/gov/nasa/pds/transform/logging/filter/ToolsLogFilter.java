@@ -36,10 +36,12 @@ public class ToolsLogFilter implements Filter {
   public boolean isLoggable(LogRecord record) {
 //    String arcPds = "gov.nasa.arc";
     String jaxb = "javax.xml.bind";
-    String comSunXml = "com.sun.xml.internal.bind";
+    String comSunXmlInternal = "com.sun.xml.internal.bind";
+    String comSunXmlBind = "com.sun.xml.bind";
     if ((record.getLoggerName() != null)
         && (record.getLoggerName().contains(jaxb)
-            || record.getLoggerName().contains(comSunXml)
+            || record.getLoggerName().contains(comSunXmlInternal)
+            || record.getLoggerName().contains(comSunXmlBind)
             )) {
       return false;
     } else {

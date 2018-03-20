@@ -23,6 +23,7 @@ import gov.nasa.pds.imaging.generate.context.ContextMappings;
 import gov.nasa.pds.imaging.generate.label.PDS3Label;
 import gov.nasa.pds.imaging.generate.label.PDSObject;
 import gov.nasa.pds.imaging.generate.readers.ParserType;
+import gov.nasa.pds.imaging.generate.util.TextUtil;
 import gov.nasa.pds.objectAccess.ObjectAccess;
 import gov.nasa.pds.objectAccess.ObjectProvider;
 import gov.nasa.pds.objectAccess.ParseException;
@@ -308,6 +309,7 @@ public class Utility {
         engine.getTemplate("/gov/nasa/pds/transform/util/" + templateName));
     generator.setContext();
     generator.getContext().put("FilenameUtils", FilenameUtils.class);
+    generator.getContext().put("TextUtil", TextUtil.class);
     generator.getContext().put("log", Logger.getLogger(Utility.class.getName()));
     generator.generate(false);
   }

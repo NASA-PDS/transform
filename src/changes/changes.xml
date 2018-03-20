@@ -23,6 +23,17 @@
   </properties>
 
   <body>
+    <release version="1.7.0" date="TBD" description="TBD">
+      <action dev="mcayanan" type="add" issue="PDS-544">
+        Generate a PDS4 Table_Delimited product label for table to CSV transformations. 
+      </action>
+      <action dev="mcayanan" type="update" issue="PDS-545">
+        Updated the API and refactored source code.
+      </action>
+      <action dev="mcayanan" type="fix" issue="PDS-546">
+        Fixed the velocity template to set the correct parsing_standard_id value as well as a field delimiter value
+      </action>
+    </release>
     <release version="1.6.1" date="TBD" description="TBD">
       <action dev="mcaynanan" type="fix" issue="PDS-532">
         Fixed table transformations using the -a flag option.

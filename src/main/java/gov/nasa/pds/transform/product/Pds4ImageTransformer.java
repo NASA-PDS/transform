@@ -16,6 +16,7 @@ package gov.nasa.pds.transform.product;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.net.URL;
 import java.net.URISyntaxException;
@@ -62,8 +63,9 @@ public class Pds4ImageTransformer extends DefaultTransformer {
   }
 
   @Override
-  public File transform(File target, File outputDir, String format,
+  public List<File> transform(File target, File outputDir, String format,
       String dataFile, int index) throws TransformException {
+    
     File result = null;
     try {
       ObjectProvider objectAccess = new ObjectAccess(
@@ -102,11 +104,12 @@ public class Pds4ImageTransformer extends DefaultTransformer {
       throw new TransformException("Problem occurred during "
           + "transformation: " + e.getMessage());
     }
-    return result;
+    return Arrays.asList(result);
+    
   }
 
   @Override
-  public File transform(URL url, File outputDir, String format,
+  public List<File> transform(URL url, File outputDir, String format,
 		  String dataFile, int index) throws TransformException, URISyntaxException, Exception {
 	  File result = null;
 	  File target = null;
@@ -146,7 +149,7 @@ public class Pds4ImageTransformer extends DefaultTransformer {
 		  throw new TransformException("Problem occurred during "
 				  + "transformation: " + e.getMessage());
 	  }
-	  return result;
+	  return Arrays.asList(result);
   }
   
   private void process(File target, ObjectProvider objectAccess,
@@ -296,7 +299,7 @@ public class Pds4ImageTransformer extends DefaultTransformer {
           + "transformation: " + e.getMessage());
     }
   }
- 
+  
   @Override
   public List<File> transformAll(URL url, File outputDir, String format)
       throws TransformException {

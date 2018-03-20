@@ -140,7 +140,7 @@
           <tr><td>png</td><td>Transform an image to a Portable Network Graphics format.</td></tr>
           <tr><td>tif or tiff</td><td>Transform an image to a Tagged Image File Format.</td></tr>
           <tr><td>pnm</td><td>Transform an image to a Portable Any Map format.</td></tr>
-          <tr><td>csv</td><td>Transform a given table into a comma-separated value file.</td></tr>
+          <tr><td>csv</td><td>Transform a given table into a Comma-Separated Value (CSV) file. A PDS4 Table_Delimited Product label is also generated that references the CSV output.</td></tr>
         </table>
                 
         <p>The following table lists the output formats available to only PDS4 target inputs:

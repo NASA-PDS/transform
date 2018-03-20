@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?xml-model href="http://pds.nasa.gov/pds4/schema/released/pds/v1/PDS4_PDS_1000.sch"?>
+<?xml-model href="https://pds.nasa.gov/pds4/pds/v1/PDS4_PDS_1900.sch"
+    schematypens="http://purl.oclc.org/dsdl/schematron"?>
 
 <Product_Observational xmlns="http://pds.nasa.gov/pds4/pds/v1"
     xmlns:pds="http://pds.nasa.gov/pds4/pds/v1"
-    xmlns:dph="http://pds.nasa.gov/pds4/dph/v01"
+    xmlns:dph="http://pds.nasa.gov/pds4/dph/v1"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pds.nasa.gov/pds4/pds/v1 http://pds.nasa.gov/pds4/schema/released/pds/v1/PDS4_PDS_1000.xsd
-                        http://pds.nasa.gov/pds4/dph/v01 http://pds.jpl.nasa.gov/repository/pds4/examples/test_0100/dph_example_dict_0100.xsd">
+    xsi:schemaLocation="http://pds.nasa.gov/pds4/pds/v1 https://pds.nasa.gov/pds4/pds/v1/PDS4_PDS_1900.xsd
+                        http://pds.nasa.gov/pds4/dph/v1 https://pds.nasa.gov/pds4/dph/v1/PDS4_DPH_1700.xsd">
     
     <Identification_Area>
         <logical_identifier>urn:nasa:pds:example.dph.sampleproducts:exampleproducts:tablechar.phx-m-tt-5-wind-vel-dir-v1.0</logical_identifier>
         <version_id>1.0</version_id>
         <title>PHOENIX Mars Wind Experiment</title>
-        <information_model_version>1.0.0.0</information_model_version>
+        <information_model_version>1.9.0.0</information_model_version>
         <product_class>Product_Observational</product_class>
         <Modification_History>
             <Modification_Detail>
@@ -33,16 +34,7 @@
             <stop_date_time>2008-10-27T15:32:50.952Z</stop_date_time>
             <local_mean_solar_time>not applicable</local_mean_solar_time>
             <local_true_solar_time>not applicable</local_true_solar_time>
-        </Time_Coordinates>
-        <Primary_Result_Summary>
-            <type>Null Result</type>
-            <purpose>Science</purpose>
-            <data_regime>Visible</data_regime>
-            <processing_level_id>Raw</processing_level_id>
-            <description>
-                This is where a generic description of the product goes            
-            </description>
-        </Primary_Result_Summary>          
+        </Time_Coordinates>         
         <Investigation_Area>
             <name>PHOENIX</name>
             <type>Mission</type>
@@ -74,7 +66,7 @@
         </Observing_System>       
         <Target_Identification>
             <name>MARS</name>
-            <type>planet</type>
+            <type>Planet</type>
             <description>description of MARS goes here</description>
             <Internal_Reference>
                 <lidvid_reference>urn:nasa:pds:context:target:target.mars::1.0</lidvid_reference>
@@ -124,14 +116,14 @@
             <creation_date_time>2009-04-30T12:12:12Z</creation_date_time>
             <file_size unit="byte">2024</file_size>
             <records>23</records>
-            <md5_checksum>d220dac0d1fe312f3f3b9c824f6ac294</md5_checksum>
+            <md5_checksum>5c1f6d2e359314f5d6a674739c5a9f43</md5_checksum>
        </File>
 
         <Table_Character>
             <local_identifier>PHX-M-TT-5-WIND-VEL-DIR_TABLE_CHAR</local_identifier>
             <offset unit="byte">0</offset>
             <records>23</records>
-            <record_delimiter>carriage-return line-feed</record_delimiter>
+            <record_delimiter>Carriage-Return Line-Feed</record_delimiter>
             
             <Record_Character>
                  <fields>10</fields>
@@ -144,7 +136,7 @@
                      <field_location unit="byte">1</field_location>
                      <data_type>ASCII_Integer</data_type>
                      <field_length unit="byte">3</field_length>
-                     <field_format>I3</field_format>
+                     <field_format>%3d</field_format>
                      <description>PHOENIX Sol number</description>
                  </Field_Character>                                         
                  <Field_Character>
@@ -153,7 +145,7 @@
                      <field_location unit="byte">5</field_location>
                      <data_type>ASCII_Real</data_type>
                      <field_length unit="byte">5</field_length>
-                     <field_format>F5.3</field_format>
+                     <field_format>%5.3f</field_format>
                      <description>Local True Solar Time</description>
                  </Field_Character>
                  <Field_Character>
@@ -162,7 +154,7 @@
                      <field_location unit="byte">11</field_location>
                      <data_type>ASCII_Real</data_type>
                      <field_length unit="byte">9</field_length>
-                     <field_format>F9.5</field_format>
+                     <field_format>%9.5f</field_format>
                      <description>Local Mean Solar Time</description>
                  </Field_Character>
                  <Field_Character>
@@ -171,7 +163,7 @@
                      <field_location unit="byte">21</field_location>
                      <data_type>ASCII_Real</data_type>
                      <field_length unit="byte">5</field_length>
-                     <field_format>F5.3</field_format>
+                     <field_format>%5.3f</field_format>
                      <unit>m/s</unit>
                      <description>Wind speed in meters per second</description>
                  </Field_Character>
@@ -181,7 +173,7 @@
                      <field_location unit="byte">27</field_location>
                      <data_type>ASCII_Real</data_type>
                      <field_length unit="byte">4</field_length>
-                     <field_format>F4.2</field_format>
+                     <field_format>%4.2f</field_format>
                      <unit>m/s</unit>
                      <description>Error in wind speed (positive)</description>
                  </Field_Character>
@@ -191,7 +183,7 @@
                      <field_location unit="byte">32</field_location>
                      <data_type>ASCII_Real</data_type>
                      <field_length unit="byte">7</field_length>
-                     <field_format>F7.5</field_format>
+                     <field_format>%7.5f</field_format>
                      <unit>m/s</unit>
                      <description>Error in wind speed (negative)</description>
                  </Field_Character>
@@ -201,7 +193,7 @@
                      <field_location unit="byte">40</field_location>
                      <data_type>ASCII_Real</data_type>
                      <field_length unit="byte">10</field_length>
-                     <field_format>F10.6</field_format>
+                     <field_format>%10.6f</field_format>
                      <unit>deg</unit>
                      <description>Wind direction in degrees given in
                          meteorological convention (0 = from N,
@@ -214,7 +206,7 @@
                      <field_location unit="byte">51</field_location>
                      <data_type>ASCII_Real</data_type>
                      <field_length unit="byte">8</field_length>
-                     <field_format>F8.4</field_format>
+                     <field_format>%8.4f</field_format>
                      <unit>deg</unit>
                      <description>Error in direction (given in degrees).
                          If dv+ is larger than v, then this is
@@ -226,7 +218,7 @@
                      <field_location unit="byte">60</field_location>
                      <data_type>ASCII_Real</data_type>
                      <field_length unit="byte">7</field_length>
-                     <field_format>F7.1</field_format>
+                     <field_format>%7.1f</field_format>
                      <unit>ms</unit>
                      <description>Exposure time by SSI in milliseconds</description>
                  </Field_Character>
@@ -236,7 +228,7 @@
                      <field_location unit="byte">69</field_location>
                      <data_type>ASCII_File_Name</data_type>
                      <field_length unit="byte">17</field_length>
-                     <field_format>A17</field_format>
+                     <field_format>%17s</field_format>
                      <description>Image filename used for the analysis</description>
                  </Field_Character>                     
             </Record_Character>
@@ -251,7 +243,7 @@
         </File>
         
         <Table_Delimited>
-            <offset unit="BYTE">0</offset>
+            <offset unit="byte">0</offset>
             <parsing_standard_id>PDS DSV 1</parsing_standard_id>
             <description>APXS x-ray spectra in counts as a function
                 of channel number. The number of spectra in the file (maximum of 12)
@@ -263,8 +255,8 @@
                 The last channel, number 512, contains the number of x-rays with energies
                 greater than full scale.</description>
             <records>3</records>
-            <record_delimiter>carriage-return line-feed</record_delimiter>
-            <field_delimiter>comma</field_delimiter>
+            <record_delimiter>Carriage-Return Line-Feed</record_delimiter>
+            <field_delimiter>Comma</field_delimiter>
             <Record_Delimited>
                 <fields>13</fields>
                 <groups>0</groups>
@@ -371,20 +363,20 @@
     </File>
 
     <Table_Binary>
-      <offset unit="BYTE">0</offset>
+      <offset unit="byte">0</offset>
       <records>336</records>
 
       <Record_Binary>
         <fields>20</fields>
-        <groups>1</groups>
-        <record_length unit="BYTE">96</record_length>
+        <groups>0</groups>
+        <record_length unit="byte">96</record_length>
         
         <Field_Binary>
           <name>SCLK_SECONDS</name>
           <field_number>1</field_number>
-          <field_location unit="BYTE">1</field_location>
+          <field_location unit="byte">1</field_location>
           <data_type>UnsignedMSB4</data_type>
-          <field_length unit="BYTE">4</field_length>
+          <field_length unit="byte">4</field_length>
           <unit>second</unit>
           <description>The whole number of seconds recorded by the spacecraft clock at the time the 
                         measurements were taken.</description>
@@ -393,9 +385,9 @@
         <Field_Binary>
           <name>SCLK_SUBSECONDS</name>
           <field_number>2</field_number>
-          <field_location unit="BYTE">5</field_location>
+          <field_location unit="byte">5</field_location>
           <data_type>UnsignedMSB2</data_type>
-          <field_length unit="BYTE">2</field_length>
+          <field_length unit="byte">2</field_length>
           <unit>second/256</unit>
           <description>The number of seconds subrecorded by the spacecraft clock at the time the 
                         measurements were taken. A subsecond is 1/256th of a second.</description>
@@ -404,79 +396,79 @@
         <Field_Binary>
           <name>SPARE</name>
           <field_number>3</field_number>
-          <field_location unit="BYTE">7</field_location>
+          <field_location unit="byte">7</field_location>
           <data_type>UnsignedMSB2</data_type>
-          <field_length unit="BYTE">2</field_length>
+          <field_length unit="byte">2</field_length>
           <description>These two bytes are currently unused.</description>
         </Field_Binary>
         
         <Field_Binary>
           <name>ROTATION_MOTOR_POSITION</name>
           <field_number>4</field_number>
-          <field_location unit="BYTE">9</field_location>
+          <field_location unit="byte">9</field_location>
           <data_type>IEEE754MSBDouble</data_type>
-          <field_length unit="BYTE">8</field_length>
+          <field_length unit="byte">8</field_length>
           <unit>radian</unit>
           <description>The position of the z-axis relative to its hardstop.</description>
         </Field_Binary>
 
         <Field_Binary>
           <name>ROTATION_MOTOR_CURRENT_SENSOR</name>
-          <field_location unit="BYTE">17</field_location>
+          <field_location unit="byte">17</field_location>
           <data_type>IEEE754MSBDouble</data_type>
-          <field_length unit="BYTE">8</field_length>
+          <field_length unit="byte">8</field_length>
           <unit>amp</unit>
           <description>Rotation motor current.</description>
         </Field_Binary>
 
         <Field_Binary>
           <name>REVOLUTION_MOTOR_POSITION</name>
-          <field_location unit="BYTE">25</field_location>
+          <field_location unit="byte">25</field_location>
           <data_type>IEEE754MSBDouble</data_type>
-          <field_length unit="BYTE">8</field_length>
+          <field_length unit="byte">8</field_length>
           <unit>radian</unit>
           <description>The position of the z-axis relative to its hardstop.</description>
         </Field_Binary>
         
         <Field_Binary>
           <name>REVOLUTION_MOTOR_CURRENT_SENSOR</name>
-          <field_location unit="BYTE">33</field_location>
+          <field_location unit="byte">33</field_location>
           <data_type>IEEE754MSBDouble</data_type>
-          <field_length unit="BYTE">8</field_length>
+          <field_length unit="byte">8</field_length>
         </Field_Binary>
         
         <Field_Binary>
           <name>Z_MOTOR_POSITION</name>
-          <field_location unit="BYTE">41</field_location>
+          <field_location unit="byte">41</field_location>
           <data_type>IEEE754MSBDouble</data_type>
-          <field_length unit="BYTE">8</field_length>
+          <field_length unit="byte">8</field_length>
           <unit>mm</unit>
           <description>"The position of the z-axis relative to its hardstop.</description>
         </Field_Binary>
         
         <Field_Binary>
           <name>Z_MOTOR_CURRENT_SENSOR</name>
-          <field_location unit="BYTE">49</field_location>
+          <field_location unit="byte">49</field_location>
           <data_type>IEEE754MSBDouble</data_type>
-          <field_length unit="BYTE">8</field_length>
+          <field_length unit="byte">8</field_length>
           <unit>amp</unit>
           <description>A-axis motor current.</description>
         </Field_Binary>
         
         <Field_Binary>
           <name>TEMPERATURE_SENSOR</name>
-          <field_location unit="BYTE">57</field_location>
+          <field_location unit="byte">57</field_location>
           <data_type>IEEE754MSBDouble</data_type>
-          <field_length unit="BYTE">8</field_length>
+          <field_length unit="byte">8</field_length>
           <unit>degree celcius</unit>
           <description>Temperature reading from RAT PRT.</description>
         </Field_Binary>
         
         <Field_Binary>
           <name>BUTTERFLY_SWITCH_1</name>
-          <field_location unit="BYTE">65</field_location>
+          <field_location unit="byte">65</field_location>
           <data_type>UnsignedMSB4</data_type>
-          <field_length unit="BYTE">4</field_length>
+          <field_length unit="byte">4</field_length>
           <unit>count</unit>
           <description>Cumulative state word for butterfly
             switch #1 - add 1 if the switch is in
@@ -486,9 +478,9 @@
         
         <Field_Binary>
           <name>BUTTERFLY_SWITCH_2</name>
-          <field_location unit="BYTE">69</field_location>
+          <field_location unit="byte">69</field_location>
           <data_type>UnsignedMSB4</data_type>
-          <field_length unit="BYTE">4</field_length>
+          <field_length unit="byte">4</field_length>
           <unit>count</unit>
           <description>Cumulative state word for butterfly
             switch #2 - add 1 if the switch is in
@@ -498,9 +490,9 @@
         
         <Field_Binary>
           <name>RAT_OVER_CURRENT_ALARM</name>
-          <field_location unit="BYTE">73</field_location>
+          <field_location unit="byte">73</field_location>
           <data_type>UnsignedMSB4</data_type>
-          <field_length unit="BYTE">4</field_length>
+          <field_length unit="byte">4</field_length>
           <unit>count</unit>
           <description>Cumulative state word for rotate motor
             over current alarm - add 1 if over
@@ -509,9 +501,9 @@
         
         <Field_Binary>
           <name>Z_AXIS_MOTOR_CONTROLLER_STATUS</name>
-          <field_location unit="BYTE">77</field_location>
+          <field_location unit="byte">77</field_location>
           <data_type>UnsignedByte</data_type>
-          <field_length unit="BYTE">1</field_length>
+          <field_length unit="byte">1</field_length>
           <description>Z-Axis motor controller bit status.
             BIT 0=motor controller active
             BIT 1=motor turning
@@ -580,9 +572,9 @@
         
         <Field_Binary>
           <name>REVOLVE_MOTOR_CONTROLLER_STATUS</name>
-          <field_location unit="BYTE">78</field_location>
+          <field_location unit="byte">78</field_location>
           <data_type>UnsignedByte</data_type>
-          <field_length unit="BYTE">1</field_length>
+          <field_length unit="byte">1</field_length>
           <description>Resolve motor controller bit status.
             BIT 0=motor controller active
             BIT 1=motor turning
@@ -596,9 +588,9 @@
         
         <Field_Binary>
           <name>GRIND_MOTOR_CONTROLLER_STATUS</name>
-          <field_location unit="BYTE">79</field_location>
+          <field_location unit="byte">79</field_location>
           <data_type>UnsignedByte</data_type>
-          <field_length unit="BYTE">1</field_length>
+          <field_length unit="byte">1</field_length>
           <description>Grind motor controller bit status.
             BIT 0=motor controller active
             BIT 1=motor turning
@@ -612,26 +604,26 @@
         
         <Field_Binary>
           <name>SPARE</name>
-          <field_location unit="BYTE">80</field_location>
+          <field_location unit="byte">80</field_location>
           <data_type>UnsignedByte</data_type>
-          <field_length unit="BYTE">1</field_length>
+          <field_length unit="byte">1</field_length>
           <description>Spare field used for padding.</description>
         </Field_Binary>
         
         <Field_Binary>
           <name>ROVER_BUS_VOLTAGE</name>
-          <field_location unit="BYTE">81</field_location>
+          <field_location unit="byte">81</field_location>
           <data_type>IEEE754MSBDouble</data_type>
-          <field_length unit="BYTE">8</field_length>
+          <field_length unit="byte">8</field_length>
           <unit>volt</unit>
           <description>Rover bus voltage.</description>
         </Field_Binary>
         
         <Field_Binary>
           <name>ALGORITHM_STATE</name>
-          <field_location unit="BYTE">89</field_location>
+          <field_location unit="byte">89</field_location>
           <data_type>UnsignedMSB4</data_type>
-          <field_length unit="BYTE">4</field_length>
+          <field_length unit="byte">4</field_length>
           <description>Describes the current state of the RAT.
             Valid values are:
             0=INACTIVE
@@ -673,9 +665,9 @@
         
         <Field_Binary>
           <name>ANOMALY_FLAG</name>
-          <field_location unit="BYTE">93</field_location>
+          <field_location unit="byte">93</field_location>
           <data_type>UnsignedMSB4</data_type>
-          <field_length unit="BYTE">4</field_length>
+          <field_length unit="byte">4</field_length>
           <description>Describes the fault protection condition
             that may have ended the current command
             and produced an anomaly report. This is a

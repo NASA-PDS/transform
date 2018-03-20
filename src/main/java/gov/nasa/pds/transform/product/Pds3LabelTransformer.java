@@ -1,4 +1,4 @@
-// Copyright 2006-2017, by the California Institute of Technology.
+// Copyright 2006-2018, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship acknowledged.
 // Any commercial use must be negotiated with the Office of Technology Transfer
 // at the California Institute of Technology.
@@ -20,6 +20,7 @@ import gov.nasa.pds.transform.util.Utility;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.net.URL;
 import java.net.URISyntaxException;
@@ -44,7 +45,7 @@ public class Pds3LabelTransformer extends DefaultTransformer {
     includePaths = new ArrayList<String>();
   }
 
-  public File transform(URL url, File outputDir, String format)
+  public List<File> transform(URL url, File outputDir, String format)
 		  throws TransformException, URISyntaxException, Exception {
 	  File target = null;
 	  log.log(new ToolsLogRecord(ToolsLevel.INFO,
@@ -54,7 +55,7 @@ public class Pds3LabelTransformer extends DefaultTransformer {
 		  log.log(new ToolsLogRecord(ToolsLevel.INFO,
 				  "Output file already exists. No transformation will occur: "
 						  + outputFile.toString(), url.toString()));
-		  return outputFile;
+		  return Arrays.asList(outputFile);
 	  }
 	 
       if (url.getProtocol().startsWith("http")) {
@@ -70,11 +71,11 @@ public class Pds3LabelTransformer extends DefaultTransformer {
 	  log.log(new ToolsLogRecord(ToolsLevel.INFO,
 			  "Finished transforming PDS3 label '" + url.toString()
 			  + "' to a PDS4 label '" + outputFile + "'", url.toString()));
-	  return outputFile;
+	  return Arrays.asList(outputFile);
   }
 
   @Override
-  public File transform(File target, File outputDir, String format)
+  public List<File> transform(File target, File outputDir, String format)
       throws TransformException {
     log.log(new ToolsLogRecord(ToolsLevel.INFO,
         "Transforming label file: " + target, target));
@@ -83,7 +84,7 @@ public class Pds3LabelTransformer extends DefaultTransformer {
       log.log(new ToolsLogRecord(ToolsLevel.INFO,
           "Output file already exists. No transformation will occur: "
           + outputFile.toString(), target));
-      return outputFile;
+      return Arrays.asList(outputFile);
     }
     try {
       Utility.generate(target, outputFile, "generic-pds3_to_pds4.vm", includePaths);
@@ -94,17 +95,17 @@ public class Pds3LabelTransformer extends DefaultTransformer {
     log.log(new ToolsLogRecord(ToolsLevel.INFO,
         "Finished transforming PDS3 label '" + target
         + "' to a PDS4 label '" + outputFile + "'", target));
-    return outputFile;
+    return Arrays.asList(outputFile);
   }
 
   @Override
-  public File transform(File target, File outputDir, String format,
+  public List<File> transform(File target, File outputDir, String format,
       String dataFile, int index) throws TransformException {
     return transform(target, outputDir, format);
   }
 
   @Override
-  public File transform(URL url, File outputDir, String format, String dataFile, int index) 
+  public List<File> transform(URL url, File outputDir, String format, String dataFile, int index) 
   throws TransformException, URISyntaxException, Exception {
 	  return transform(url, outputDir, format);
   }
@@ -113,7 +114,7 @@ public class Pds3LabelTransformer extends DefaultTransformer {
   public List<File> transformAll(File target, File outputDir, String format)
       throws TransformException {
     List<File> outputs = new ArrayList<File>();
-    outputs.add(transform(target, outputDir, format));
+    outputs.addAll(transform(target, outputDir, format));
     return outputs;
   }
   
@@ -121,7 +122,7 @@ public class Pds3LabelTransformer extends DefaultTransformer {
   public List<File> transformAll(URL url, File outputDir, String format)
 		  throws TransformException, URISyntaxException, Exception {
      List<File> outputs = new ArrayList<File>();
-	 outputs.add(transform(url, outputDir, format));
+	 outputs.addAll(transform(url, outputDir, format));
 	 return outputs;
   }
 

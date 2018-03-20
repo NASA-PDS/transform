@@ -1,4 +1,4 @@
-// Copyright 2006-2015, by the California Institute of Technology.
+// Copyright 2006-2018, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship acknowledged.
 // Any commercial use must be negotiated with the Office of Technology Transfer
 // at the California Institute of Technology.
@@ -43,10 +43,10 @@ public interface ProductTransformer {
    * @throws TransformException If an error occurred during the
    * transformation process.
    */
-  public File transform(File target, File outputDir, String format)
+  public List<File> transform(File target, File outputDir, String format)
   throws TransformException;
   
-  public File transform(URL url, File outputDir, String format)
+  public List<File> transform(URL url, File outputDir, String format)
 		  throws TransformException, URISyntaxException, Exception;
 
   /**
@@ -67,10 +67,10 @@ public interface ProductTransformer {
    * @throws TransformException If an error occurred during the
    * transformation process.
    */
-  public File transform(File target, File outputDir, String format,
+  public List<File> transform(File target, File outputDir, String format,
       String dataFile, int index) throws TransformException;
   
-  public File transform(URL target, File outputDir, String format,
+  public List<File> transform(URL target, File outputDir, String format,
 	      String dataFile, int index) 
   throws TransformException, URISyntaxException, Exception;
 

@@ -318,7 +318,7 @@ public class TransformLauncher {
    */
   private void setLogger() throws IOException {
     Logger logger = Logger.getLogger("");
-    logger.setLevel(Level.ALL);
+    logger.setLevel(Level.INFO);
     Handler []handler = logger.getHandlers();
     for (int i = 0; i < logger.getHandlers().length; i++) {
       logger.removeHandler(handler[i]);
@@ -384,11 +384,11 @@ public class TransformLauncher {
         	for (URL target: targets) {
         		try {
         			if (target.getProtocol().startsWith("http")) {
-        				results.add(pds3Transformer.transform(target, outputDir, formatType,
+        				results.addAll(pds3Transformer.transform(target, outputDir, formatType,
         						dataFileName, index));
         			}
         			else {
-        				results.add(pds3Transformer.transform(new File(target.toURI()), outputDir,
+        				results.addAll(pds3Transformer.transform(new File(target.toURI()), outputDir,
         						formatType, dataFileName, index));
         			}
         		} catch (TransformException t) {
@@ -418,26 +418,24 @@ public class TransformLauncher {
         	for (URL target: targets) {
         		try {
         			if (target.getProtocol().startsWith("http")) {
-        				results.add(pt.transform(target, outputDir, formatType,
+        				results.addAll(pt.transform(target, outputDir, formatType,
         					dataFileName, index));
         			}
         			else {
-        				results.add(pt.transform(new File(target.toURI()), outputDir, formatType,
+        				results.addAll(pt.transform(new File(target.toURI()), outputDir, formatType,
             					dataFileName, index));
         			}
         		} catch (TransformException t) {
-        			t.printStackTrace();
         			log.log(new ToolsLogRecord(ToolsLevel.SEVERE, t.getMessage(), target.toString()));
         		}
         	}
         }
       }
     } catch (TransformException t) {
-    	t.printStackTrace();
       log.log(new ToolsLogRecord(ToolsLevel.SEVERE, t.getMessage()));
     } 
     catch (Exception ex) {
-    	ex.printStackTrace();
+      log.log(new ToolsLogRecord(ToolsLevel.SEVERE, ex.getMessage()));
     }
     return results;
   }
@@ -460,7 +458,6 @@ public class TransformLauncher {
         results = doTransformation();
       }
     } catch (Exception e) {
-      e.printStackTrace();
       System.err.println(e.getMessage());
       System.exit(1);
     }

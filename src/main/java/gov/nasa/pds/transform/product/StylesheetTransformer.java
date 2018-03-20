@@ -21,6 +21,7 @@ import gov.nasa.pds.transform.util.Utility;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.net.URL;
 import java.net.URISyntaxException;
@@ -51,8 +52,8 @@ public class StylesheetTransformer extends DefaultTransformer {
   public StylesheetTransformer(boolean overwrite) {
     super(overwrite);
   }
-
-  public File transform(File target, File outputDir, String format)
+/*
+  public List<File> transform(File target, File outputDir, String format)
   throws TransformException {
     // Use saxon for schematron (i.e. the XSLT generation).
     System.setProperty("javax.xml.transform.TransformerFactory",
@@ -75,7 +76,7 @@ public class StylesheetTransformer extends DefaultTransformer {
             "Successfully transformed target label to the following output: "
             + outputFile.toString(), target));
       }
-      return outputFile;
+      return Arrays.asList(outputFile);
     } catch (TransformerConfigurationException tce) {
       throw new TransformException(
           "Error occurred while loading stylesheet for the '" + format
@@ -87,15 +88,17 @@ public class StylesheetTransformer extends DefaultTransformer {
           + te.getMessage());
     }
   }
-
+  */
+/*
   @Override
-  public File transform(File target, File outputDir, String format,
+  public List<File> transform(File target, File outputDir, String format,
       String dataFile, int index) throws TransformException {
     return transform(target, outputDir, format);
   }
+  */
   
   @Override
-  public File transform(URL url, File outputDir, String format,
+  public List<File> transform(URL url, File outputDir, String format,
 		  String dataFile, int index) throws TransformException, URISyntaxException, Exception {
       try {
 		  SSLContext context = SSLContext.getInstance("TLSv1.2");
@@ -125,7 +128,7 @@ public class StylesheetTransformer extends DefaultTransformer {
               "Successfully transformed target label to the following output: "
               + outputFile.toString(), url.toString()));
         }
-        return outputFile;
+        return Arrays.asList(outputFile);
       } catch (TransformerConfigurationException tce) {
         throw new TransformException(
             "Error occurred while loading stylesheet for the '" + format
@@ -137,20 +140,20 @@ public class StylesheetTransformer extends DefaultTransformer {
             + te.getMessage());
       }
   }
-
+/*
   @Override
   public List<File> transformAll(File target, File outputDir, String format)
       throws TransformException {
     List<File> outputs = new ArrayList<File>();
-    outputs.add(transform(target, outputDir, format));
+    outputs.addAll(transform(target, outputDir, format));
     return outputs;
   }
-  
+*/
   @Override
   public List<File> transformAll(URL url, File outputDir, String format)
       throws TransformException, URISyntaxException, Exception {
     List<File> outputs = new ArrayList<File>();
-    outputs.add(transform(url, outputDir, format));
+    outputs.addAll(transform(url, outputDir, format));
     return outputs;
   }
 }

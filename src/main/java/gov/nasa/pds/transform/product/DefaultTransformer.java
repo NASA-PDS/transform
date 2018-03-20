@@ -1,4 +1,4 @@
-// Copyright 2006-2017, by the California Institute of Technology.
+// Copyright 2006-2018, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship acknowledged.
 // Any commercial use must be negotiated with the Office of Technology Transfer
 // at the California Institute of Technology.
@@ -17,13 +17,10 @@ import gov.nasa.pds.transform.TransformException;
 import gov.nasa.pds.transform.TransformLauncher;
 import gov.nasa.pds.transform.logging.ToolsLevel;
 import gov.nasa.pds.transform.logging.ToolsLogRecord;
-import gov.nasa.pds.transform.util.Utility;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 import java.net.URL;
 import java.net.URISyntaxException;
@@ -66,33 +63,46 @@ public abstract class DefaultTransformer implements ProductTransformer {
   }
 
   @Override
-  public File transform(File target, File outputDir, String format)
+  public List<File> transform(File target, File outputDir, String format)
   throws TransformException {
-    File result = null;
     try {
-      result = transform(target, outputDir, format, "", 1);
+      return transform(target.toURI().toURL(), outputDir, format);
+    } catch (Exception e) {
+      throw new TransformException(e.getMessage());
+    }
+    /*
+    List<File> results = new ArrayList<File>();
+    try {
+      results = transform(target, outputDir, format, "", 1);
     } catch (TransformException te) {
       log.log(new ToolsLogRecord(ToolsLevel.SEVERE, te.getMessage(), target));
     }
-    return result;
+    return results;
+    */
   }
 
   @Override
-  public File transform(URL url, File outputDir, String format)
+  public List<File> transform(URL url, File outputDir, String format)
 		  throws TransformException, URISyntaxException, Exception {
-	  File result = null;
+	  List<File> results = new ArrayList<File>();
 	  try {
-		  result = transform(url, outputDir, format, "", 1);
+		  results = transform(url, outputDir, format, "", 1);
 	  } catch (TransformException te) {
 		  log.log(new ToolsLogRecord(ToolsLevel.SEVERE, te.getMessage(), url.toString()));
 	  }
-	  return result;
+	  return results;
   }
-   
-  public abstract File transform(File target, File outputDir, String format,
-      String dataFile, int index) throws TransformException;
   
-  public abstract File transform(URL url, File outputDir, String format,
+  public List<File> transform(File target, File outputDir, String format,
+      String dataFile, int index) throws TransformException {
+    try {
+      return transform(target.toURI().toURL(), outputDir, format, dataFile, index);
+    } catch (Exception e) {
+      throw new TransformException(e.getMessage());
+    }
+  }
+  
+  public abstract List<File> transform(URL url, File outputDir, String format,
 	      String dataFile, int index) throws TransformException, URISyntaxException, Exception;
   
   @Override
@@ -101,7 +111,7 @@ public abstract class DefaultTransformer implements ProductTransformer {
     List<File> results = new ArrayList<File>();
     for (URL target : targets) {
       try {
-        results.add(transform(target, outputDir, format));
+        results.addAll(transform(target, outputDir, format));
       } catch (TransformException te) {
         log.log(new ToolsLogRecord(ToolsLevel.SEVERE, te.getMessage(), target.toString()));
       }
@@ -110,8 +120,14 @@ public abstract class DefaultTransformer implements ProductTransformer {
   }
   
   @Override
-  public abstract List<File> transformAll(File target, File outputDir, String format)
-  throws TransformException;
+  public List<File> transformAll(File target, File outputDir, String format)
+  throws TransformException {
+    try {
+      return transformAll(target.toURI().toURL(), outputDir, format);
+    } catch (Exception e) {
+      throw new TransformException(e.getMessage());
+    }
+  }
  
   @Override
   public abstract List<File> transformAll(URL url, File outputDir, String format)
