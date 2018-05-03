@@ -104,55 +104,101 @@
     </Target_Identification>
   </Observation_Area>
   #set( $objectNames = $label.getPDSObjectNames() )
+ 
+  ## Support explicit FILE objects (PDS-539)
+  #set ($filePtrObjectMap = {})
+  #createFilePtrToObjectMap($objectNames $label $filePtrObjectMap)
   
   ## Group the objects by data file name
   #set ($ptrObjectMap = {})
   #createPtrToObjectMap ($objectNames $label $ptrObjectMap)
+
+## Support explicit FILE objects (PDS-539)
+#if ($filePtrObjectMap.size()>0)
+  #set ($ptrObjectMap = $filePtrObjectMap)
+#end
   
-  #foreach( $key in $ptrObjectMap.keySet() )
+#foreach( $key in $ptrObjectMap.keySet() )
   <File_Area_Observational>
     <File>
-      <file_name>$key</file_name>
-    </File>
-    #set ($objectNames = $ptrObjectMap.get($key))
-    #foreach( $objectName in $objectNames )
-      #set ( $value = $label.get("PTR_$objectName").toString() )
-      #set ( $value = $value.replaceAll("[\(\)]","") )
-      #set ( $pointer = [] )
-      #foreach ( $element in $value.split(",") )
-        #if ($pointer.add($element))
+      ## Support explicit FILE objects (PDS-539)
+      #if ($filePtrObjectMap.size()>0)
+        #set ( $value = $key )
+        #set ( $value = $value.replaceAll("\(","") )
+        #set ( $value = $value.replaceAll("\)", "") )
+        #set ( $pointer = [] )
+        #foreach ( $element in $value.split(",") )
+          #if ($pointer.add($element))
+          #end
         #end
-      #end
-   
-      #if ( $pointer.size() == 2 )
-        #set ( $dataFile = $pointer[0].toLowerCase() )
-        #if ( $pointer[1].contains("BYTES") )
-          #set( $Integer = 0 )
-          #set ( $dataFileOffset = $Integer.parseInt($pointer[1].split(" ")[0].trim()) - 1 )
-        #else
-          #set( $Integer = 0 )
-          #set ( $offset = $Integer.parseInt($pointer[1].trim()) - 1 )
-          #set ( $dataFileOffset = $offset * $Integer.parseInt($label.RECORD_BYTES.trim()) )
+        #if ( $pointer.size() == 2 )
+          #set ( $dataFile = $pointer[0].toLowerCase() )
+          #if ( $pointer[1].contains("BYTES") )
+            #set( $Integer = 0 )
+            ### TODO TODO TODO: need to recheck this
+            ##set ( $dataFileOffset = $Integer.parseInt($pointer[1].split(" ")[0].trim()) - 1 )
+            #set ( $dataFileOffset = $Integer.parseInt($pointer[1].split(" ")[0].trim()) )
+          #else
+            #set( $Integer = 0 )
+            #set ( $offset = $Integer.parseInt($pointer[1].trim()) - 1 )
+            ### TODO TODO TODO: need to recheck this
+            ###set ( $dataFileOffset = $offset * $Integer.parseInt($label.RECORD_BYTES.trim()) )
+            #set ( $dataFileOffset = $Integer.parseInt($pointer[1].split(" ")[0].trim()) - 1 )
+          #end
+      <file_name>$dataFile</file_name>
         #end
-      #elseif ( $pointer.size() == 0 )
-      
       #else
-        #if ( !$pointer[0].trim().matches("\d+") )
-          #set ( $dataFile = $pointer[0] )
-          #set ( $dataFileOffset = 0 )
-        #else
-          #set( $Integer = 0 )
-          #if ( $pointer[0].contains("BYTES") )
+      <file_name>$key</file_name>
+      #end
+    </File>
+    #if ($filePtrObjectMap.size()>0)
+      #set ($objectNames = [$ptrObjectMap.get($key).getName()])
+    #else
+       #set ($objectNames = $ptrObjectMap.get($key))
+    #end
+   
+    #foreach( $objectName in $objectNames )
+      #if ($filePtrObjectMap.size()==0)
+        #set ( $value = $label.get("PTR_$objectName").toString() )
+        #set ( $value = $value.replaceAll("[\(\)]","") )
+        #set ( $pointer = [] )
+        #foreach ( $element in $value.split(",") )
+          #if ($pointer.add($element))
+          #end
+        #end
+        #if ( $pointer.size() == 2 )
+          #set ( $dataFile = $pointer[0].toLowerCase() )
+          #if ( $pointer[1].contains("BYTES") )
             #set( $Integer = 0 )
             #set ( $dataFileOffset = $Integer.parseInt($pointer[1].split(" ")[0].trim()) - 1 )
           #else
-            #set ( $offset = $Integer.parseInt($pointer[0].trim()) - 1 )
+            #set( $Integer = 0 )
+            #set ( $offset = $Integer.parseInt($pointer[1].trim()) - 1 )
             #set ( $dataFileOffset = $offset * $Integer.parseInt($label.RECORD_BYTES.trim()) )
-            #set ( $dataFile = $FilenameUtils.getBaseName($generate.file_name.toString()).concat(".xml") )
           #end
-        #end
+        #elseif ( $pointer.size() == 0 )  
+        #else
+          #if ( !$pointer[0].trim().matches("\d+") )
+            #set ( $dataFile = $pointer[0] )
+            #set ( $dataFileOffset = 0 )
+          #else
+            #set( $Integer = 0 )
+            #if ( $pointer[0].contains("BYTES") )
+              #set( $Integer = 0 )
+              #set ( $dataFileOffset = $Integer.parseInt($pointer[1].split(" ")[0].trim()) - 1 )
+            #else
+              #set ( $offset = $Integer.parseInt($pointer[0].trim()) - 1 )
+              #set ( $dataFileOffset = $offset * $Integer.parseInt($label.RECORD_BYTES.trim()) )
+              #set ( $dataFile = $FilenameUtils.getBaseName($generate.file_name.toString()).concat(".xml") )
+            #end
+          #end
+        #end    ## end for if ($pointer.size()==2)
+      
+        #set ( $object = $label.get($objectName) )
+      #else   ## for explicit FILE objects (PDS-539)
+        #set ( $object = $ptrObjectMap.get($key) ) 
       #end
-      #set ( $object = $label.get($objectName) )
+            
       #if ( $objectName.endsWith("IMAGE") )
         #mapImage($object $dataFileOffset)
       #elseif ( $objectName.endsWith("TABLE") || $objectName.endsWith("SERIES") )
@@ -247,8 +293,8 @@
           #set ( $childObjects = [] )  
         #end
         
-        #foreach ( $childObject in $childObjects )
-          #if ( $childObject.getName().equals("COLUMN") )
+        #foreach ( $childObject in $childObjects )      
+          #if ( $childObject.getName().equals("COLUMN") )          
             #mapColumn($childObject, $fieldType, $groupType)
           #elseif ( $childObject.getName().equals("CONTAINER") )
             #mapContainer($childObject, $fieldType, $groupType)
@@ -356,7 +402,6 @@
     #end
 
     <groups>$totalGroups</groups>
-    
     
     <group_location unit="byte">$container.START_BYTE</group_location>
     #set ( $value = false )
@@ -646,6 +691,36 @@
       #end
     #end
   #end
+#end
+
+#macro( createFilePtrToObjectMap $objectNames $label $ptrObjectMap )
+  ## PDS-539 TODOT TODO TODO: should be getting pointers from the nested objects
+  #set( $value = false )
+  #set ( $value = $label.FILE)
+  #if ( $!{value} )
+    #if ( $value.class.name.contains("List") )
+      #set ( $files = $value )
+    #else
+      #set ( $files = [$value] )
+    #end
+  #else
+    #set ( $files = [] )
+  #end  
+  
+  #set( $validTypes = ".*IMAGE|.*TABLE|.*SERIES|.*SPREADSHEET" )
+  #set( $ptrObjNames = [ "IMAGE", "TABLE", "SERIES", "SPREADSHEET" ] )
+  #foreach ( $file in $files ) 
+    #set ( $childObjects = $file.getChildObjects() )          
+    #foreach ( $aChild in $childObjects ) 
+      #if ( $aChild.getName().matches($validTypes) && !$aChild.getName().endsWith("PDS4_IMAGE") )
+        #set ( $clist = [])
+        #set ( $swallow = $clist.add($aChild) )
+        #set ( $filename = $file.get("PTR_$aChild.getName()") )
+        $!ptrObjectMap.put($file.get("PTR_$aChild.getName()").toString(), $aChild)
+      #end
+    #end  ## end for
+  #end    
+  ### PDS-539
 #end
 
 #macro( mapImage $object $dataFileOffset)
