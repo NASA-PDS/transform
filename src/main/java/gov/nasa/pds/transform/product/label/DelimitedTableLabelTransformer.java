@@ -49,6 +49,8 @@ TableLabelTransformer<TableDelimited> {
     if (!table.getFieldDelimiter().equals(type.getXmlType())) {
       table.setFieldDelimiter(type.getXmlType());
     }
+    //Should always set the value to 0
+    table.getOffset().setValue(0);
     return table;
   }
 
