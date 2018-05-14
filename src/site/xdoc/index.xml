@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Copyright 2012, by the California Institute of Technology.
+  Copyright 2012-2018, by the California Institute of Technology.
   ALL RIGHTS RESERVED. United States Government Sponsorship acknowledged.
   Any commercial use must be negotiated with the Office of Technology 
   Transfer at the California Institute of Technology.
@@ -24,8 +24,21 @@
 
   <body>
     <section name="About Transform Tool">
-      <p>The Transform Tool project contains software for transforming PDS3 and PDS4 product labels and product data into other formats.
+      <p>The Transform Tool project contains software for transforming PDS3 and PDS4 product labels and product data into other formats. The following transformations are currently supported:
       </p>
+
+      <table>
+        <tr><th>Input</th><th>Output</th><th>Comment</th></tr>
+        <tr><td>PDS3 Image<br/>(8-bit Image)<br/>(16-bit Image)</td><td>GIF, JPEG, JPEG 2000, PNG, PNM, TIFF</td><td>Known limitations:<br/>- Does not yet support product labels referencing multiple images, including explicit FILE objects<br/>- Does not yet support Qube objects</td></tr>
+        <tr><td>PDS3 Table</td><td>CSV<br/>PDS4 Labeled Table</td><td>The resulting product label contains the minimum set of elements in order to be compliant with the PDS4 standards.</td></tr>
+        <tr><td>PDS3 Label</td><td>PDS4 Label</td><td>The resulting product label contains the minimum set of elements in order to be compliant with the PDS4 standards.</td></tr>
+        <tr><td>PDS4 Table<br/>(Table_Binary)<br/>(Table_Character)<br/>(Table_Delimited)</td><td>CSV<br/>PDS4 Labeled Table</td><td>The resulting product label contains the minimum set of elements in order to be compliant with the PDS4 standards.</td></tr>
+        <tr><td>PDS4 2D Image<br/>(Array_2D_Image)</td><td>GIF, JPEG, JPEG 2000, PNG, PNM, TIFF</td><td></td></tr>
+        <tr><td>PDS4 3D Image<br/>(Array_3D_Image)</td><td>GIF, JPEG, JPEG 2000, PNG, PNM, TIFF</td><td>The current implementation defaults to transforming band 1. Will add support for selecting bands in the future.</td></tr>
+        <tr><td>PDS4 3D Hyper-Spectral Cube<br/>(Array_3D_Spectrum)</td><td>GIF, JPEG, JPEG 2000, PNG, PNM, TIFF</td><td>The current implementation defaults to transforming band 1. Will add support for selecting bands in the future.</td></tr>
+        <tr><td>PDS4 Label</td><td>PDS3 Label</td><td>The resulting product label contains the minimum set of elements in order to be compliant with the PDS3 standards.<br/><br/>Known limitations:<br/>- Does not yet support a PDS4 label containing multiple File_Area_Observational elements.<br/>- Does not yet support a PDS4 label containing Group_Field_Delimited elements<br/>- Does not yet support a PDS4 label describing a Qube data object</td></tr>
+        <tr><td>PDS4 Label</td><td>Object Description Language (ODL)<br/>Parameter Value Language (PVL)<br/>HTML</td><td></td></tr>
+      </table>
 
       <p>Please send comments, change requests and bug reports to the <a href="mailto:pds_operator@jpl.nasa.gov">PDS Operator</a> at pds_operator@jpl.nasa.gov.
       </p>
