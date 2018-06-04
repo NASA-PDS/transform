@@ -781,33 +781,33 @@ public class Pds4ToPds3LabelTransformer {
     Value value = null;
     String namePrefix = OBJECT_NAME_PREFIX + counter.toString();
     if (dataObject instanceof TableBase) {
-      Integer offset = new Integer(((TableBase) dataObject).getOffset().getValue());
+      Long offset = new Long(((TableBase) dataObject).getOffset().getValue());
       if (offset != 0) {
         Sequence sequence = new Sequence();
         sequence.add(new TextString(dataFile));
-        sequence.add(new Numeric(Integer.toString(offset.intValue() + 1), "BYTES"));
+        sequence.add(new Numeric(Long.toString(offset.longValue() + 1), "BYTES"));
         value = sequence;
       } else {
         value = new TextString(dataFile);
       }
       identifier = namePrefix + "_TABLE" ;
     } else if (dataObject instanceof TableDelimited) {
-      Integer offset = new Integer(((TableDelimited) dataObject).getOffset().getValue());
+      Long offset = new Long(((TableDelimited) dataObject).getOffset().getValue());
       if (offset != 0) {
         Sequence sequence = new Sequence();
         sequence.add(new TextString(dataFile));
-        sequence.add(new Numeric(Integer.toString(offset.intValue() + 1), "BYTES"));
+        sequence.add(new Numeric(Long.toString(offset.intValue() + 1), "BYTES"));
         value = sequence;
       } else {
         value = new TextString(dataFile);
       }
       identifier = namePrefix + "_SPREADSHEET" ;
     } else if (dataObject instanceof Array) {
-      Integer offset = new Integer(((Array) dataObject).getOffset().getValue());
+      Long offset = new Long(((Array) dataObject).getOffset().getValue());
       if (offset != 0) {
         Sequence sequence = new Sequence();
         sequence.add(new TextString(dataFile));
-        sequence.add(new Numeric(Integer.toString(offset.intValue() + 1), "BYTES"));
+        sequence.add(new Numeric(Long.toString(offset.intValue() + 1), "BYTES"));
         value = sequence;
       } else {
         value = new TextString(dataFile);
