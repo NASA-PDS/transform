@@ -287,39 +287,44 @@ public class ObjectsReport {
 			for (PointerStatement pointer : pointerMap.get(datafile)) {
 				//System.out.println("pointer.getIdentifier().getId() = " + pointer.getIdentifier().getId() + "   datafile = " + datafile);
 				List<ObjectStatement> objects = label.getObjects(
-						pointer.getIdentifier().getId());
-				
-				//System.out.println("objects.size() = " + objects.size());
-				if (!objects.isEmpty()) {
-					// Assume only 1 object was returned for that identifier
-					ObjectStatement object = objects.get(0);
-					hasTables = true;
-					if (printHeader) {
-						writer.println("  Data file: " + datafile + "\n");
-						printHeader = false;
-					}
-					printTableInfo(object, index);
-				}
-				else { // for PDS-539 (to handle nested object and pointers)
-					objects = objMap.get(datafile);
-					//System.out.println("objects.size() = " + objects.size());
+						pointer.getIdentifier().getId());		
+        // PDS-540 check for null objects
+				if (objects!=null) {
 					if (!objects.isEmpty()) {
-						for (ObjectStatement obj: objects) {
-							//System.out.println("object.getIdentifier().getId() = " + obj.getIdentifier().getId());
-							if (obj.getIdentifier().getId().endsWith("SPREADSHEET") ||
-									obj.getIdentifier().getId().endsWith("TABLE") ||
-									obj.getIdentifier().getId().endsWith("SERIES")) {
-								hasTables = true;
-								if (printHeader) {
-									writer.println("  Data file: " + datafile + "\n");
-									printHeader = false;
-								}
-								printTableInfo(obj, index);
-							}
+						// Assume only 1 object was returned for that identifier
+						ObjectStatement object = objects.get(0);
+						hasTables = true;
+						if (printHeader) {
+							writer.println("  Data file: " + datafile + "\n");
+							printHeader = false;
 						}
+						printTableInfo(object, index);
 					}
+					else { // for PDS-539 (to handle nested object and pointers)
+						objects = objMap.get(datafile);
+						// PDS-540 (to handle unfound data objects)
+						if (objects==null) {
+							writer.println("  Error(s) with Table: " + pointer.getIdentifier().getId() + "\n");
+						} 
+						else {
+							if (!objects.isEmpty()) {
+								for (ObjectStatement obj: objects) {
+									if (obj.getIdentifier().getId().endsWith("SPREADSHEET") ||
+											obj.getIdentifier().getId().endsWith("TABLE") ||
+											obj.getIdentifier().getId().endsWith("SERIES")) {
+										hasTables = true;
+										if (printHeader) {
+											writer.println("  Data file: " + datafile + "\n");
+											printHeader = false;
+										}
+										printTableInfo(obj, index);
+									}
+								} // end for
+							} // end if (!objects.isEmpty())
+						} // end else
+					}
+					index++;
 				}
-				index++;
 			}
 		}
 		if (!hasTables) {
