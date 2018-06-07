@@ -135,14 +135,12 @@
           #set ( $dataFile = $pointer[0].toLowerCase() )
           #if ( $pointer[1].contains("BYTES") )
             #set( $Integer = 0 )
-            ### TODO TODO TODO: need to recheck this
-            ##set ( $dataFileOffset = $Integer.parseInt($pointer[1].split(" ")[0].trim()) - 1 )
+            ## TODO TODO TODO: need to recheck this
             #set ( $dataFileOffset = $Integer.parseInt($pointer[1].split(" ")[0].trim()) )
           #else
             #set( $Integer = 0 )
             #set ( $offset = $Integer.parseInt($pointer[1].trim()) - 1 )
-            ### TODO TODO TODO: need to recheck this
-            ###set ( $dataFileOffset = $offset * $Integer.parseInt($label.RECORD_BYTES.trim()) )
+            ## TODO TODO TODO: need to recheck this
             #set ( $dataFileOffset = $Integer.parseInt($pointer[1].split(" ")[0].trim()) - 1 )
           #end
       <file_name>$dataFile</file_name>
@@ -173,8 +171,13 @@
             #set ( $dataFileOffset = $Integer.parseInt($pointer[1].split(" ")[0].trim()) - 1 )
           #else
             #set( $Integer = 0 )
-            #set ( $offset = $Integer.parseInt($pointer[1].trim()) - 1 )
-            #set ( $dataFileOffset = $offset * $Integer.parseInt($label.RECORD_BYTES.trim()) )
+            #set ( $offset = $Integer.parseInt($pointer[1].trim()) - 1 )        
+            ##PDS-541
+            #if($label.RECORD_BYTES)
+              #set ( $dataFileOffset = $offset * $Integer.parseInt($label.RECORD_BYTES.trim()) )
+            #else
+              #set ( $dataFileOffset = $offset )
+            #end
           #end
         #elseif ( $pointer.size() == 0 )  
         #else
@@ -188,7 +191,12 @@
               #set ( $dataFileOffset = $Integer.parseInt($pointer[1].split(" ")[0].trim()) - 1 )
             #else
               #set ( $offset = $Integer.parseInt($pointer[0].trim()) - 1 )
-              #set ( $dataFileOffset = $offset * $Integer.parseInt($label.RECORD_BYTES.trim()) )
+              ##PDS-541
+              #if($label.RECORD_BYTES)
+                #set ( $dataFileOffset = $offset * $Integer.parseInt($label.RECORD_BYTES.trim()) )
+              #else
+                #set ( $dataFileOffset = $offset )
+              #end
               #set ( $dataFile = $FilenameUtils.getBaseName($generate.file_name.toString()).concat(".xml") )
             #end
           #end
@@ -661,7 +669,12 @@
         #else
           #set( $Integer = 0 )
           #set ( $offset = $Integer.parseInt($pointer[1].trim()) - 1 )
-          #set ( $dataFileOffset = $offset * $Integer.parseInt($label.RECORD_BYTES.trim()) )
+          ##PDS-541
+          #if($label.RECORD_BYTES)
+            #set ( $dataFileOffset = $offset * $Integer.parseInt($label.RECORD_BYTES.trim()) )
+          #else
+            #set ( $dataFileOffset = $offset )
+          #end
         #end
       #elseif ( $pointer.size() == 0 )
     
@@ -675,7 +688,12 @@
             #set ( $dataFileOffset = $pointer[0].split(" ")[0] )
           #else
             #set ( $offset = $Integer.parseInt($pointer[0].trim()) - 1 )
-            #set ( $dataFileOffset = $offset * $Integer.parseInt($label.RECORD_BYTES.trim()) )
+            ##PDS-541
+            #if($label.RECORD_BYTES)
+              #set ( $dataFileOffset = $offset * $Integer.parseInt($label.RECORD_BYTES.trim()) )
+            #else
+              #set ( $dataFileOffset = $offset )
+            #end
             #set ( $dataFile = $generate.file_name.toString() )
           #end
         #end

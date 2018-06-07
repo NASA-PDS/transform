@@ -24,6 +24,9 @@
 
   <body>
     <release version="1.8.0" date="TBD" description="TBD">
+      <action dev="hyunlee" type="fix" issue="PDS-541">
+        Gracefully handle errors during PDS3 to PDS4 label transformations
+      </action>
       <action dev="hyunlee" type="fix" issue="PDS-539">
         Support explicit FILE objects for target PDS3 labels.
       </action>
