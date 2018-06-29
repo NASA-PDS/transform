@@ -24,15 +24,18 @@
 
   <body>
     <release version="1.8.0" date="TBD" description="TBD">
+      <action dev="hyunlee" type="fix" issue="PDS-539">
+        Support explicit FILE objects for target PDS3 labels.
+      </action>
       <action dev="hyunlee" type="fix" issue="PDS-540">
         Gracefully handle unfound data objects.
       </action>
       <action dev="hyunlee" type="fix" issue="PDS-541">
         Gracefully handle errors during PDS3 to PDS4 label transformations
       </action>
-      <action dev="hyunlee" type="fix" issue="PDS-539">
-        Support explicit FILE objects for target PDS3 labels.
-      </action>
+      <action dev="mcayanan" type="update" issue="PDS-566">
+        Updated to support new start_bit_location/stop_bit_location elements. Inherited from pds4-tools.
+      </action>      
       <action dev="mcayanan" type="update">
         Updated to support Long offset values. Inherited from pds4-tools.
       </action>

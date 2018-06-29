@@ -13,6 +13,7 @@
 // $Id$
 package gov.nasa.pds.transform.product.label;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,7 +71,7 @@ TableLabelTransformer<TableBinary> {
     tableDelimited.setName(tableBinary.getName());
     //Offset should always be set to 0
     tableDelimited.setOffset(tableBinary.getOffset());
-    tableDelimited.getOffset().setValue(0);
+    tableDelimited.getOffset().setValue(BigInteger.valueOf(0));
     tableDelimited.setParsingStandardId("PDS DSV 1");
     tableDelimited.setRecords(tableBinary.getRecords());
     tableDelimited.setUniformlySampled(tableBinary.getUniformlySampled());
@@ -87,13 +88,13 @@ TableLabelTransformer<TableBinary> {
    */
   public RecordDelimited toRecordDelimited(RecordBinary recordBinary) {
     RecordDelimited recordDelimited = new RecordDelimited();
-    numFields = recordBinary.getFields();
+    numFields = recordBinary.getFields().intValueExact();
     recordDelimited.setGroups(recordBinary.getGroups());
     recordDelimited.getFieldDelimitedsAndGroupFieldDelimiteds().addAll(
         toFieldDelimitedAndGroupFieldDelimiteds(
             recordBinary.getFieldBinariesAndGroupFieldBinaries()));
     //Should we manually count number of Field_Delimited objects???
-    recordDelimited.setFields(numFields);
+    recordDelimited.setFields(BigInteger.valueOf(numFields));
     return recordDelimited;
   }
   

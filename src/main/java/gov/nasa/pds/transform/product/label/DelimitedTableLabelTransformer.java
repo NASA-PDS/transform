@@ -13,6 +13,8 @@
 // $Id$
 package gov.nasa.pds.transform.product.label;
 
+import java.math.BigInteger;
+
 import gov.nasa.arc.pds.xml.generated.TableDelimited;
 import gov.nasa.pds.objectAccess.table.DelimiterType;
 
@@ -50,7 +52,7 @@ TableLabelTransformer<TableDelimited> {
       table.setFieldDelimiter(type.getXmlType());
     }
     //Should always set the value to 0
-    table.getOffset().setValue(0);
+    table.getOffset().setValue(BigInteger.valueOf(0));
     return table;
   }
 

@@ -13,6 +13,7 @@
 // $Id$
 package gov.nasa.pds.transform.product.label;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,7 +59,7 @@ public class CharacterTableLabelTransformer implements TableLabelTransformer<Tab
     tableDelimited.setName(table.getName());
     //Offset should always be set to 0
     tableDelimited.setOffset(table.getOffset());
-    tableDelimited.getOffset().setValue(0);
+    tableDelimited.getOffset().setValue(BigInteger.valueOf(0));
     tableDelimited.setParsingStandardId("PDS DSV 1");
     tableDelimited.setRecords(table.getRecords());
     tableDelimited.setUniformlySampled(table.getUniformlySampled());

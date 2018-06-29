@@ -260,7 +260,7 @@ public class Pds4ToPds3LabelTransformer {
       objectStatement.addStatement(new AttributeStatement(label, "NAME", new TextString(name)));
     }
     TextString interchangeFormat = null;
-    TextString rows = new TextString(Integer.toString(tableBase.getRecords()));
+    TextString rows = new TextString(tableBase.getRecords().toString());
     TextString columns = null;
     TextString rowBytes = null;
     List<Object> fields = new ArrayList<Object>();
@@ -269,9 +269,9 @@ public class Pds4ToPds3LabelTransformer {
       interchangeFormat = new TextString("ASCII");
       TableCharacter tc = (TableCharacter) tableBase;
       if (tc.getRecordCharacter() != null) {
-        columns = new TextString(Integer.toString(tc.getRecordCharacter().getFields()));
+        columns = new TextString(tc.getRecordCharacter().getFields().toString());
         if (tc.getRecordCharacter().getRecordLength() != null) {
-          rowBytes = new TextString(Integer.toString(tc.getRecordCharacter().getRecordLength().getValue()));
+          rowBytes = new TextString(tc.getRecordCharacter().getRecordLength().getValue().toString());
         } else {
           throw new TransformException("Missing 'record_length' element in the Record_Character area.");
         }
@@ -280,11 +280,11 @@ public class Pds4ToPds3LabelTransformer {
     } else if (tableBase instanceof TableBinary) {
       interchangeFormat = new TextString("BINARY");
       TableBinary tb = (TableBinary) tableBase;
-      columns = new TextString(Integer.toString(tb.getRecordBinary().getFields()));
+      columns = new TextString(tb.getRecordBinary().getFields().toString());
       if (tb.getRecordBinary() != null) {
-        columns = new TextString(Integer.toString(tb.getRecordBinary().getFields()));
+        columns = new TextString(tb.getRecordBinary().getFields().toString());
         if (tb.getRecordBinary().getRecordLength() != null) {
-          rowBytes = new TextString(Integer.toString(tb.getRecordBinary().getRecordLength().getValue()));
+          rowBytes = new TextString(tb.getRecordBinary().getRecordLength().getValue().toString());
         } else {
           throw new TransformException("Missing 'record_length' element in the Record_Binary area.");
         }
@@ -329,7 +329,7 @@ public class Pds4ToPds3LabelTransformer {
       table.addStatement(new AttributeStatement(label, "NAME", new TextString(name)));
     }
     TextString interchangeFormat = null;
-    TextString rows = new TextString(Integer.toString(tableDelimited.getRecords()));
+    TextString rows = new TextString(tableDelimited.getRecords().toString());
     TextString columns = null;
     TextString rowBytes = null;
     TextString delimiter = null;
@@ -348,11 +348,11 @@ public class Pds4ToPds3LabelTransformer {
               + tableDelimited.getFieldDelimiter() + "'.");
     }
     if (tableDelimited.getRecordDelimited() != null) {
-      columns = new TextString(Integer.toString(
-          tableDelimited.getRecordDelimited().getFields()));
+      columns = new TextString(
+          tableDelimited.getRecordDelimited().getFields().toString());
       if (tableDelimited.getRecordDelimited().getMaximumRecordLength() != null) {
-        rowBytes = new TextString(Integer.toString(
-            tableDelimited.getRecordDelimited().getMaximumRecordLength().getValue()));
+        rowBytes = new TextString(tableDelimited.getRecordDelimited()
+            .getMaximumRecordLength().getValue().toString());
       } else {
         //Default to 10,000 for now since ROW_BYTES is required in PDS3
         rowBytes = new TextString("10000");
@@ -422,19 +422,19 @@ public class Pds4ToPds3LabelTransformer {
     if (field instanceof FieldCharacter) {
       FieldCharacter fc = (FieldCharacter) field;
       if (fc.getFieldLocation() != null) {
-        startByte = new TextString(Integer.toString(fc.getFieldLocation().getValue()));
+        startByte = new TextString(fc.getFieldLocation().getValue().toString());
       }
       if (fc.getFieldLength() != null) {
-        bytes = new TextString(Integer.toString(fc.getFieldLength().getValue()));
+        bytes = new TextString(fc.getFieldLength().getValue().toString());
       }
       dataType = fc.getDataType();
     } else if (field instanceof FieldBinary) {
       FieldBinary fb = (FieldBinary) field;
       if (fb.getFieldLocation() != null) {
-        startByte = new TextString(Integer.toString(fb.getFieldLocation().getValue()));
+        startByte = new TextString(fb.getFieldLocation().getValue().toString());
       }
       if (fb.getFieldLength() != null) {
-        bytes = new TextString(Integer.toString(fb.getFieldLength().getValue()));
+        bytes = new TextString(fb.getFieldLength().getValue().toString());
       }
       dataType = fb.getDataType();
       packedDataFields = fb.getPackedDataFields();
@@ -445,7 +445,7 @@ public class Pds4ToPds3LabelTransformer {
       //to the PDS4 max field length, but this is an optional keyword.
       //Default to 256 bytes for now if the max field length is not defined.
       if (fd.getMaximumFieldLength() != null) {
-        bytes = new TextString(Integer.toString(fd.getMaximumFieldLength().getValue())); 
+        bytes = new TextString(fd.getMaximumFieldLength().getValue().toString()); 
       } else {
         bytes = new TextString("256");
         log.log(new ToolsLogRecord(ToolsLevel.WARNING, 
@@ -492,9 +492,15 @@ public class Pds4ToPds3LabelTransformer {
         log.log(new ToolsLogRecord(ToolsLevel.SEVERE, 
             "Field_Bit element has an invalid data type '" + fieldBit.getDataType(), pds4Label));
       }
-      TextString startBit = new TextString(Integer.toString(fieldBit.getStartBit()));
-      
-      int bits = (fieldBit.getStopBit() - fieldBit.getStartBit()) + 1;
+      int bits = 1;
+      TextString startBit = new TextString("0");
+      if (fieldBit.getStartBit() != null && fieldBit.getStopBit() != null) {
+        startBit = new TextString(fieldBit.getStartBit().toString());
+        bits = (fieldBit.getStopBit().intValueExact() - fieldBit.getStartBit().intValueExact()) + 1;
+      } else if (fieldBit.getStartBitLocation() != null && fieldBit.getStartBitLocation() != null) {
+        startBit = new TextString(fieldBit.getStartBitLocation().toString());
+        bits = (fieldBit.getStopBitLocation().intValueExact() - fieldBit.getStartBitLocation().intValueExact()) + 1;
+      }
       OrderedObjectStatement bitColumn = new OrderedObjectStatement(label, "BIT_COLUMN");
       bitColumn.addStatement(new AttributeStatement(label, "NAME", name));
       bitColumn.addStatement(new AttributeStatement(label, "DATA_TYPE", bitDataType));
@@ -524,11 +530,11 @@ public class Pds4ToPds3LabelTransformer {
     if (group instanceof GroupFieldCharacter) {
       GroupFieldCharacter fc = (GroupFieldCharacter) group;
       if (fc.getGroupLocation() != null) {
-        startByte = new TextString(Integer.toString(fc.getGroupLocation().getValue()));
+        startByte = new TextString(fc.getGroupLocation().getValue().toString());
       }
-      if (fc.getGroupLength() != null && fc.getRepetitions() != 0) {
-        bytes = new TextString(Integer.toString(fc.getGroupLength().getValue() / fc.getRepetitions()));
-        repetitions = new TextString(Integer.toString(fc.getRepetitions()));
+      if (fc.getGroupLength() != null && fc.getRepetitions().intValueExact() != 0) {
+        bytes = new TextString(fc.getGroupLength().getValue().divide(fc.getRepetitions()).toString());
+        repetitions = new TextString(fc.getRepetitions().toString());
       }
       if (fc.getName() != null) {
         name = new TextString(fc.getName());
@@ -537,11 +543,11 @@ public class Pds4ToPds3LabelTransformer {
     } else if (group instanceof GroupFieldBinary) {
       GroupFieldBinary fb = (GroupFieldBinary) group;
       if (fb.getGroupLocation() != null) {
-        startByte = new TextString(Integer.toString(fb.getGroupLocation().getValue()));
+        startByte = new TextString(fb.getGroupLocation().getValue().toString());
       }
-      if (fb.getGroupLength() != null && fb.getRepetitions() != 0) {
-        bytes = new TextString(Integer.toString(fb.getGroupLength().getValue() / fb.getRepetitions()));
-        repetitions = new TextString(Integer.toString(fb.getRepetitions()));
+      if (fb.getGroupLength() != null && fb.getRepetitions().intValueExact() != 0) {
+        bytes = new TextString(fb.getGroupLength().getValue().divide(fb.getRepetitions()).toString());
+        repetitions = new TextString(fb.getRepetitions().toString());
       }
       if (fb.getName() != null) {
         name = new TextString(fb.getName());
@@ -626,9 +632,9 @@ public class Pds4ToPds3LabelTransformer {
       Array2DImage array2DImage = (Array2DImage) array;
       for (AxisArray axis : array2DImage.getAxisArraies()) {
         if ("Line".equalsIgnoreCase(axis.getAxisName())) {
-          lines = axis.getElements();
+          lines = axis.getElements().intValueExact();
         } else if ("Sample".equalsIgnoreCase(axis.getAxisName())) {
-          samples = axis.getElements();
+          samples = axis.getElements().intValueExact();
         }
       }
     } else if (array instanceof Array3DImage) {
@@ -637,9 +643,9 @@ public class Pds4ToPds3LabelTransformer {
       image.addStatement(new AttributeStatement(label, "BAND_STORAGE_TYPE", new TextString("BAND_SEQUENTIAL")));
       for (AxisArray axis : array3DImage.getAxisArraies()) {
         if ("Line".equalsIgnoreCase(axis.getAxisName())) {
-          lines = axis.getElements();
+          lines = axis.getElements().intValueExact();
         } else if ("Sample".equalsIgnoreCase(axis.getAxisName())) {
-          samples = axis.getElements();
+          samples = axis.getElements().intValueExact();
         }
       }
     } else if (array instanceof Array3DSpectrum) {
@@ -647,11 +653,11 @@ public class Pds4ToPds3LabelTransformer {
       image.addStatement(new AttributeStatement(label, "BAND_STORAGE_TYPE", new TextString("BAND_SEQUENTIAL")));
       for (AxisArray axis : array3DSpectrum.getAxisArraies()) {
         if ("Line".equalsIgnoreCase(axis.getAxisName())) {
-          lines = axis.getElements();
+          lines = axis.getElements().intValueExact();
         } else if ("Sample".equalsIgnoreCase(axis.getAxisName())) {
-          samples = axis.getElements();
+          samples = axis.getElements().intValueExact();
         } else if ("Band".equalsIgnoreCase(axis.getAxisName())) {
-          image.addStatement(new AttributeStatement(label, "BANDS", new TextString(Integer.toString(axis.getElements()))));
+          image.addStatement(new AttributeStatement(label, "BANDS", new TextString(axis.getElements().toString())));
         }
       }
     }
@@ -781,7 +787,7 @@ public class Pds4ToPds3LabelTransformer {
     Value value = null;
     String namePrefix = OBJECT_NAME_PREFIX + counter.toString();
     if (dataObject instanceof TableBase) {
-      Long offset = new Long(((TableBase) dataObject).getOffset().getValue());
+      Long offset = new Long(((TableBase) dataObject).getOffset().getValue().longValueExact());
       if (offset != 0) {
         Sequence sequence = new Sequence();
         sequence.add(new TextString(dataFile));
@@ -792,7 +798,7 @@ public class Pds4ToPds3LabelTransformer {
       }
       identifier = namePrefix + "_TABLE" ;
     } else if (dataObject instanceof TableDelimited) {
-      Long offset = new Long(((TableDelimited) dataObject).getOffset().getValue());
+      Long offset = new Long(((TableDelimited) dataObject).getOffset().getValue().longValueExact());
       if (offset != 0) {
         Sequence sequence = new Sequence();
         sequence.add(new TextString(dataFile));
@@ -803,7 +809,7 @@ public class Pds4ToPds3LabelTransformer {
       }
       identifier = namePrefix + "_SPREADSHEET" ;
     } else if (dataObject instanceof Array) {
-      Long offset = new Long(((Array) dataObject).getOffset().getValue());
+      Long offset = new Long(((Array) dataObject).getOffset().getValue().longValueExact());
       if (offset != 0) {
         Sequence sequence = new Sequence();
         sequence.add(new TextString(dataFile));
