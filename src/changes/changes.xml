@@ -33,6 +33,9 @@
       <action dev="hyunlee" type="fix" issue="PDS-541">
         Gracefully handle errors during PDS3 to PDS4 label transformations
       </action>
+      <action dev="mcayanan" type="update" issue="PDS-560">
+        Updated velocity template to correctly map bit columns to field bit elements for PDS3 to PDS4 label transformations.
+      </action>      
       <action dev="mcayanan" type="update" issue="PDS-566">
         Updated to support new start_bit_location/stop_bit_location elements. Inherited from pds4-tools.
       </action>      

@@ -457,19 +457,18 @@
     <group_location unit="byte">$column.START_BYTE</group_location>
     <group_length unit="byte">$column.BYTES</group_length>
     <$fieldType>
+      #set ( $bitColumns = false )
+      #getBitColumns($column $fieldType $bitColumns)
       <name>$column.NAME.toString().toLowerCase()</name>
       <field_location unit="byte">1</field_location>
-      #getDataType ($column $fieldType $column.ITEM_BYTES)
+      #if ( $!{bitColumns} && $bitColumns.size() > 0 )
+      <data_type>UnsignedBitString</data_type>
+      #else
+        #getDataType ($column $fieldType $column.ITEM_BYTES)
+      #end  
       <field_length unit="byte">$column.ITEM_BYTES</field_length>
       #if ( $fieldType.equals("Field_Binary") )
-        #set( $value = false )
-        #set ( $value = $column.BIT_COLUMN )
-        #if ( $!{value} )
-          #if ( $value.class.name.contains("List") )
-            #set ( $bitColumns = $value )
-          #else
-            #set ( $bitColumns = [$value] )
-          #end
+        #if ( $!{bitColumns} )
       <Packed_Data_Fields>
         <bit_fields>$bitColumns.size()</bit_fields>
         #mapBitColumns($bitColumns $groupType)
@@ -482,19 +481,18 @@
   </$groupType>
   #else
   <$fieldType>
+    #set ( $bitColumns = false )
+    #getBitColumns($column $fieldType $bitColumns)  
     <name>$column.NAME.toString().toLowerCase()</name>
     <field_location unit="byte">$column.START_BYTE</field_location>
-    #getDataType ($column $fieldType $column.BYTES)
+    #if ( $!{bitColumns} && $bitColumns.size() > 0 )
+    <data_type>UnsignedBitString</data_type>
+    #else
+      #getDataType ($column $fieldType $column.BYTES)
+    #end
     <field_length unit="byte">$column.BYTES</field_length>
     #if ( $fieldType.equals("Field_Binary") )
-      #set( $value = false )
-      #set ( $value = $column.BIT_COLUMN )
-      #if ( $!{value} )
-        #if ( $value.class.name.contains("List") )
-          #set ( $bitColumns = $value )
-        #else
-          #set ( $bitColumns = [$value] )
-        #end
+      #if ( $!{bitColumns} )
         <Packed_Data_Fields>
         <bit_fields>$bitColumns.size()</bit_fields>
         #mapBitColumns($bitColumns)
@@ -638,16 +636,30 @@
   #foreach ( $bitColumn in $bitColumns )
   <Field_Bit>
     <name>$bitColumn.NAME.toString().toLowerCase()</name>
-    <start_bit>$bitColumn.START_BIT</start_bit>
+    <start_bit_location>$bitColumn.START_BIT</start_bit_location>
     #set( $Integer = 0 )
     #set ( $stopBit = $Integer.parseInt($bitColumn.START_BIT.toString()) + $Integer.parseInt($bitColumn.BITS.toString()) - 1 )
-    <stop_bit>$stopBit</stop_bit>
+    <stop_bit_location>$stopBit</stop_bit_location>
     #if ( $bitColumn.BIT_DATA_TYPE.toString().contains("UNSIGNED") )
       <data_type>UnsignedBitString</data_type>
     #else
       <data_type>SignedBitString</data_type>
     #end
   </Field_Bit>
+  #end
+#end
+
+#macro( getBitColumns $column $fieldType $bitColumns)
+  #if ( $fieldType.equals("Field_Binary") )
+    #set( $value = false )
+    #set ( $value = $column.BIT_COLUMN )
+    #if ( $!{value} )
+      #if ( $value.class.name.contains("List") )
+        #set ( $bitColumns = $value )
+      #else
+        #set ( $bitColumns = [$value] )
+      #end
+    #end
   #end
 #end
 
