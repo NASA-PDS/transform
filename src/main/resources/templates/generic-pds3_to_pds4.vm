@@ -177,6 +177,7 @@
               #set ( $dataFileOffset = $offset * $Integer.parseInt($label.RECORD_BYTES.trim()) )
             #else
               #set ( $dataFileOffset = $offset )
+              $log.severe("Could not find RECORD_BYTES in the label, which is needed to calculate the actual byte location for ^$objectName, which has a record offset value.")
             #end
           #end
         #elseif ( $pointer.size() == 0 )  
@@ -196,6 +197,7 @@
                 #set ( $dataFileOffset = $offset * $Integer.parseInt($label.RECORD_BYTES.trim()) )
               #else
                 #set ( $dataFileOffset = $offset )
+                $log.severe("Could not find RECORD_BYTES in the label, which is needed to calculate the actual byte location for ^$objectName, which has a record offset value.")
               #end
               #set ( $dataFile = $FilenameUtils.getBaseName($generate.file_name.toString()).concat(".xml") )
             #end
@@ -686,6 +688,7 @@
             #set ( $dataFileOffset = $offset * $Integer.parseInt($label.RECORD_BYTES.trim()) )
           #else
             #set ( $dataFileOffset = $offset )
+            ##$log.severe("Could not find RECORD_BYTES in the label, which is needed to calculate the actual byte location for ^$objectName, which has a record offset value.")
           #end
         #end
       #elseif ( $pointer.size() == 0 )
@@ -705,6 +708,7 @@
               #set ( $dataFileOffset = $offset * $Integer.parseInt($label.RECORD_BYTES.trim()) )
             #else
               #set ( $dataFileOffset = $offset )
+              ##$log.severe("Could not find RECORD_BYTES in the label, which is needed to calculate the actual byte location for ^$objectName, which has a record offset value.")          
             #end
             #set ( $dataFile = $generate.file_name.toString() )
           #end

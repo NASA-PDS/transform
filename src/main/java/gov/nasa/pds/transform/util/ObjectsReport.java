@@ -304,7 +304,8 @@ public class ObjectsReport {
 						objects = objMap.get(datafile);
 						// PDS-540 (to handle unfound data objects)
 						if (objects==null) {
-							writer.println("  Error(s) with Table: " + pointer.getIdentifier().getId() + "\n");
+							writer.println("  Error(s) with Table: " + pointer.getIdentifier().getId());
+							writer.println("  Could not find " + pointer.getIdentifier().getId() + " in the label file.\n");
 						} 
 						else {
 							if (!objects.isEmpty()) {

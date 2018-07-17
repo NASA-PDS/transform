@@ -41,7 +41,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-//import java.io.FileNotFoundException;
 
 import org.apache.commons.io.FilenameUtils;
 
@@ -189,12 +188,22 @@ public class Pds4TableTransformer extends DefaultTransformer {
 				} else {
 					base = Utility.getParent(url);
 				}
-
 				URL dataFile = new URL(base, dataFileName);
 				
-				// PDS-540
-				if (!exists(dataFile))
-					throw new TransformException("No table object '" + index + "' is found in the label. Please check the label.");	
+				// PDS-540 & PDS-550
+				if (!exists(dataFile)) {
+					boolean hasUppercase = !dataFileName.equals(dataFileName.toLowerCase());
+					boolean hasLowercase = !dataFileName.equals(dataFileName.toUpperCase());
+					if (hasUppercase)
+						dataFileName = dataFileName.toLowerCase();
+					if (hasLowercase)
+						dataFileName = dataFileName.toUpperCase();								
+					dataFile = new URL(base, dataFileName);
+
+					if (!exists(dataFile)) {				
+						throw new TransformException("No table object '" + index + "' is found in the label. Please check the label.");	
+					}
+				}
 					
 				File outputFile = Utility.createOutputFile(new File(dataFileName),
 						outputDir, format);
@@ -281,13 +290,23 @@ public class Pds4TableTransformer extends DefaultTransformer {
 										outputDir, format);
 							}
 							
-						  // PDS-540
+						  // PDS-540 & PDS-550
 							if (!exists(dataFile)) {
-								log.log(new ToolsLogRecord(ToolsLevel.ERROR,
-										"No table object '" + i + "' is found in the label. Please check the label.", url.toString()));
-								continue;
+								boolean hasUppercase = !dataFilename.equals(dataFilename.toLowerCase());
+								boolean hasLowercase = !dataFilename.equals(dataFilename.toUpperCase());
+								if (hasUppercase)
+									dataFilename = dataFilename.toLowerCase();
+								if (hasLowercase)
+									dataFilename = dataFilename.toUpperCase();
+								dataFile = new URL(base, dataFilename);
+
+								if (!exists(dataFile)) {
+									log.log(new ToolsLogRecord(ToolsLevel.ERROR,
+											"No table object '" + i + "' is found in the label. Please check the label.", url.toString()));
+									continue;
+								}
 							}
-							
+
 							try {
 								Object tableObject = process(url, dataFile, outputFile, objectAccess, fileArea,
 										(i+1));
