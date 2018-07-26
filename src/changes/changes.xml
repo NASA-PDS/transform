@@ -24,15 +24,27 @@
 
   <body>
     <release version="1.8.0" date="TBD" description="TBD">
+      <action dev="slevoe" type="fix" issue="PDS-493">
+        Fixed an issue with multi-line comments in PDS3 labels. Inherited from VICARIO library.
+      </action>
+      <action dev="slevoe" type="fix" issue="PDS-500">
+        Fixed an issue with parenthesis characters in descriptions when reading PDS3 labels. Inherited from VICARIO library.
+      </action>    
       <action dev="hyunlee" type="fix" issue="PDS-539">
-        Support explicit FILE objects for target PDS3 labels.
+        Support explicit FILE objects for target PDS3 labels. Inherited from generate.
       </action>
       <action dev="hyunlee" type="fix" issue="PDS-540">
         Gracefully handle unfound data objects.
       </action>
       <action dev="hyunlee" type="fix" issue="PDS-541">
-        Gracefully handle errors during PDS3 to PDS4 label transformations
+        Gracefully handle missing RECORD_BYTES during PDS3 to PDS4 label transformations
       </action>
+      <action dev="slevoe" type="fix" issue="PDS-551">
+        Fixed an issue where it was not transforming MRO HiRISE products properly. Inherited from VICARIO library.
+      </action>
+      <action dev="slevoe" type="update" issue="PDS-553">
+        Updated to support SFDU Statements in PDS3 labels. Inherited from VICARIO library.
+      </action>            
       <action dev="mcayanan" type="update" issue="PDS-560">
         Updated velocity template to correctly map bit columns to field bit elements for PDS3 to PDS4 label transformations.
       </action>      
