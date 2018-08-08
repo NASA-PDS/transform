@@ -253,7 +253,7 @@ public class ObjectsReport {
 			}
 		}
 
-		// for PDS-539)
+		// for PDS-539
 		Map<String, List<ObjectStatement>> objMap =
 				new LinkedHashMap<String, List<ObjectStatement>>();
 		List<ObjectStatement> fileObjects = label.getObjects("FILE");
@@ -318,7 +318,8 @@ public class ObjectsReport {
 											writer.println("  Data file: " + datafile + "\n");
 											printHeader = false;
 										}
-										printTableInfo(obj, index);
+										// index should be always '1' for explicit FILE objects
+										printTableInfo(obj, 1);
 									}
 								} // end for
 							} // end if (!objects.isEmpty())
