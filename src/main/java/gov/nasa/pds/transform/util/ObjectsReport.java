@@ -113,7 +113,6 @@ public class ObjectsReport {
 	 * @throws Exception If there was an error while parsing the label.
 	 */
 	public void list(File label) throws Exception {
-		//System.out.println("label = " + label.getName());
 		if ("xml".equalsIgnoreCase(FilenameUtils.getExtension(label.getName()))) {
 			List<FileAreaObservational> fileAreas =
 					new ArrayList<FileAreaObservational>();
@@ -130,7 +129,6 @@ public class ObjectsReport {
 		} else {
 			Label pds3Label = null;
 			try {
-				//System.out.println("in ObejctsReport.list().... before calling Utility.parsePds3Label....");
 				pds3Label = Utility.parsePds3Label(label);
 			} catch (Exception e) {
 				throw new Exception("Exception occurred while parsing label: "
@@ -285,7 +283,6 @@ public class ObjectsReport {
 		for (String datafile : pointerMap.keySet()) {
 			boolean printHeader = true;
 			for (PointerStatement pointer : pointerMap.get(datafile)) {
-				//System.out.println("pointer.getIdentifier().getId() = " + pointer.getIdentifier().getId() + "   datafile = " + datafile);
 				List<ObjectStatement> objects = label.getObjects(
 						pointer.getIdentifier().getId());		
         // PDS-540 check for null objects
@@ -306,6 +303,7 @@ public class ObjectsReport {
 						if (objects==null) {
 							writer.println("  Error(s) with Table: " + pointer.getIdentifier().getId());
 							writer.println("  Could not find " + pointer.getIdentifier().getId() + " in the label file.\n");
+							index--;
 						} 
 						else {
 							if (!objects.isEmpty()) {

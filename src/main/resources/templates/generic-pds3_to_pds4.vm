@@ -112,13 +112,13 @@
   ## Group the objects by data file name
   #set ($ptrObjectMap = {})
   #createPtrToObjectMap ($objectNames $label $ptrObjectMap)
-
 ## Support explicit FILE objects (PDS-539)
 #if ($filePtrObjectMap.size()>0)
   #set ($ptrObjectMap = $filePtrObjectMap)
 #end
-  
+
 #foreach( $key in $ptrObjectMap.keySet() )
+#if ($key)
   <File_Area_Observational>
     <File>
       ## Support explicit FILE objects (PDS-539)
@@ -149,10 +149,11 @@
       <file_name>$key</file_name>
       #end
     </File>
+    
     #if ($filePtrObjectMap.size()>0)
       #set ($objectNames = [$ptrObjectMap.get($key).getName()])
     #else
-       #set ($objectNames = $ptrObjectMap.get($key))
+      #set ($objectNames = $ptrObjectMap.get($key))
     #end
    
     #foreach( $objectName in $objectNames )
@@ -166,6 +167,7 @@
         #end
         #if ( $pointer.size() == 2 )
           #set ( $dataFile = $pointer[0].toLowerCase() )
+          ##<DAT_FILE>$dataFile</DAT_FILE>
           #if ( $pointer[1].contains("BYTES") )
             #set( $Integer = 0 )
             #set ( $dataFileOffset = $Integer.parseInt($pointer[1].split(" ")[0].trim()) - 1 )
@@ -202,13 +204,12 @@
               #set ( $dataFile = $FilenameUtils.getBaseName($generate.file_name.toString()).concat(".xml") )
             #end
           #end
-        #end    ## end for if ($pointer.size()==2)
-      
-        #set ( $object = $label.get($objectName) )
+        #end    ## end for if ($pointer.size()==2)    
+        #set ( $object = $label.get($objectName) )   
+             
       #else   ## for explicit FILE objects (PDS-539)
         #set ( $object = $ptrObjectMap.get($key) ) 
       #end
-            
       #if ( $objectName.endsWith("IMAGE") )
         #mapImage($object $dataFileOffset)
       #elseif ( $objectName.endsWith("TABLE") || $objectName.endsWith("SERIES") )
@@ -218,6 +219,8 @@
           #set ( $tableType = "Table_Binary" )
         #end
       <$tableType>
+      ##  #if ($key)
+        <local_identifier>$objectName</local_identifier>
         <offset unit="byte">$dataFileOffset</offset>
         <records>$object.ROWS</records>
         #if ($tableType.equals("Table_Character"))
@@ -311,6 +314,10 @@
           #end
         #end        
         </$recordType>
+        ## for PDS-540 (-n index option)
+        ###else
+        ##   $log.severe("Could not find an object: $ptrObjectMap.get($key)")
+        ###end 
       </$tableType>
       #elseif ( $objectName.endsWith("SPREADSHEET") )
       <Table_Delimited>
@@ -361,8 +368,12 @@
       </Table_Delimited>
       #end
     #end
-  </File_Area_Observational>       
+  </File_Area_Observational>   
+  ###end 
+  #else
+    $log.severe("Could not find an object: $ptrObjectMap.get($key)")
   #end
+#end
 </Product_Observational>
 
 #macro( mapContainer $container $fieldType $groupType )

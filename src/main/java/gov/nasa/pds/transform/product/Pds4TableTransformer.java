@@ -70,91 +70,6 @@ public class Pds4TableTransformer extends DefaultTransformer {
 		displayHeaders = true;
 	}
 
-	/**
-	 * Transform the given label.
-	 *
-	 * @param target The PDS4 xml label file.
-	 * @param outputDir The output directory.
-	 * @param format the format type.
-	 *
-	 * @throws TransformException If an error occurred during transformation.
-	 * @throws ParseException If there were errors parsing the given label.
-	 */
-	/*
-  public List<File> transform(File target, File outputDir, String format,
-      String dataFileName, int index)
-  throws TransformException {
-    try {
-      return transform(target.toURI().toURL(), outputDir, format, dataFileName, index);
-    } catch (Exception e) {
-      throw new TransformException(e.getMessage());
-    }
-
-    tableExtractor.setFormat(format);
-    File result = null;
-    try {
-      ObjectAccess objectAccess = new ObjectAccess(
-          target.getCanonicalFile().getParent());
-      List<FileAreaObservational> fileAreas = Utility.getFileAreas(target);
-      FileAreaObservational fileArea = null;
-      if (fileAreas.isEmpty()) {
-        throw new TransformException("Cannot find File_Area_Observational "
-            + "area in the label: " + target.toString());
-      } else {
-        for (FileAreaObservational fa : fileAreas) {
-          if (dataFileName.isEmpty()) {
-            fileArea = fileAreas.get(0);
-            dataFileName = fileArea.getFile().getFileName();
-            break;
-          } else {
-            if (fa.getFile().getFileName().equals(dataFileName)) {
-              fileArea = fa;
-              break;
-            }
-          }
-        }
-      }
-      if (fileArea != null) {
-        URL base = null;
-        if (dataFileBasePath != null) {
-          base = dataFileBasePath;
-        } else {
-          base = target.getParentFile().toURI().toURL();
-        }
-        URL dataFile = new URL(base, dataFileName);
-        File outputFile = Utility.createOutputFile(new File(dataFileName),
-            outputDir, format);
-        Object tableObject = process(target.toURI().toURL(), dataFile, outputFile, objectAccess, fileArea, index);
-        // fix for PDS-353 (PDS4_TO_CSV)
-        result = outputFile;
-        Map<File, Object> outputsToTables = new LinkedHashMap<File, Object>();
-        outputsToTables.put(outputFile, tableObject);
-        create_delimited_table_label(objectAccess, target.toURI().toURL(), outputsToTables, outputDir);
-      } else {
-        String message = "";
-        if (dataFileName.isEmpty()) {
-          message = "No data file(s) found in label.";
-        } else {
-          message = "No data file '" + dataFileName + "' found in label.";
-        }
-        throw new TransformException(message);
-      }
-      return result;
-    } catch (ParseException p) {
-      throw new TransformException("Error occurred while parsing label '"
-          + target.toString() + "': " + p.getMessage());
-    } catch (IOException i) {
-      throw new TransformException("Error occurred while resolving the path "
-          + "of the label: " + i.getMessage());
-    } catch (URISyntaxException e) {
-      throw new TransformException(e.getMessage());
-    } catch (Exception e) {
-      throw new TransformException(e.getMessage());
-    }
-
-  }
-	 */
-
 	public List<File> transform(URL url, File outputDir, String format,
 			String dataFileName, int index) throws TransformException, URISyntaxException, Exception {
 		tableExtractor.setFormat(format);
@@ -171,6 +86,10 @@ public class Pds4TableTransformer extends DefaultTransformer {
 					if (dataFileName.isEmpty()) {
 						fileArea = fileAreas.get(0);
 						dataFileName = fileArea.getFile().getFileName();
+						if (dataFileName.equals("$key") && fileAreas.size()>1) {
+							fileArea = fileAreas.get(1);
+							dataFileName = fileArea.getFile().getFileName();
+						}
 						break;
 					} else {
 						if (fa.getFile().getFileName().equals(dataFileName)) {
@@ -188,23 +107,7 @@ public class Pds4TableTransformer extends DefaultTransformer {
 				} else {
 					base = Utility.getParent(url);
 				}
-				URL dataFile = new URL(base, dataFileName);
-				
-				// PDS-540 & PDS-550
-				if (!exists(dataFile)) {
-					boolean hasUppercase = !dataFileName.equals(dataFileName.toLowerCase());
-					boolean hasLowercase = !dataFileName.equals(dataFileName.toUpperCase());
-					if (hasUppercase)
-						dataFileName = dataFileName.toLowerCase();
-					if (hasLowercase)
-						dataFileName = dataFileName.toUpperCase();								
-					dataFile = new URL(base, dataFileName);
-
-					if (!exists(dataFile)) {				
-						throw new TransformException("No table object '" + index + "' is found in the label. Please check the label.");	
-					}
-				}
-					
+				URL dataFile = new URL(base, dataFileName);		
 				File outputFile = Utility.createOutputFile(new File(dataFileName),
 						outputDir, format);
 
@@ -300,16 +203,14 @@ public class Pds4TableTransformer extends DefaultTransformer {
 									dataFilename = dataFilename.toUpperCase();
 								dataFile = new URL(base, dataFilename);
 
-								if (!exists(dataFile)) {
+								if (!exists(dataFile)) {				
 									log.log(new ToolsLogRecord(ToolsLevel.ERROR,
-											"No table object '" + i + "' is found in the label. Please check the label.", url.toString()));
+											"No table object '" + (i+1) + "' is found in the label. Please check the label.", url.toString()));
 									continue;
 								}
 							}
-
 							try {
-								Object tableObject = process(url, dataFile, outputFile, objectAccess, fileArea,
-										(i+1));
+								Object tableObject = process(url, dataFile, outputFile, objectAccess, fileArea, (i+1));
 								outputs.add(outputFile);
 								if (tableObject != null) {
 									outputsToTables.put(outputFile, tableObject);
@@ -346,7 +247,7 @@ public class Pds4TableTransformer extends DefaultTransformer {
 		}
 	}
 
-	protected Object process(URL target, URL dataFile, File outputFile,
+  protected Object process(URL target, URL dataFile, File outputFile,
 			ObjectProvider objectAccess, FileAreaObservational fileArea, int index)
 					throws TransformException {
 		Object tableObject = null;
@@ -376,16 +277,14 @@ public class Pds4TableTransformer extends DefaultTransformer {
 					fileWriter = new PrintWriter(new FileWriter(outputFile));
 					tableExtractor.setOutput(fileWriter);
 					log.log(new ToolsLogRecord(ToolsLevel.INFO,
-							"Transforming table '" + index + "' of file: "
-									+ dataFile.toString(), target.toString()));
-
+					"Transforming table '" + index + "' of file: "
+							+ dataFile.toString(), target.toString()));
+					
 					TableReader reader = null;
 					URL url = objectAccess.getRoot();
 					if (url.getProtocol().startsWith("http")) {
 						String urlStr = url.toString(); 
 						String urlLocation = urlStr.substring(0, urlStr.lastIndexOf('/'));
-						//	URL datafileUrl = new URL(urlLocation+"/"+dataFile.getName());
-						//	reader = ExporterFactory.getTableReader(tableObject, datafileUrl);
 						reader = ExporterFactory.getTableReader(tableObject, dataFile);
 					}
 					else 
@@ -411,18 +310,6 @@ public class Pds4TableTransformer extends DefaultTransformer {
 		}
 		return tableObject;
 	}
-
-	/*
-  @Override
-  public List<File> transformAll(File target, File outputDir, String format)
-      throws TransformException {
-    try {
-      return transformAll(target.toURI().toURL(), outputDir, format);
-    } catch (MalformedURLException u) {
-      throw new TransformException(u.getMessage());
-    }
-  }
-	 */
 
 	public void setDataFileBasePath(String base) 
 			throws MalformedURLException {
