@@ -110,6 +110,7 @@ public class Constants {
     PDS4_ONLY_VALID_FORMATS.add("html");
     PDS4_ONLY_VALID_FORMATS.add("html-structure-only");
     PDS4_ONLY_VALID_FORMATS.add("pds3-label");
+    PDS4_ONLY_VALID_FORMATS.add("fits");
   }
 
   /**
