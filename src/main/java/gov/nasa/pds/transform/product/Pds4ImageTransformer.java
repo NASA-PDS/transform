@@ -173,6 +173,12 @@ public class Pds4ImageTransformer extends DefaultTransformer {
             + "for the label '" + (arrays.size()) + "' for data file '"
             + fileArea.getFile().getFileName() + "'");
       }
+      
+      if ((selectedArray instanceof Array3DImage) && 
+      		("fits".equalsIgnoreCase(format) || "fit".equalsIgnoreCase(format))) 
+      	throw new TransformException("Format value '" + format
+            + "' is not one of the valid formats for a PDS4 Array3DImage transformation.");
+          
       log.log(new ToolsLogRecord(ToolsLevel.INFO,
           "Transforming image '" + index + "' of file '"
           + fileArea.getFile().getFileName() + "'", target));
