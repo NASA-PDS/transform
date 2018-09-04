@@ -23,7 +23,7 @@
   </properties>
 
   <body>
-    <release version="1.8.0" date="TBD" description="TBD">
+    <release version="1.8.0" date="TBD" description="This release of the Transform Tool is a component of the integrated release 9.0.0 of the PDS4 System. This is an operational release of the system components to date.">
       <action dev="slevoe" type="fix" issue="PDS-493">
         Fixed an issue with multi-line comments in PDS3 labels. Inherited from VICARIO library.
       </action>
@@ -45,17 +45,20 @@
       <action dev="slevoe" type="update" issue="PDS-553">
         Updated to support SFDU Statements in PDS3 labels. Inherited from VICARIO library.
       </action>            
+      <action dev="mcayanan" type="fix" issue="PDS-556">
+        Fixed to support reading of Arrays greater than 2GB. Inherited from pds4-tools.
+      </action>
       <action dev="mcayanan" type="update" issue="PDS-560">
         Updated velocity template to correctly map bit columns to field bit elements for PDS3 to PDS4 label transformations.
       </action>      
       <action dev="mcayanan" type="update" issue="PDS-566">
         Updated to support new start_bit_location/stop_bit_location elements. Inherited from pds4-tools.
       </action>      
-      <action dev="mcayanan" type="update">
-        Updated to support Long offset values. Inherited from pds4-tools.
-      </action>
       <action dev="hyunlee" type="fix" issue="PDS-550">
         Support the data file using both upper and lower case.
+      </action>
+      <action dev="hyunlee" type="add" issue="PDS-573">
+        Add support for Array_2D_Image to FITS transformation. Inherited from pds4-tools.
       </action>
     </release>
 
