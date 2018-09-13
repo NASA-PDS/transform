@@ -39,6 +39,9 @@
       <action dev="hyunlee" type="fix" issue="PDS-541">
         Gracefully handle missing RECORD_BYTES during PDS3 to PDS4 label transformations
       </action>
+      <action dev="hyunlee" type="fix" issue="PDS-550">
+        Support the data file using both upper and lower case.
+      </action>      
       <action dev="slevoe" type="fix" issue="PDS-551">
         Fixed an issue where it was not transforming MRO HiRISE products properly. Inherited from VICARIO library.
       </action>
@@ -54,9 +57,6 @@
       <action dev="mcayanan" type="update" issue="PDS-566">
         Updated to support new start_bit_location/stop_bit_location elements. Inherited from pds4-tools.
       </action>      
-      <action dev="hyunlee" type="fix" issue="PDS-550">
-        Support the data file using both upper and lower case.
-      </action>
       <action dev="hyunlee" type="add" issue="PDS-573">
         Add support for Array_2D_Image to FITS transformation. Inherited from pds4-tools.
       </action>
