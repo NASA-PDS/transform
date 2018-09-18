@@ -30,9 +30,6 @@
       <action dev="slevoe" type="fix" issue="PDS-500">
         Fixed an issue with parenthesis characters in descriptions when reading PDS3 labels. Inherited from VICARIO library.
       </action>    
-      <action dev="hyunlee" type="fix" issue="PDS-527">
-        Modified to accept as input a PDS3 labeled table and convert it to a PDS4 labeled table be it character, delimited or binary.
-      </action>
       <action dev="hyunlee" type="fix" issue="PDS-539">
         Support explicit FILE objects for target PDS3 labels. Inherited from generate.
       </action>
