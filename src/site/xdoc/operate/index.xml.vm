@@ -60,7 +60,7 @@
           <tr><td>Product_Table_Multiple_Datafiles.xml</td><td>PDS4 data product label that references multiple table data files.</td><td>csv, html, html-structure-only, pds3-label</td></tr>
           <tr><td>Product_Table_Multiple_Tables.xml</td><td>PDS4 data product label containing multiple table objects.</td><td>csv, html, html-structure-only, pds3-label</td></tr>
           <tr><td>b0090_p243401_01_01v02.xml</td><td>PDS4 data product label containing an Array 3D Specturm object followed by multiple Array 2D Image objects.</td><td>jpg, gif, jp2, tif, png, pnm, pvl, html, html-structure-only, pds3-label</td></tr>
-          <tr><td>i943630r.xml</td><td>PDS4 data product label of an Array 2D Image.</td><td>jpg, gif, jp2, tif, png, pnm, pvl, html, html-structure-only, pds3-label</td></tr>
+          <tr><td>i943630r.xml</td><td>PDS4 data product label of an Array 2D Image.</td><td>jpg, gif, jp2, tif, png, pnm, fits, pvl, html, html-structure-only, pds3-label</td></tr>
         </table>
         
       </subsection>
@@ -148,6 +148,7 @@
         
         <table>
           <tr><th>Format Type</th><th>Description</th></tr>
+          <tr><td>fits</td><td>Transform a given Array_2D_Image product to a Flexible Image Transport System (FITS) file format. Note that this transformation is only valid for Array_2D_Image products at this time.</td></tr>
           <tr><td>pvl</td><td>Transform a given PDS4 label into a Parameter Value Language file.</td></tr>
           <tr><td>html</td><td>Transform a given PDS4 label into an html representation of the label.</td></tr>
           <tr><td>html-structure-only</td><td>Transform a given PDS4 label into an html representation of the label structure. As a result, the element contents are stripped out in the resulting file.</td></tr>
@@ -691,7 +692,7 @@ Array data type is not valid, null, or unsupported
         <li>SPREADSHEET</li>
       </ul>
 
-      <p>Explicit FILE objects and QUBE objects are not supported by the tool at this time.
+      <p>QUBE objects are not supported by the tool at this time.
       </p>
 
       <p><b><i>PDS4 to PDS3 Label Transformations</i></b></p>
