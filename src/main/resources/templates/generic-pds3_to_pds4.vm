@@ -824,27 +824,27 @@
       <data_type>UnsignedLSB4</data_type>
       #end
     #elseif ( $object.SAMPLE_TYPE == "IEEE_REAL" || $object.SAMPLE_TYPE == "FLOAT" || $object.SAMPLE_TYPE == "REAL" || $object.SAMPLE_TYPE == "MAC_REAL" || $object.SAMPLE_TYPE == "SUN_REAL" || $object.SAMPLE_TYPE == "VAX_REAL" || $object.SAMPLE_TYPE == "VAXG_REAL" || $object.SAMPLE_TYPE == "VAX_DOUBLE")
-      #if ( $object.SAMPLE_BITS == "4" )
+      #if ( $object.SAMPLE_BITS == "32" )
       <data_type>IEEE754MSBSingle</data_type>
-      #elseif ( $object.SAMPLE_BITS == "8" )
+      #elseif ( $object.SAMPLE_BITS == "64" )
       <data_type>IEEE754MSBDouble</data_type>
       #end
     #elseif ( $object.SAMPLE_TYPE == "PC_REAL" )
-      #if ( $object.SAMPLE_BITS == "4" )
+      #if ( $object.SAMPLE_BITS == "32" )
       <data_type>IEEE754LSBSingle</data_type>
-      #elseif ( $object.SAMPLE_BITS == "8" )
+      #elseif ( $object.SAMPLE_BITS == "64" )
       <data_type>IEEE754LSBDouble</data_type>
       #end
     #elseif ( $object.SAMPLE_TYPE == "PC_COMPLEX" )
-      #if ( $object.SAMPLE_BITS == "8" )
+      #if ( $object.SAMPLE_BITS == "64" )
       <data_type>ComplexLSB8</data_type>
-      #elseif ( $object.SAMPLE_BITS == "16" )
+      #elseif ( $object.SAMPLE_BITS == "128" )
       <data_type>ComplexLSB16</data_type>
       #end
     #elseif ( $object.SAMPLE_TYPE == "VAX_COMPLEX" || $object.SAMPLE_TYPE == "VAXG_COMPLEX" )
-      #if ( $object.SAMPLE_BITS == "8" )
+      #if ( $object.SAMPLE_BITS == "64" )
       <data_type>ComplexMSB8</data_type>
-      #elseif ( $object.SAMPLE_BITS == "16" )
+      #elseif ( $object.SAMPLE_BITS == "128" )
       <data_type>ComplexMSB16</data_type>
       #end
     #elseif ( $object.SAMPLE_TYPE == "MSB_BIT_STRING" || $object.SAMPLE_TYPE == "LSB_BIT_STRING" || $object.SAMPLE_TYPE == "VAX_BIT_STRING" )
