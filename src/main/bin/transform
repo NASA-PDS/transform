@@ -22,8 +22,13 @@
 
 # Check if the JAVA_HOME environment variable is set.
 if [ -z "${JAVA_HOME}" ]; then
-   echo "The JAVA_HOME environment variable is not set." 1>&2
-   exit 1
+   JAVA_CMD=`which java`
+   if [ $? -ne 0 ]; then
+     echo "JAVA_HOME is not set as an environment variable"
+     exit 1
+   fi
+else
+   JAVA_CMD="${JAVA_HOME}"/bin/java
 fi
 
 # Setup environment variables.
@@ -42,4 +47,4 @@ TRANSFORM_JAR=`ls ${LIB_DIR}/transform-*.jar`
 
 # Executes Transform Tool via the executable jar file
 # Arguments are passed in to the tool via '$@'
-"${JAVA_HOME}"/bin/java -Xms256m -Xmx1024m -Dcom.sun.media.jai.disableMediaLib=true -Doverwrite.output=true -Dexternal.programs.home=${PARENT_DIR}/external-programs -jar ${TRANSFORM_JAR} "$@"
+${JAVA_CMD} -Xms256m -Xmx1024m -Dcom.sun.media.jai.disableMediaLib=true -Doverwrite.output=true -Dexternal.programs.home=${PARENT_DIR}/external-programs -jar ${TRANSFORM_JAR} "$@"
