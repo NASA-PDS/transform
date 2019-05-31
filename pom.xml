@@ -244,8 +244,8 @@
       <version>${generate-version}</version>
       <exclusions>
         <exclusion>
-          <groupId>jpl.mipl.io</groupId>
-          <artifactId>vicario</artifactId>
+	  <groupId>gov.nasa.jpl.ammos.ids.vicario</groupId>
+	  <artifactId>vicario</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
