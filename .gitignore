@@ -1,0 +1,10 @@
+target/
+.DS_Store
+*.log
+typescript
+.*.swp
+*.sublime-*
+
+.idea
+*.iml
+
