@@ -115,8 +115,12 @@ public class Pds4ImageTransformer extends DefaultTransformer {
         }
       }
     } catch (ParseException pe) {
-      throw new TransformException("Problems parsing label: "
-          + pe.getMessage());
+      throw new TransformException("Problems parsing label (1): "
+          + pe.getMessage() + "; cause: "
+          + pe.getCause().getClass().getName() + "; message: "
+          + pe.getCause().getMessage());
+    } catch (RuntimeException e) {
+      throw e;
     } catch (Exception e) {
       throw new TransformException("Problem occurred during "
           + "transformation: " + e.getMessage());
@@ -160,8 +164,10 @@ public class Pds4ImageTransformer extends DefaultTransformer {
 			  }
 		  }
 	  } catch (ParseException pe) {
-		  throw new TransformException("Problems parsing label: "
+		  throw new TransformException("Problems parsing label (2): "
 				  + pe.getMessage());
+    } catch (RuntimeException e) {
+      throw e;
 	  } catch (Exception e) {
 		  throw new TransformException("Problem occurred during "
 				  + "transformation: " + e.getMessage());
@@ -310,8 +316,10 @@ public class Pds4ImageTransformer extends DefaultTransformer {
         return results;
       }
     } catch (ParseException pe) {
-      throw new TransformException("Problems parsing label: "
+      throw new TransformException("Problems parsing label (3): "
           + pe.getMessage());
+    } catch (RuntimeException e) {
+      throw e;
     } catch (Exception e) {
       throw new TransformException("Problem occurred during "
           + "transformation: " + e.getMessage());
@@ -350,6 +358,8 @@ public class Pds4ImageTransformer extends DefaultTransformer {
               process(new File(url.getFile()), objectAccess, fao, outputFile, format, (i+1), 
                   imageProperties.getDisplaySettings());
               results.add(outputFile);
+            } catch (RuntimeException e) {
+              throw e;
             } catch (Exception e) {
               log.log(new ToolsLogRecord(ToolsLevel.SEVERE, e.getMessage(),
                   target));
@@ -359,8 +369,10 @@ public class Pds4ImageTransformer extends DefaultTransformer {
         return results;
       }
     } catch (ParseException pe) {
-      throw new TransformException("Problems parsing label: "
+      throw new TransformException("Problems parsing label (4): "
           + pe.getMessage());
+    } catch (RuntimeException e) {
+      throw e;
     } catch (Exception e) {
       throw new TransformException("Problem occurred during "
           + "transformation: " + e.getMessage());
