@@ -67,6 +67,9 @@ POSSIBILITY OF SUCH DAMAGE.
       </roles>
     </developer>
   </developers>
+  <properties>
+    <model-version>1C00</model-version>
+  </properties>
   <build>
     <resources>
       <resource>
@@ -110,6 +113,34 @@ POSSIBILITY OF SUCH DAMAGE.
           <include>generic-pds3_to_pds4.vm</include>
         </includes>
       </resource>
+      <!-- These next 3 seem wrong; why is "transform" putting resources for "imaging" to find? -->
+      <!-- And it doesn't work anyway. -->
+<!--
+      <resource>
+        <filtering>true</filtering>
+        <targetPath>gov/nasa/pds/imaging/generate/context</targetPath>
+        <directory>src/main/resources/conf</directory>
+        <includes>
+          <include>context-classes.xml</include>
+        </includes>
+      </resource>
+      <resource>
+        <filtering>true</filtering>
+        <targetPath>gov/nasa/pds/imaging/generate/automatic</targetPath>
+        <directory>src/main/resources/conf</directory>
+        <includes>
+          <include>generated-mappings.xml</include>
+        </includes>
+      </resource>
+      <resource>
+        <filtering>true</filtering>
+        <targetPath>gov/nasa/pds/imaging/generate</targetPath>
+        <directory>src/main/resources/conf</directory>
+        <includes>
+          <include>velocity-tools.xml</include>
+        </includes>
+      </resource>
+-->
     </resources>
     <plugins>
       <plugin>
@@ -342,6 +373,11 @@ POSSIBILITY OF SUCH DAMAGE.
       <groupId>org.apache.velocity</groupId>
       <artifactId>velocity</artifactId>
       <version>1.7</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.velocity.tools</groupId>
+      <artifactId>velocity-tools</artifactId>
+      <version>2.0-alpha1</version>
     </dependency>
     <dependency>
       <groupId>org.antlr</groupId>
