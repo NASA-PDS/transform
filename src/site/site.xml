@@ -60,8 +60,8 @@ POSSIBILITY OF SUCH DAMAGE.
     </menu>
 
     <menu name="Change Log">
-      <item name="Since v1.15.1" href="https://github.com/NASA-PDS-Incubator/${project.artifactId}/blob/v${project.version}/CHANGELOG.md#v${project.version}" />
-      <item name="Prior to v1.15.1" href="changes-report.html" />
+      <item name="Since v1.10.0" href="https://github.com/NASA-PDS-Incubator/${project.artifactId}/blob/v${project.version}/CHANGELOG.md#v${project.version}" />
+      <item name="Prior to v1.9.0" href="changes-report.html" />
     </menu>
 
     <menu ref="reports"/>
