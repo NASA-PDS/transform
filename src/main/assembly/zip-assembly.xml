@@ -65,12 +65,6 @@ POSSIBILITY OF SUCH DAMAGE.
       <lineEnding>keep</lineEnding>
     </fileSet>
     <fileSet>
-      <directory>src/main/resources/examples</directory>
-      <outputDirectory>examples</outputDirectory>
-      <fileMode>644</fileMode>
-      <lineEnding>keep</lineEnding>
-    </fileSet>
-    <fileSet>
       <directory>src/main/resources/external-programs</directory>
       <outputDirectory>external-programs</outputDirectory>
       <excludes>
