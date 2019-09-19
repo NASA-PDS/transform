@@ -110,7 +110,7 @@ git checkout gh-pages
 mkdir -p $VERSION
 
 # Copy the over to version-specific and default sites
-rsync -av target/site $VERSION
+rsync -av target/site/ $VERSION
 rsync -av $VERSION/* .
 
 git add .
