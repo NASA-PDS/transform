@@ -96,7 +96,7 @@ git tag v${VERSION}
 git push --tags
 
 # For RELEASE CANDIDATE
-git tag v${VERSION}-rc${CANDIDATE_NUM}
+git tag v${VERSION}-SNAPSHOT
 git push --tags
 ```
 
