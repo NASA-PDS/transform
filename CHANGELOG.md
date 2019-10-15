@@ -1,11 +1,15 @@
 # Change Log
 
-## [v1.10.0-SNAPSHOT](https://github.com/NASA-PDS-Incubator/transform/tree/v1.10.0-SNAPSHOT) (2019-09-25)
-
+## [v1.10.0](https://github.com/NASA-PDS-Incubator/transform/tree/v1.10.0) (2019-10-14)
 **Closed issues:**
 
 - Remove examples from release package [\#11](https://github.com/NASA-PDS-Incubator/transform/issues/11)
+- Prep release candidate for Build 10a [\#9](https://github.com/NASA-PDS-Incubator/transform/issues/9)
 - Update Maven docs to refer to Github release assets [\#8](https://github.com/NASA-PDS-Incubator/transform/issues/8)
+
+**Merged pull requests:**
+
+- Update assembly to ignore examples. [\#12](https://github.com/NASA-PDS-Incubator/transform/pull/12) ([jordanpadams](https://github.com/jordanpadams))
 
 
 
