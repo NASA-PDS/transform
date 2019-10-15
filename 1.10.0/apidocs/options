@@ -6,21 +6,21 @@
 -source
 '1.8'
 -sourcepath
-'/Users/jpadams/build/transform/src/main/java'
+'/private/tmp/transform/src/main/java'
 -author
 -bottom
 'Copyright &#169; 2019. All rights reserved.'
 -charset
 'UTF-8'
 -d
-'/Users/jpadams/build/transform/target/site/apidocs'
+'/private/tmp/transform/target/site/apidocs'
 -docencoding
 'UTF-8'
 -doctitle
-'{project.groupId}:transform 1.10.0-SNAPSHOT API'
+'{project.groupId}:transform 1.10.0 API'
 -linkoffline
-'https://docs.oracle.com/javase/8/docs/api' '/Users/jpadams/build/transform/target/javadoc-bundle-options'
+'https://docs.oracle.com/javase/8/docs/api' '/private/tmp/transform/target/javadoc-bundle-options'
 -use
 -version
 -windowtitle
-'{project.groupId}:transform 1.10.0-SNAPSHOT API'
+'{project.groupId}:transform 1.10.0 API'
