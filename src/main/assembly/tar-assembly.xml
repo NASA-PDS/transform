@@ -48,6 +48,7 @@ POSSIBILITY OF SUCH DAMAGE.
         <include>*.jar</include>
       </includes>
       <excludes>
+        <exclude>*-javadoc.jar</exclude>
         <exclude>*-sources.jar</exclude>
         <exclude>*-test-sources.jar</exclude>
       </excludes>
