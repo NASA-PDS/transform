@@ -1,6 +1,6 @@
 # Change Log
 
-## [v1.11.0](https://github.com/NASA-PDS-Incubator/transform/tree/v1.11.0) (2019-12-12)
+## [v1.11.0](https://github.com/NASA-PDS-Incubator/transform/tree/v1.11.0) (2019-12-13)
 [Full Changelog](https://github.com/NASA-PDS-Incubator/transform/compare/v1.10.0...v1.11.0)
 
 **Implemented enhancements:**
