@@ -1,6 +1,26 @@
 # Change Log
 
-## [v1.10.0](https://github.com/NASA-PDS-Incubator/transform/tree/v1.10.0) (2019-10-14)
+## [v1.11.0](https://github.com/NASA-PDS-Incubator/transform/tree/v1.11.0) (2019-12-12)
+[Full Changelog](https://github.com/NASA-PDS-Incubator/transform/compare/v1.10.0...v1.11.0)
+
+**Implemented enhancements:**
+
+- Update POM to use PDS Parent POM [\#18](https://github.com/NASA-PDS-Incubator/transform/issues/18)
+
+**Fixed bugs:**
+
+- Remove erroneous JAR files causing command-line failure in build 1.10.0 [\#16](https://github.com/NASA-PDS-Incubator/transform/issues/16)
+
+**Closed issues:**
+
+- Prep operational release for Build 10a [\#10](https://github.com/NASA-PDS-Incubator/transform/issues/10)
+
+**Merged pull requests:**
+
+- Update POM to use PDS parent POM [\#20](https://github.com/NASA-PDS-Incubator/transform/pull/20) ([jordanpadams](https://github.com/jordanpadams))
+- Update assembly packages to ignore unnecessary jars [\#19](https://github.com/NASA-PDS-Incubator/transform/pull/19) ([jordanpadams](https://github.com/jordanpadams))
+
+## [v1.10.0](https://github.com/NASA-PDS-Incubator/transform/tree/v1.10.0) (2019-10-15)
 **Closed issues:**
 
 - Remove examples from release package [\#11](https://github.com/NASA-PDS-Incubator/transform/issues/11)
