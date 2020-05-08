@@ -1,0 +1,72 @@
+# This workflow will build a package using Maven and then publish it to GitHub packages when a release is created
+# For more information see: https://github.com/actions/setup-java#apache-maven-with-a-settings-path
+
+name: Maven Build
+
+on:
+   push:
+     branches:
+       - master
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.8
+        server-id: ossrh
+        server-username: MAVEN_USERNAME
+        server-password: MAVEN_PASSWORD
+
+    - name: Set up Python 3
+      uses: actions/setup-python@v1
+      with:
+        python-version: '3.7'
+
+    - name: Install dependencies
+      run: python -m pip install --upgrade pip setuptools wheel
+
+    - name: Publish package
+      run: mvn -B deploy --file pom.xml
+      env:
+        MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+        MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+     
+    - name: Test Output
+      uses: actions/upload-artifact@v1
+      with:
+        name: test-reports
+        path: target/surefire-reports/
+
+    - name: Adding dependencies
+      run: |
+         sudo apt-get update && sudo apt-get install -y libxml2-dev libxslt1-dev python-libxml2
+
+    - name: Publish new snapshot release
+      run: |
+         pip install pds-github-util
+         maven-snapshot-release --token ${{ secrets.GITHUB_TOKEN }}
+    # the changelog will be available on https://nasa-pds.github.io/<your repo>/CHANGELOG
+    - uses: actions/checkout@v2
+      with:
+        ref: gh-pages
+    - name: Create changelog
+      run: |
+        sudo gem install github_changelog_generator
+        github_changelog_generator --user NASA-PDS --project pds-registry-app  --token ${{ secrets.GITHUB_TOKEN }} --configure-sections '{"improvements":{"prefix":"**Improvements:**","labels":["enhancement"]},"defects":{"prefix":"**Defects:**","labels":["bug"]},"deprecations":{"prefix":"**Deprecations:**","labels":["deprecation"]}}' --no-pull-requests
+    - name: Commit CHANGELOG.md file
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add CHANGELOG.md
+        git commit -m "update changelog" --allow-empty
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: gh-pages
