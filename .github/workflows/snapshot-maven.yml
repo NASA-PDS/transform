@@ -55,18 +55,22 @@ jobs:
     - uses: actions/checkout@v2
       with:
         ref: gh-pages
-    - name: Create changelog
+    - name: Create changelog and requirements
       run: |
+        echo ::set-env name=REQUIREMENT_FILE::$(requirement-report --organization NASA-PDS --repository transform  --output pdsen-corral --token ${{ secrets.GITHUB_TOKEN }} --dev)
         sudo gem install github_changelog_generator
-        github_changelog_generator --user NASA-PDS --project pds-registry-app  --token ${{ secrets.GITHUB_TOKEN }} --configure-sections '{"improvements":{"prefix":"**Improvements:**","labels":["enhancement"]},"defects":{"prefix":"**Defects:**","labels":["bug"]},"deprecations":{"prefix":"**Deprecations:**","labels":["deprecation"]}}' --no-pull-requests
-    - name: Commit CHANGELOG.md file
+        github_changelog_generator --user NASA-PDS --project transform  --token ${{ secrets.GITHUB_TOKEN }} --configure-sections '{"improvements":{"prefix":"**Improvements:**","labels":["enhancement"]},"defects":{"prefix":"**Defects:**","labels":["bug"]},"deprecations":{"prefix":"**Deprecations:**","labels":["deprecation"]}}' --no-pull-requests
+    - name: Commit CHANGELOG.md and requirements files
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git add CHANGELOG.md
-        git commit -m "update changelog" --allow-empty
+        echo "commit pdsen-corral/CHANGELOG.md and ${{ env.REQUIREMENT_FILE }}on gh-pages branch"
+        git add pdsen-corral/CHANGELOG.md ${{ env.REQUIREMENT_FILE }}
+        git commit -m "update changelog and requirements" --allow-empty
     - name: Push changes
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         branch: gh-pages
+    - name: Ping pdsen-corral
+      run: git-ping --repo nasa-pds/pdsen-corral --token ${{ secrets.ADMIN_GITHUB_TOKEN }} --branch master --message 'transform has been updated'
