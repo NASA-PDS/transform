@@ -58,8 +58,8 @@ git commit -m "[RELEASE] Validate v$VERSION"
 CANDIDATE_NUM=1
 git commit -m "[RELEASE] Validate v${VERSION}-rc${CANDIDATE_NUM}"
 
-# Push changes to master
-git push -u origin master
+# Push changes to main
+git push -u origin main
 ```
 
 ## Build and Deploy Software to [Sonatype Maven Repo](https://repo.maven.apache.org/maven2/gov/nasa/pds/).
@@ -131,16 +131,16 @@ Update `pom.xml` with the next SNAPSHOT version either manually or using Github 
 For RELEASE CANDIDATE, ignore this step.
 
 ```
-git checkout master
+git checkout main
 
-# For release candidates, skip to push changes to master
+# For release candidates, skip to push changes to main
 VERSION=1.16.0-SNAPSHOT
 mvn versions:set -DnewVersion=$VERSION
 git add pom.xml
 git commit -m "Update version for $VERSION development"
 
-# Push changes to master
-git push -u origin master
+# Push changes to main
+git push -u origin main
 ```
 
 ## Complete Release in Github
