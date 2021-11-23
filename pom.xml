@@ -290,9 +290,9 @@ POSSIBILITY OF SUCH DAMAGE.
     </dependency>
     <!-- Temporarily located in ${project.basedir}/repo until an official public release is made-->
     <dependency>
-      <groupId>gov.nasa.pds.temporary.preparation</groupId>
-      <artifactId>generate</artifactId>
-      <version>0.15.0</version>
+      <groupId>gov.nasa.pds</groupId>
+      <artifactId>mi-label</artifactId>
+      <version>1.0.0</version>
       <exclusions>
         <exclusion>
           <groupId>gov.nasa.jpl.ammos.ids.vicario</groupId>
