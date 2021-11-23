@@ -37,7 +37,7 @@ POSSIBILITY OF SUCH DAMAGE.
   <parent>
     <groupId>gov.nasa</groupId>
     <artifactId>pds</artifactId>
-    <version>1.0.0</version>
+    <version>1.13.0</version>
   </parent>
   
   <groupId>gov.nasa.pds</groupId>
@@ -162,9 +162,9 @@ POSSIBILITY OF SUCH DAMAGE.
   </build>
 
   <scm>
-    <url>https://github.com/NASA-PDS-Incubator/transform/tree/master</url>
-    <connection>scm:git:git://github.com/NASA-PDS-Incubator/transform.git</connection>
-    <developerConnection>scm:git:ssh://github.com:NASA-PDS-Incubator/transform.git</developerConnection>
+    <url>https://github.com/NASA-PDS/transform/tree/master</url>
+    <connection>scm:git:git://github.com/NASA-PDS/transform.git</connection>
+    <developerConnection>scm:git:ssh://github.com:NASA-PDS/transform.git</developerConnection>
   </scm>
 
   <dependencies>
