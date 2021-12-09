@@ -1,4 +1,7 @@
 # Transform Tool
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5756418.svg)](https://doi.org/10.5281/zenodo.5756418)
+
 Project containing software for transforming PDS3 and PDS4 labels and data products into various formats.
 
 # Documentation
