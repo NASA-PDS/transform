@@ -1,1 +1,1 @@
-/Library/Java/JavaVirtualMachines/adoptopenjdk-8.jdk/Contents/Home/jre/../bin/javadoc @options @packages
+/usr/lib/jvm/java-1.8-openjdk/jre/../bin/javadoc @options @packages
