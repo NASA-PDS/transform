@@ -39,7 +39,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
   <bannerLeft>
     <src>images/pds4_logo.png</src>
-    <href>https://github.com/NASA-PDS-Incubator/${project.artifactId}</href>
+    <href>https://github.com/NASA-PDS/${project.artifactId}</href>
   </bannerLeft>
 
   <bannerRight>
@@ -50,7 +50,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
   <body>
     <links>
-      <item name="Transform Github Repo" href="https://github.com/NASA-PDS-Incubator/${project.artifactId}" />
+      <item name="Transform Github Repo" href="https://github.com/NASA-PDS/${project.artifactId}" />
     </links>
 
     <menu name="Software Documentation">
@@ -60,12 +60,12 @@ POSSIBILITY OF SUCH DAMAGE.
     </menu>
 
     <menu name="Downloads">
-      <item name="Current Release (tar.gz)" href="https://github.com/NASA-PDS-Incubator/${project.artifactId}/releases/download/${project.version}/${project.artifactId}-${project.version}-bin.tar.gz"/>
-      <item name="Current Release (zip)" href="https://github.com/NASA-PDS-Incubator/${project.artifactId}/releases/download/${project.version}/${project.artifactId}-${project.version}-bin.zip"/>
+      <item name="Current Release (tar.gz)" href="https://github.com/NASA-PDS/${project.artifactId}/releases/download/${project.version}/${project.artifactId}-${project.version}-bin.tar.gz"/>
+      <item name="Current Release (zip)" href="https://github.com/NASA-PDS/${project.artifactId}/releases/download/${project.version}/${project.artifactId}-${project.version}-bin.zip"/>
     </menu>
 
     <menu name="Change Log">
-      <item name="Since v1.10.0" href="https://github.com/NASA-PDS-Incubator/${project.artifactId}/blob/v${project.version}/CHANGELOG.md#${project.version}" />
+      <item name="Since v1.10.0" href="https://github.com/NASA-PDS/${project.artifactId}/blob/v${project.version}/CHANGELOG.md#${project.version}" />
       <item name="Prior to v1.9.0" href="changes-report.html" />
     </menu>
 

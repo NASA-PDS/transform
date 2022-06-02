@@ -5,7 +5,7 @@
 Project containing software for transforming PDS3 and PDS4 labels and data products into various formats.
 
 # Documentation
-The documentation for the latest release of the Transform Tool, including release notes, installation and operation of the software are online at https://nasa-pds-incubator.github.io/transform/.
+The documentation for the latest release of the Transform Tool, including release notes, installation and operation of the software are online at https://nasa-pds.github.io/transform/.
 
 If you would like to get the latest documentation, including any updates since the last release, you can execute the "mvn site:run" command and view the documentation locally at http://localhost:8080.
 
@@ -27,7 +27,7 @@ A release candidate should be created after the community has determined that a 
 
 ## Clone fresh repo
 ```
-git clone git@github.com:NASA-PDS-Incubator/transform.git
+git clone git@github.com:NASA-PDS/transform.git
 ```
 
 ## Update Version Numbers
@@ -147,7 +147,7 @@ git push -u origin main
 ```
 
 ## Complete Release in Github
-Currently the process to create more formal release notes and attach Assets is done manually through the [Github UI](https://github.com/NASA-PDS-Incubator/validate/releases/new) but should eventually be automated via script.
+Currently the process to create more formal release notes and attach Assets is done manually through the [Github UI](https://github.com/NASA-PDS/validate/releases/new) but should eventually be automated via script.
 
 *NOTE: Be sure to add the `tar.gz` and `zip` from the `target/` directory to the release assets, and use the CHANGELOG generated above to create the RELEASE NOTES.*
 
