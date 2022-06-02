@@ -1,6 +1,6 @@
 # Transform Tool
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5756418.svg)](https://doi.org/10.5281/zenodo.5756418)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5756418.svg)](https://doi.org/10.5281/zenodo.5756418) [![🤪 Unstable integration & delivery](https://github.com/NASA-PDS/transform/actions/workflows/unstable-cicd.yaml/badge.svg)](https://github.com/NASA-PDS/transform/actions/workflows/unstable-cicd.yaml) [![😌 Stable integration & delivery](https://github.com/NASA-PDS/transform/actions/workflows/stable-cicd.yaml/badge.svg)](https://github.com/NASA-PDS/transform/actions/workflows/stable-cicd.yaml)
 
 Project containing software for transforming PDS3 and PDS4 labels and data products into various formats.
 
