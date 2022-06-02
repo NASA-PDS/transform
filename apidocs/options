@@ -17,10 +17,10 @@
 -docencoding
 'UTF-8'
 -doctitle
-'{project.groupId}:transform 1.11.2 API'
+'{project.groupId}:transform 1.11.3 API'
 -linkoffline
 'https://docs.oracle.com/javase/8/docs/api' '/github/workspace/target/javadoc-bundle-options'
 -use
 -version
 -windowtitle
-'{project.groupId}:transform 1.11.2 API'
+'{project.groupId}:transform 1.11.3 API'
