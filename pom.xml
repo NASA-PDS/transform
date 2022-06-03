@@ -42,7 +42,7 @@ POSSIBILITY OF SUCH DAMAGE.
   
   <groupId>gov.nasa.pds</groupId>
   <artifactId>transform</artifactId>
-  <version>1.11.4-SNAPSHOT</version>
+  <version>1.11.4</version>
   <packaging>jar</packaging>
 
   <name>{project.groupId}:${project.artifactId}</name>
