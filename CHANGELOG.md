@@ -1,5 +1,17 @@
 # Changelog
 
+## [release/1.11.5](https://github.com/NASA-PDS/transform/tree/release/1.11.5) (2022-09-06)
+
+[Full Changelog](https://github.com/NASA-PDS/transform/compare/v1.11.4...release/1.11.5)
+
+**Defects:**
+
+- Bad Links in Transform Tool-Installation Page [\#31](https://github.com/NASA-PDS/transform/issues/31) [[s.low](https://github.com/NASA-PDS/transform/labels/s.low)]
+
+## [v1.11.4](https://github.com/NASA-PDS/transform/tree/v1.11.4) (2022-06-03)
+
+[Full Changelog](https://github.com/NASA-PDS/transform/compare/v1.11.3...v1.11.4)
+
 ## [v1.11.3](https://github.com/NASA-PDS/transform/tree/v1.11.3) (2022-06-02)
 
 [Full Changelog](https://github.com/NASA-PDS/transform/compare/v1.11.2...v1.11.3)
