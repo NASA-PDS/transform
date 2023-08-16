@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?xml-model href="https://pds.nasa.gov/pds4/pds/v1/PDS4_PDS_${model-version}.sch"
+<?xml-model href="https://pds.nasa.gov/pds4/pds/v1/PDS4_PDS_1K00.sch"
   schematypens="http://purl.oclc.org/dsdl/schematron"?>
 <Product_Observational xmlns="http://pds.nasa.gov/pds4/pds/v1"
     xmlns:pds="http://pds.nasa.gov/pds4/pds/v1"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pds.nasa.gov/pds4/pds/v1 https://pds.nasa.gov/pds4/pds/v1/PDS4_PDS_${model-version}.xsd">
+    xsi:schemaLocation="http://pds.nasa.gov/pds4/pds/v1 https://pds.nasa.gov/pds4/pds/v1/PDS4_PDS_1K00.xsd">
   <Identification_Area>
   #if ( $label.PRODUCT_ID )
-    <logical_identifier>urn:nasa:pds:data:$label.DATA_SET_ID.toLowerCase().replaceAll("/","-"):$label.PRODUCT_ID.toLowerCase()</logical_identifier>
-    #set ($title = $label.DATA_SET_ID.toLowerCase().concat(" ").concat($label.PRODUCT_ID.toLowerCase()))
+    <logical_identifier>urn:nasa:pds:data:$label.DATA_SET_ID[0].toLowerCase().replaceAll("/","-"):$label.PRODUCT_ID[0].toLowerCase()</logical_identifier>
+    #set ($title = $label.DATA_SET_ID[0].toLowerCase().concat(" ").concat($label.PRODUCT_ID[0].toLowerCase()))
   #else
-    <logical_identifier>urn:nasa:pds:data:$label.DATA_SET_ID.toLowerCase().replaceAll("/","-"):$generate.file_name.toLowerCase()</logical_identifier>
-    #set ($title = $label.DATA_SET_ID.toLowerCase())
+    <logical_identifier>urn:nasa:pds:data:$label.DATA_SET_ID[0].toLowerCase().replaceAll("/","-"):$generate.file_name[0].toLowerCase()</logical_identifier>
+    #set ($title = $label.DATA_SET_ID[0].toLowerCase())
   #end
     <version_id>1.0</version_id>
   #if ( $label.OBSERVATION_NAME )
-     <title>$label.OBSERVATION_NAME.toLowerCase()</title>
+     <title>$label.OBSERVATION_NAME[0].toLowerCase()</title>
   #elseif ( $label.OBSERVATION_ID )
-     <title>$label.OBSERVATION_ID.toLowerCase()</title>
+     <title>$label.OBSERVATION_ID[0].toLowerCase()</title>
   #elseif ( $label.PRODUCT_NAME )
-     <title>$label.PRODUCT_NAME.toLowerCase()</title>
+     <title>$label.PRODUCT_NAME[0].toLowerCase()</title>
   #else
      <title>$title</title>
   #end
-     <information_model_version>$generate.model_version</information_model_version>
+     <information_model_version>1.20.0.0</information_model_version>
      <product_class>Product_Observational</product_class>
      <Modification_History>
        <Modification_Detail>
@@ -36,22 +36,19 @@
 
   <Observation_Area>
     <Time_Coordinates>
-    #if ( $label.START_TIME && !($label.START_TIME.trim().equals("N/A") || $label.START_TIME.trim().equals("NULL") || $label.START_TIME.trim().equals("UNK")) )
-      #if ( $label.START_TIME.trim().endsWith("Z") )
-        <start_date_time>${label.START_TIME}</start_date_time>
-      #else
-        <start_date_time>${label.START_TIME}Z</start_date_time>
-      #end
+    
+    #if ( $label.START_TIME.toString() )
+      #getStartTime($label.START_TIME.toString())
+    #elseif ( $label.TIME_PARAMETERS.START_TIME.toString() )
+      #getStartTime($label.TIME_PARAMETERS.START_TIME.toString())
     #else
       <start_date_time xsi:nil="true"></start_date_time>
     #end
 
-    #if( $label.STOP_TIME && !($label.STOP_TIME.trim().equals("N/A") || $label.STOP_TIME.trim().equals("NULL") || $label.STOP_TIME.trim().equals("UNK")) )
-      #if ( $label.STOP_TIME.trim().endsWith("Z") )
-        <stop_date_time>${label.STOP_TIME}</stop_date_time>
-      #else
-        <stop_date_time>${label.STOP_TIME}Z</stop_date_time>
-      #end
+    #if ( $label.STOP_TIME.toString() )
+      #getStopTime($label.STOP_TIME.toString())
+    #elseif ( $label.TIME_PARAMETERS.STOP_TIME.toString() )
+      #getStopTime($label.TIME_PARAMETERS.STOP_TIME.toString())
     #else
       <stop_date_time xsi:nil="true"></stop_date_time>
     #end
@@ -60,18 +57,18 @@
     <Investigation_Area>
     #if ( $label.MISSION_NAME )
        #set ( $missionName = $label.MISSION_NAME )
-      <name>$missionName.toLowerCase()</name>
+      <name>$missionName[0].toLowerCase()</name>
       <type>Mission</type>
       <Internal_Reference>
-        <lid_reference>urn:nasa:pds:investigation.$missionName.toLowerCase().replaceAll("\s+", ".")</lid_reference>
+        <lid_reference>urn:nasa:pds:investigation.$missionName[0].toLowerCase().replaceAll("\s+", ".")</lid_reference>
         <reference_type>data_to_investigation</reference_type>
       </Internal_Reference>
-    #elseif ( $label.MISSION_PHASE_NAME )
-      #set ( $missionPhaseName = $label.MISSION_PHASE_NAME )
-      <name>$missionPhaseName.toLowerCase()</name>
+    #elseif ( $label.INSTRUMENT_HOST_NAME )
+      #set ( $instrumentHostName = $label.INSTRUMENT_HOST_NAME )
+      <name>$instrumentHostName[0].toLowerCase()</name>
       <type>Mission</type>
       <Internal_Reference>
-        <lid_reference>urn:nasa:pds:investigation.$missionPhaseName.toLowerCase().replaceAll("\s+", ".")</lid_reference>
+        <lid_reference>urn:nasa:pds:investigation.$instrumentHostName[0].toLowerCase().replaceAll("\s+", ".")</lid_reference>
         <reference_type>data_to_investigation</reference_type>
       </Internal_Reference>
     #end
@@ -80,45 +77,47 @@
     <Observing_System>
     #if ( $label.INSTRUMENT_HOST_NAME )
       <Observing_System_Component>
-        <name>$label.INSTRUMENT_HOST_NAME.toLowerCase()</name>
+        <name>$label.INSTRUMENT_HOST_NAME[0].toLowerCase()</name>
         <type>Spacecraft</type>
       </Observing_System_Component>
     #end
     #if ( $label.INSTRUMENT_NAME )
       <Observing_System_Component>
-        <name>$label.INSTRUMENT_NAME.toLowerCase()</name>
+        <name>$label.INSTRUMENT_NAME[0].toLowerCase()</name>
         <type>Instrument</type>
       </Observing_System_Component>
     #elseif ( $label.INSTRUMENT_ID )
       <Observing_System_Component>
-        <name>$label.INSTRUMENT_ID.toLowerCase()</name>
+        <name>$label.INSTRUMENT_ID[0].toLowerCase()</name>
         <type>Instrument</type>
       </Observing_System_Component>
     #end
     </Observing_System>
     <Target_Identification>
     #if ( $label.TARGET_NAME )
-      <name>$label.TARGET_NAME.toLowerCase()</name>
+      <name>$label.TARGET_NAME[0].toLowerCase()</name>
       <type>Planet</type>
     #end
     </Target_Identification>
   </Observation_Area>
   #set( $objectNames = $label.getPDSObjectNames() )
- 
+
   ## Support explicit FILE objects (PDS-539)
   #set ($filePtrObjectMap = {})
+
   #createFilePtrToObjectMap($objectNames $label $filePtrObjectMap)
-  
+
   ## Group the objects by data file name
   #set ($ptrObjectMap = {})
   #createPtrToObjectMap ($objectNames $label $ptrObjectMap)
+
 ## Support explicit FILE objects (PDS-539)
 #if ($filePtrObjectMap.size()>0)
   #set ($ptrObjectMap = $filePtrObjectMap)
 #end
 
 #foreach( $key in $ptrObjectMap.keySet() )
-#if ($key)
+  #if ($key)
   <File_Area_Observational>
     <File>
       ## Support explicit FILE objects (PDS-539)
@@ -130,23 +129,25 @@
           #if ($pointer.add($element))
           #end
         #end
+
         #if ( $pointer.size() == 2 )
-          #set ( $dataFile = $pointer[0].toLowerCase() )
+          #set ( $dataFile = $pointer[0][0].toLowerCase() )
           #if ( $pointer[1].contains("BYTES") )
             #set( $Integer = 0 )
-            ## TODO TODO TODO: need to recheck this
+            ## TODO: need to recheck this
             #set ( $dataFileOffset = $Integer.parseInt($pointer[1].split(" ")[0].trim()) )
           #else
             #set( $Integer = 0 )
             #set ( $offset = $Integer.parseInt($pointer[1].trim()) - 1 )
-            ## TODO TODO TODO: need to recheck this
+            ## TODO: need to recheck this
             #set ( $dataFileOffset = $Integer.parseInt($pointer[1].split(" ")[0].trim()) - 1 )
           #end
-      <file_name>$dataFile</file_name>
+          #set ( $filename = $dataFile )
         #end
       #else
-      <file_name>$key</file_name>
+        #set ( $filename = $key )
       #end
+      <file_name>$filename</file_name>
     </File>
     
     #if ($filePtrObjectMap.size()>0)
@@ -155,6 +156,7 @@
       #set ($objectNames = $ptrObjectMap.get($key))
     #end
    
+    #set ( $dataFileOffset = 0 )
     #foreach( $objectName in $objectNames )
       #if ($filePtrObjectMap.size()==0)
         #set ( $value = $label.get("PTR_$objectName").toString() )
@@ -165,8 +167,8 @@
           #end
         #end
         #if ( $pointer.size() == 2 )
-          #set ( $dataFile = $pointer[0].toLowerCase() )
-          ##<DAT_FILE>$dataFile</DAT_FILE>
+          #set ( $dataFile = $pointer[0][0].toLowerCase() )
+
           #if ( $pointer[1].contains("BYTES") )
             #set( $Integer = 0 )
             #set ( $dataFileOffset = $Integer.parseInt($pointer[1].split(" ")[0].trim()) - 1 )
@@ -175,7 +177,7 @@
             #set ( $offset = $Integer.parseInt($pointer[1].trim()) - 1 )        
             ##PDS-541
             #if($label.RECORD_BYTES)
-              #set ( $dataFileOffset = $offset * $Integer.parseInt($label.RECORD_BYTES.trim()) )
+              #set ( $dataFileOffset = $offset * $Integer.parseInt($label.RECORD_BYTES[0].trim()) )
             #else
               #set ( $dataFileOffset = $offset )
               $log.severe("Could not find RECORD_BYTES in the label, which is needed to calculate the actual byte location for ^$objectName, which has a record offset value.")
@@ -195,7 +197,7 @@
               #set ( $offset = $Integer.parseInt($pointer[0].trim()) - 1 )
               ##PDS-541
               #if($label.RECORD_BYTES)
-                #set ( $dataFileOffset = $offset * $Integer.parseInt($label.RECORD_BYTES.trim()) )
+                #set ( $dataFileOffset = $offset * $Integer.parseInt($label.RECORD_BYTES[0].trim()) )
               #else
                 #set ( $dataFileOffset = $offset )
                 $log.severe("Could not find RECORD_BYTES in the label, which is needed to calculate the actual byte location for ^$objectName, which has a record offset value.")
@@ -206,19 +208,20 @@
         #end    ## end for if ($pointer.size()==2)    
         #set ( $object = $label.get($objectName) )   
              
-      #else   ## for explicit FILE objects (PDS-539)
-        #set ( $object = $ptrObjectMap.get($key) ) 
-      #end
+      #else     ## else for $filePtrObjectMap.size()==0
+        #set ( $object = $ptrObjectMap.get($key) )
+      #end      ## end for $filePtrObjectMap.size()==0
+
+      ## Object-specific Parsing
       #if ( $objectName.endsWith("IMAGE") )
         #mapImage($object $dataFileOffset)
-      #elseif ( $objectName.endsWith("TABLE") || $objectName.endsWith("SERIES") )
+      #elseif ( $objectName.endsWith("TABLE") || $objectName.endsWith("SERIES") )  ## Product Type Specific Parsing
         #if ( $object.INTERCHANGE_FORMAT == "ASCII" )
           #set ( $tableType = "Table_Character" )
         #else
           #set ( $tableType = "Table_Binary" )
         #end
       <$tableType>
-      ##  #if ($key)
         <local_identifier>$objectName</local_identifier>
         <offset unit="byte">$dataFileOffset</offset>
         <records>$object.ROWS</records>
@@ -313,12 +316,8 @@
           #end
         #end        
         </$recordType>
-        ## for PDS-540 (-n index option)
-        ###else
-        ##   $log.severe("Could not find an object: $ptrObjectMap.get($key)")
-        ###end 
       </$tableType>
-      #elseif ( $objectName.endsWith("SPREADSHEET") )
+      #elseif ( $objectName.endsWith("SPREADSHEET") )    ## Product Type Specific Parsing
       <Table_Delimited>
         <offset unit="byte">$dataFileOffset</offset>
         <parsing_standard_id>PDS DSV 1</parsing_standard_id>
@@ -358,19 +357,18 @@
         #end
         #foreach ( $field in $fields )
           <Field_Delimited>
-            <name>$field.NAME.toString().toLowerCase()</name>
+            <name>$field.NAME.toString()[0].toLowerCase()</name>
             #getDataType($field "Field_Delimited")
             <maximum_field_length unit="byte">$field.BYTES</maximum_field_length>
           </Field_Delimited>
         #end
         </Record_Delimited>
       </Table_Delimited>
-      #end
+      #end    ## Product Type Specific Parsing
     #end
-  </File_Area_Observational>   
-  ###end 
+  </File_Area_Observational>
   #else
-    $log.severe("Could not find an object: $ptrObjectMap.get($key)")
+    $log.severe("Could not find an object FOO: $ptrObjectMap.get($key)")
   #end
 #end
 </Product_Observational>
@@ -471,7 +469,7 @@
     <$fieldType>
       #set ( $bitColumns = false )
       #getBitColumns($column $fieldType $bitColumns)
-      <name>$column.NAME.toString().toLowerCase()</name>
+      <name>$column.NAME[0].toString().toLowerCase()</name>
       <field_location unit="byte">1</field_location>
       #if ( $!{bitColumns} && $bitColumns.size() > 0 )
       <data_type>UnsignedBitString</data_type>
@@ -495,7 +493,7 @@
   <$fieldType>
     #set ( $bitColumns = false )
     #getBitColumns($column $fieldType $bitColumns)  
-    <name>$column.NAME.toString().toLowerCase()</name>
+    <name>$column.NAME[0].toString().toLowerCase()</name>
     <field_location unit="byte">$column.START_BYTE</field_location>
     #if ( $!{bitColumns} && $bitColumns.size() > 0 )
     <data_type>UnsignedBitString</data_type>
@@ -647,7 +645,7 @@
 #macro( mapBitColumns $bitColumns $groupType)
   #foreach ( $bitColumn in $bitColumns )
   <Field_Bit>
-    <name>$bitColumn.NAME.toString().toLowerCase()</name>
+    <name>$bitColumn.NAME[0].toString().toLowerCase()</name>
     <start_bit_location>$bitColumn.START_BIT</start_bit_location>
     #set( $Integer = 0 )
     #set ( $stopBit = $Integer.parseInt($bitColumn.START_BIT.toString()) + $Integer.parseInt($bitColumn.BITS.toString()) - 1 )
@@ -695,7 +693,7 @@
           #set ( $offset = $Integer.parseInt($pointer[1].trim()) - 1 )
           ##PDS-541
           #if($label.RECORD_BYTES)
-            #set ( $dataFileOffset = $offset * $Integer.parseInt($label.RECORD_BYTES.trim()) )
+            #set ( $dataFileOffset = $offset * $Integer.parseInt($label.RECORD_BYTES[0].trim()) )
           #else
             #set ( $dataFileOffset = $offset )
             ##$log.severe("Could not find RECORD_BYTES in the label, which is needed to calculate the actual byte location for ^$objectName, which has a record offset value.")
@@ -737,33 +735,35 @@
   #end
 #end
 
-#macro( createFilePtrToObjectMap $objectNames $label $ptrObjectMap )
+#macro( createFilePtrToObjectMap $objectNames $label $filePtrObjectMap )
   ## PDS-539 TODOT TODO TODO: should be getting pointers from the nested objects
   #set( $value = false )
-  #set ( $value = $label.FILE)
-  #if ( $!{value} )
-    #if ( $value.class.name.contains("List") )
-      #set ( $files = $value )
-    #else
-      #set ( $files = [$value] )
+  #set( $fileObjNames = [ "FILE", "UNCOMPRESSED_FILE", "COMPRESSED_FILE" ] )
+  #set ( $files = [] )
+  #foreach ( $fileObjName in $fileObjNames ) 
+    #set ( $value = $label.get($fileObjName))
+    #if ( $!{value} )
+      #if ( $value.class.name.contains("List") )
+        #set ( $swallow = $files.add($value))
+      #else
+        #set ( $swallow = $files.add($value))
+      #end
     #end
-  #else
-    #set ( $files = [] )
-  #end  
+  #end
   
   #set( $validTypes = ".*IMAGE|.*TABLE|.*SERIES|.*SPREADSHEET" )
   #set( $ptrObjNames = [ "IMAGE", "TABLE", "SERIES", "SPREADSHEET" ] )
-  #foreach ( $file in $files ) 
-    #set ( $childObjects = $file.getChildObjects() )          
-    #foreach ( $aChild in $childObjects ) 
+  #foreach ( $file in $files )
+    #set ( $childObjects = $file.getChildObjects() )
+    #foreach ( $aChild in $childObjects )
       #if ( $aChild.getName().matches($validTypes) && !$aChild.getName().endsWith("PDS4_IMAGE") )
         #set ( $clist = [])
         #set ( $swallow = $clist.add($aChild) )
         #set ( $filename = $file.get("PTR_$aChild.getName()") )
-        $!ptrObjectMap.put($file.get("PTR_$aChild.getName()").toString(), $aChild)
+        $!filePtrObjectMap.put($file.get("PTR_$aChild.getName()").toString(), $aChild)
       #end
     #end  ## end for
-  #end    
+  #end
   ### PDS-539
 #end
 
@@ -879,4 +879,28 @@
     </Axis_Array>
     #end
   </$type>
+#end
+
+#macro( getStartTime $time)
+  #if ( !($time.trim().equals("N/A") || $time.toString().trim().equals("NULL") || $time.toString().trim().equals("UNK")) )
+    #if ( $time.toString().trim().endsWith("Z") )
+      <start_date_time>${time}</start_date_time>
+    #else
+      <start_date_time>${time}Z</start_date_time>
+    #end
+  #else
+    <start_date_time xsi:nil="true"></start_date_time>
+  #end
+#end
+
+#macro( getStopTime $time)
+  #if ( !($time.trim().equals("N/A") || $time.toString().trim().equals("NULL") || $time.toString().trim().equals("UNK")) )
+    #if ( $time.toString().trim().endsWith("Z") )
+      <stop_date_time>${time}</stop_date_time>
+    #else
+      <stop_date_time>${time}Z</stop_date_time>
+    #end
+  #else
+    <stop_date_time xsi:nil="true"></stop_date_time>
+  #end
 #end
