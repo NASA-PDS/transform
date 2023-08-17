@@ -1,8 +1,16 @@
 # Changelog
 
-## [release/1.11.5](https://github.com/NASA-PDS/transform/tree/release/1.11.5) (2022-09-06)
+## [«unknown»](https://github.com/NASA-PDS/transform/tree/«unknown») (2023-08-17)
 
-[Full Changelog](https://github.com/NASA-PDS/transform/compare/v1.11.4...release/1.11.5)
+[Full Changelog](https://github.com/NASA-PDS/transform/compare/v1.11.5...«unknown»)
+
+**Defects:**
+
+- Examples missing from tar/zip packages [\#35](https://github.com/NASA-PDS/transform/issues/35) [[s.medium](https://github.com/NASA-PDS/transform/labels/s.medium)]
+
+## [v1.11.5](https://github.com/NASA-PDS/transform/tree/v1.11.5) (2022-11-09)
+
+[Full Changelog](https://github.com/NASA-PDS/transform/compare/v1.11.4...v1.11.5)
 
 **Defects:**
 
@@ -18,11 +26,7 @@
 
 ## [v1.11.2](https://github.com/NASA-PDS/transform/tree/v1.11.2) (2022-05-05)
 
-[Full Changelog](https://github.com/NASA-PDS/transform/compare/v1.12.0-SNAPSHOT...v1.11.2)
-
-## [v1.12.0-SNAPSHOT](https://github.com/NASA-PDS/transform/tree/v1.12.0-SNAPSHOT) (2022-01-31)
-
-[Full Changelog](https://github.com/NASA-PDS/transform/compare/v1.11.1...v1.12.0-SNAPSHOT)
+[Full Changelog](https://github.com/NASA-PDS/transform/compare/v1.11.1...v1.11.2)
 
 ## [v1.11.1](https://github.com/NASA-PDS/transform/tree/v1.11.1) (2019-12-13)
 
