@@ -8,6 +8,7 @@ on:
   #   branches: [master]
   schedule:
     - cron:  '0 0 * * 0'
+  workflow_dispatch:
 
 jobs:
   analyze:
@@ -61,4 +62,29 @@ jobs:
     #   make release
 
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v1
+      uses: github/codeql-action/analyze@v2
+      
+    - run: |
+        pip install nasa-scrub
+        
+        results_dir=`realpath ${{ github.workspace }}/../results`
+        sarif_files=`find $results_dir -name '*.sarif'`
+        
+        for sarif_file in $sarif_files
+        do
+          output_file="$results_dir/$(basename $sarif_file .sarif).scrub"
+          
+          python3 -m scrub.tools.parsers.translate_results $sarif_file $output_file ${{ github.workspace }} scrub
+        done
+        
+        python3 -m scrub.tools.parsers.csv_parser $results_dir
+        
+        echo "RESULTS_DIR=$results_dir" >> $GITHUB_ENV
+        
+      
+    - name: Upload CodeQL Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: codeql-artifacts
+        path: ${{ env.RESULTS_DIR }}
+
