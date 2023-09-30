@@ -36,6 +36,8 @@ import java.io.PrintWriter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.opencsv.exceptions.CsvValidationException;
+
 import gov.nasa.pds.label.object.FieldDescription;
 import gov.nasa.pds.label.object.TableRecord;
 import gov.nasa.pds.objectAccess.TableReader;
@@ -80,9 +82,10 @@ public class TableExtractor {
    *
    * @param reader the table reader to use for reading data
    * @throws TransformException
+ * @throws CsvValidationException 
    */
   public void extractTable(TableReader reader, boolean displayHeaders)
-      throws TransformException {
+      throws TransformException, CsvValidationException {
     FieldDescription[] fields = reader.getFields();
     if (fields.length == 0) {
       throw new TransformException("No fields found in the table.");
@@ -164,10 +167,11 @@ public class TableExtractor {
    * @param displayFields an array of field indices to display
    * @param fieldLengths an array of field lengths to use for output
    * @throws TransformException
+ * @throws CsvValidationException 
    * @throws IOException
    */
   private void displayRows(TableReader reader, FieldDescription[] fields,
-      int[] displayFields, int[] fieldLengths) throws TransformException {
+      int[] displayFields, int[] fieldLengths) throws TransformException, CsvValidationException {
     TableRecord record;
     try {
       while ((record = reader.readNext()) != null) {
