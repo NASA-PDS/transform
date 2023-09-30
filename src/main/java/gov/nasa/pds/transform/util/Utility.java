@@ -30,12 +30,37 @@
 
 package gov.nasa.pds.transform.util;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.logging.Logger;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.velocity.app.VelocityEngine;
 import gov.nasa.arc.pds.xml.generated.Array;
 import gov.nasa.arc.pds.xml.generated.DisciplineArea;
 import gov.nasa.arc.pds.xml.generated.DisplaySettings;
 import gov.nasa.arc.pds.xml.generated.FileAreaObservational;
 import gov.nasa.arc.pds.xml.generated.ProductObservational;
 import gov.nasa.pds.imaging.generate.Generator;
+import gov.nasa.pds.imaging.generate.TemplateException;
 import gov.nasa.pds.imaging.generate.context.ContextMappings;
 import gov.nasa.pds.imaging.generate.label.PDS3Label;
 import gov.nasa.pds.imaging.generate.label.PDSObject;
@@ -50,42 +75,10 @@ import gov.nasa.pds.tools.label.ManualPathResolver;
 import gov.nasa.pds.tools.label.parser.DefaultLabelParser;
 import gov.nasa.pds.tools.util.MessageUtils;
 import gov.nasa.pds.transform.constants.Constants;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.logging.Logger;
-
-import java.io.OutputStream;
-import java.io.FileOutputStream;
-
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-
 import nom.tam.fits.BasicHDU;
 import nom.tam.fits.Fits;
 import nom.tam.fits.FitsException;
 import nom.tam.fits.ImageHDU;
-
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.velocity.app.VelocityEngine;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-import org.w3c.dom.Document;
 
 /**
  * Utility class.
@@ -295,12 +288,12 @@ public class Utility {
   }
 
   public static void generate(File target, File outputFile, String templateName)
-  throws Exception {
+      throws TemplateException, IOException, LabelParserException {
     generate(target, outputFile, templateName, new ArrayList<String>());
   }
   
-  public static void generate(File target, File outputFile, String templateName, List<String> includePaths)
-  throws Exception {
+  public static void generate(File target, File outputFile, String templateName,
+      List<String> includePaths) throws TemplateException, IOException, LabelParserException {
     System.getProperties().setProperty(
         "javax.xml.parsers.DocumentBuilderFactory",
         "com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl");

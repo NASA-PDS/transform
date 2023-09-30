@@ -321,7 +321,7 @@ public class TransformLauncher {
    */
   private void setLogger() throws IOException {
     Logger logger = Logger.getLogger("");
-    logger.setLevel(Level.INFO);
+    logger.setLevel(Level.FINEST);
     Handler []handler = logger.getHandlers();
     for (int i = 0; i < logger.getHandlers().length; i++) {
       logger.removeHandler(handler[i]);
