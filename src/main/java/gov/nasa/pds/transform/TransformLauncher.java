@@ -30,6 +30,25 @@
 
 package gov.nasa.pds.transform;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.GnuParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.ParseException;
+import gov.nasa.pds.transform.commandline.options.Flag;
+import gov.nasa.pds.transform.commandline.options.InvalidOptionException;
 import gov.nasa.pds.transform.logging.ToolsLevel;
 import gov.nasa.pds.transform.logging.ToolsLogRecord;
 import gov.nasa.pds.transform.logging.format.TransformFormatter;
@@ -43,39 +62,6 @@ import gov.nasa.pds.transform.product.ProductTransformerFactory;
 import gov.nasa.pds.transform.util.ObjectsReport;
 import gov.nasa.pds.transform.util.ToolInfo;
 import gov.nasa.pds.transform.util.Utility;
-import gov.nasa.pds.transform.commandline.options.Flag;
-import gov.nasa.pds.transform.commandline.options.InvalidOptionException;
-
-import java.io.File;
-//import java.io.InputStream;
-//import java.io.OutputStream;
-//import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.FileNotFoundException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-//import javax.net.ssl.HttpsURLConnection;
-//import javax.net.ssl.SSLContext;
-
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.GnuParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.ParseException;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.PatternLayout;
-import org.apache.log4j.Priority;
 
 /**
  * Front end class of the Transform Tool that handles the command-line
@@ -482,10 +468,6 @@ public class TransformLauncher {
   }
 
   public static void main(String[] args) throws IOException {
-    //This removes the log4j warnings
-    ConsoleAppender ca = new ConsoleAppender(new PatternLayout("%-5p %m%n"));
-    ca.setThreshold(Priority.FATAL);
-    BasicConfigurator.configure(ca);
     if (args.length == 0) {
       System.out.println("\nType 'transform -h' for usage");
       System.exit(0);
