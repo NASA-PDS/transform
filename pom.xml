@@ -288,21 +288,11 @@ POSSIBILITY OF SUCH DAMAGE.
       <artifactId>mi-label</artifactId>
       <version>1.4.0-SNAPSHOT</version>
       <exclusions>
-        <exclusion>
-	      <groupId>gov.nasa.jpl.ammos.ids.vicario</groupId>
-	      <artifactId>vicario</artifactId>
-	    </exclusion>
-	    <exclusion>
-	      <groupId>gov.nasa.pds</groupId>
-	      <artifactId>pds3-product-tools</artifactId>
-	    </exclusion>
+	<exclusion>
+	  <groupId>gov.nasa.pds</groupId>
+	  <artifactId>pds3-product-tools</artifactId>
+	</exclusion>
       </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>gov.nasa.pds</groupId>
-      <artifactId>vicario</artifactId>
-      <version>48.0.3-SNAPSHOT</version>
-      <scope>compile</scope>
     </dependency>
   </dependencies>
 
