@@ -1,12 +1,14 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/transform/tree/«unknown») (2023-09-30)
+## [«unknown»](https://github.com/NASA-PDS/transform/tree/«unknown») (2023-10-02)
 
 [Full Changelog](https://github.com/NASA-PDS/transform/compare/v1.11.5...«unknown»)
 
 **Defects:**
 
+- Unable to transform from PDS3 Label to PDS4 Label with upgraded mi-label [\#36](https://github.com/NASA-PDS/transform/issues/36) [[s.medium](https://github.com/NASA-PDS/transform/labels/s.medium)]
 - Examples missing from tar/zip packages [\#35](https://github.com/NASA-PDS/transform/issues/35) [[s.medium](https://github.com/NASA-PDS/transform/labels/s.medium)]
+- \[SECURITY\] Upgrade to log4j-core/log4j-api [\#30](https://github.com/NASA-PDS/transform/issues/30) [[s.low](https://github.com/NASA-PDS/transform/labels/s.low)]
 
 ## [v1.11.5](https://github.com/NASA-PDS/transform/tree/v1.11.5) (2022-11-09)
 
