@@ -192,21 +192,15 @@ POSSIBILITY OF SUCH DAMAGE.
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>1.2.14</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
       <groupId>gov.nasa.pds</groupId>
       <artifactId>pds3-product-tools</artifactId>
-      <version>4.0.1</version>
+      <version>4.3.0</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>gov.nasa.pds</groupId>
       <artifactId>pds4-jparser</artifactId>
-      <version>1.2.0</version>
+      <version>2.6.0</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
@@ -292,19 +286,13 @@ POSSIBILITY OF SUCH DAMAGE.
     <dependency>
       <groupId>gov.nasa.pds</groupId>
       <artifactId>mi-label</artifactId>
-      <version>1.2.2</version>
+      <version>1.4.0-SNAPSHOT</version>
       <exclusions>
-        <exclusion>
-          <groupId>gov.nasa.jpl.ammos.ids.vicario</groupId>
-          <artifactId>vicario</artifactId>
-        </exclusion>
+	<exclusion>
+	  <groupId>gov.nasa.pds</groupId>
+	  <artifactId>pds3-product-tools</artifactId>
+	</exclusion>
       </exclusions>
-    </dependency>
-    <!-- Temporarily located in ${project.basedir}/repo until an official public release is made-->
-    <dependency>
-      <groupId>gov.nasa.jpl.ammos.ids.vicario</groupId>
-      <artifactId>vicario</artifactId>
-      <version>48.0.3-SNAPSHOT</version>
     </dependency>
   </dependencies>
 
