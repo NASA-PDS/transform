@@ -258,7 +258,7 @@ POSSIBILITY OF SUCH DAMAGE.
     <dependency>
       <groupId>org.antlr</groupId>
       <artifactId>antlr-runtime</artifactId>
-      <version>3.2</version>
+      <version>3.4.1-preview-jbossorg-0</version>
     </dependency>
     <dependency>
       <groupId>com.sun.xml.bind</groupId>
