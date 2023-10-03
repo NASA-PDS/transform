@@ -1,8 +1,8 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/transform/tree/«unknown») (2023-10-03)
+## [release/1.12.0](https://github.com/NASA-PDS/transform/tree/release/1.12.0) (2023-10-03)
 
-[Full Changelog](https://github.com/NASA-PDS/transform/compare/v1.11.5...«unknown»)
+[Full Changelog](https://github.com/NASA-PDS/transform/compare/v1.11.5...release/1.12.0)
 
 **Defects:**
 
