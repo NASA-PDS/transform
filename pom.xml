@@ -49,7 +49,7 @@ POSSIBILITY OF SUCH DAMAGE.
   <description>
     The Transform Tool project contains software for transforming PDS3 and PDS4 product labels and product data into other formats.
   </description>
-  <url>https://pds-engineering.jpl.nasa.gov/development/pds4/current/preparation/transform/</url>
+  <url>https://nasa-pds.github.io/transform/</url>
   <licenses>
     <license>
       <name>The Apache License, Version 2.0</name>
