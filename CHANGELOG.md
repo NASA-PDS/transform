@@ -1,8 +1,16 @@
 # Changelog
 
-## [release/1.12.0](https://github.com/NASA-PDS/transform/tree/release/1.12.0) (2023-10-03)
+## [«unknown»](https://github.com/NASA-PDS/transform/tree/«unknown») (2023-10-24)
 
-[Full Changelog](https://github.com/NASA-PDS/transform/compare/v1.11.5...release/1.12.0)
+[Full Changelog](https://github.com/NASA-PDS/transform/compare/v1.12.0...«unknown»)
+
+**Defects:**
+
+- Broken download link and Windows JAVA settings in installation docs [\#45](https://github.com/NASA-PDS/transform/issues/45) [[s.medium](https://github.com/NASA-PDS/transform/labels/s.medium)]
+
+## [v1.12.0](https://github.com/NASA-PDS/transform/tree/v1.12.0) (2023-10-03)
+
+[Full Changelog](https://github.com/NASA-PDS/transform/compare/v1.11.5...v1.12.0)
 
 **Defects:**
 
