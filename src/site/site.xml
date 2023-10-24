@@ -34,25 +34,39 @@ POSSIBILITY OF SUCH DAMAGE.
   <skin>
     <groupId>org.apache.maven.skins</groupId>
     <artifactId>maven-fluido-skin</artifactId>
-    <version>1.8</version>
+    <version>2.0.0-M6</version>
   </skin>
+  <custom>
+    <fluidoSkin>
+      <gitHub>
+        <projectId>nasa-pds/${project.artifactId}</projectId>
+        <ribbonOrientation>right</ribbonOrientation>
+        <ribbonColor>black</ribbonColor>
+      </gitHub>
+      <googleSearch>
+        <sitesearch/>
+      </googleSearch>
+    </fluidoSkin>
+  </custom>
+
+  <poweredBy>
+    <logo name="PDS" href="https://pds.nasa.gov"
+          img="images/pds4_logo.png"/>
+  </poweredBy>
+  
+  <!--bannerLeft>
+
+  </bannerLeft-->
 
   <bannerLeft>
-    <src>images/pds4_logo.png</src>
-    <href>https://github.com/NASA-PDS/${project.artifactId}</href>
+    <name>PDS Transform Tool</name>
+    <href>https://pds.nasa.gov</href>
+    <!--width>500</width-->
   </bannerLeft>
-
-  <bannerRight>
-    <name>Transform Tool</name>
-  </bannerRight>
 
   <version/>
 
   <body>
-    <links>
-      <item name="Transform Github Repo" href="https://github.com/NASA-PDS/${project.artifactId}" />
-    </links>
-
     <menu name="Software Documentation">
       <item name="About Transform Tool" href="index.html"/>
       <item name="Installation" href="install/index.html"/>
