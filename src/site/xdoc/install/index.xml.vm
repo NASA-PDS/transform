@@ -19,11 +19,11 @@
     </section>
 
     <section name="System Requirements">
-      <p>If you run into issues attempting to run Validate out of the box, this section details the system requirements for installing and operating the Validate Tool.
+      <p>If you run into issues attempting to run the software out-of-the-box, this section details the system requirements for installing and operating the software.
       </p>
 
       <subsection name="Java Runtime Environment">
-        <p>The Validate Tool was developed using Java and runs on any platform with a supported <a href="https://openjdk.java.net/install/">Java Runtime Environment (JRE)</a> >= Java  version 11. The software was specifically compiled for and tested in OpenJDK 15.0.1. The following commands test the local Java installation in a UNIX-based environment:
+        <p>This software was developed using Java and runs on any platform with a supported <a href="https://openjdk.java.net/install/">Java Runtime Environment (JRE)</a> >= Java  version 11. The software was specifically compiled for and tested in OpenJDK 15.0.1. The following commands test the local Java installation in a UNIX-based environment:
         </p>
         <source>
 % which java
@@ -36,7 +36,7 @@ OpenJDK 64-Bit Server VM (build 15.0.1+9, mixed mode, sharing)
 
         <p><i>NOTE: Transform Tool requires 64-bit Java in order to enable Java Virtual Machine memory requirements. In version output above, note the line <b>Java HotSpot(TM) 64-Bit Server VM</b></i></p>
 
-        <p><i><b>For Windows Users:</b> The 32-bit JRE is the default on Windows, and even the the online installer for Windows on the <a href="https://www.java.com/en/download/manual.jsp">Java Download All Operating Systems page</a> only installs the 32-bit JRE. If you see an error like that described under <a href="/validate/operate/errors.html#invalid-heap">this common error</a>, you have the wrong JRE installed.</i></p>
+        <p><i><b>For Windows Users:</b> The 32-bit JRE is the default on Windows, and even the the online installer for Windows on the <a href="https://www.java.com/en/download/manual.jsp">Java Download All Operating Systems page</a> only installs the 32-bit JRE. If you see an error with text like "Invalid maximum heap size", you have the wrong JRE installed.</i></p>
 
         <p>If the either of these commands fail, it indicates Java is not installed or the version is not at least 1.9. Consult the local system administrator for installation of this software. For the do-it-yourself crowd, the Java software can be downloaded from the <a href="https://openjdk.java.net/install/" target="_blank">Java Download</a> page.
         </p>
