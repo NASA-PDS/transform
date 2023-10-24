@@ -1,35 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-Copyright © 2019, California Institute of Technology ("Caltech").
-U.S. Government sponsorship acknowledged.
-
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-
-• Redistributions of source code must retain the above copyright notice,
-  this list of conditions and the following disclaimer.
-• Redistributions must reproduce the above copyright notice, this list of
-  conditions and the following disclaimer in the documentation and/or other
-  materials provided with the distribution.
-• Neither the name of Caltech nor its operating division, the Jet Propulsion
-  Laboratory, nor the names of its contributors may be used to endorse or
-  promote products derived from this software without specific prior written
-  permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-POSSIBILITY OF SUCH DAMAGE.
--->
 <document>
   <properties>
     <title>Installation</title>
@@ -50,30 +19,30 @@ POSSIBILITY OF SUCH DAMAGE.
     </section>
 
     <section name="System Requirements">
-      <p>This section details the system requirements for installing and operating the Transform Tool.
+      <p>If you run into issues attempting to run Validate out of the box, this section details the system requirements for installing and operating the Validate Tool.
       </p>
 
       <subsection name="Java Runtime Environment">
-        <p>The Transform Tool was developed using Java and will run on any platform with a supported Java Runtime Environment (JRE). The software was specifically compiled for and tested in Java version 1.8. The following commands test the local Java installation in a UNIX-based environment:
+        <p>The Validate Tool was developed using Java and runs on any platform with a supported <a href="https://openjdk.java.net/install/">Java Runtime Environment (JRE)</a> >= Java  version 11. The software was specifically compiled for and tested in OpenJDK 15.0.1. The following commands test the local Java installation in a UNIX-based environment:
         </p>
-
         <source>
 % which java
 /usr/bin/java
-
 % java -version
-java version "1.8.0_101"
-Java(TM) SE Runtime Environment (build 1.8.0_101-b13)
-Java HotSpot(TM) 64-Bit Server VM (build 25.101-b13, mixed mode)
+openjdk version "15.0.1" 2020-10-20
+OpenJDK Runtime Environment (build 15.0.1+9)
+OpenJDK 64-Bit Server VM (build 15.0.1+9, mixed mode, sharing)
         </source>
 
-        <p>The first command above checks whether the <i>java</i> executable is in the environment's path and the second command reports the version. If Java is not installed or the version is not at least 1.8, Java will need to be downloaded and installed in the current environment. Consult the local system administrator for installation of this software. For the do-it-yourself crowd, the Java software can be downloaded from the <a href="http://www.oracle.com/technetwork/java/javase/downloads/" target="_blank">Oracle Java Download</a> page. The suggested software package is the Java Standard Edition (SE) 8, either the JDK or the JRE package. The JDK package is not necessary to run the software but could be useful if development and compilation of Java software will also occur in the current environment.
+        <p><i>NOTE: Transform Tool requires 64-bit Java in order to enable Java Virtual Machine memory requirements. In version output above, note the line <b>Java HotSpot(TM) 64-Bit Server VM</b></i></p>
+
+        <p><i><b>For Windows Users:</b> The 32-bit JRE is the default on Windows, and even the the online installer for Windows on the <a href="https://www.java.com/en/download/manual.jsp">Java Download All Operating Systems page</a> only installs the 32-bit JRE. If you see an error like that described under <a href="/validate/operate/errors.html#invalid-heap">this common error</a>, you have the wrong JRE installed.</i></p>
+
+        <p>If the either of these commands fail, it indicates Java is not installed or the version is not at least 1.9. Consult the local system administrator for installation of this software. For the do-it-yourself crowd, the Java software can be downloaded from the <a href="https://openjdk.java.net/install/" target="_blank">Java Download</a> page.
         </p>
-      </subsection>
-    </section>
 
     <section name="Unpacking the Package">
-      <p>Download the <i>${project.artifactId}</i> package from <a href="https://github.com/NASA-PDS/${project.artifactId}/releases/download/${project.version}" target="_blank">Github</a>. The binary distribution is available in identical zip or tar/gzip packages. The installation directory may vary from environment to environment but in UNIX-based environments it is typical to install software packages in the <i>/usr/local</i> directory and in Windows-based environments it is typical to install software packages in the <i>C:\Program Files</i> directory. Unpack the selected binary distribution file with one of the following commands:
+      <p>Download the <i>${project.artifactId}</i> package from <a href="https://github.com/NASA-PDS/${project.artifactId}/releases/latest" target="_blank">Github</a>. The binary distribution is available in identical zip or tar/gzip packages. The installation directory may vary from environment to environment but in UNIX-based environments it is typical to install software packages in the <i>/usr/local</i> directory and in Windows-based environments it is typical to install software packages in the <i>C:\Program Files</i> directory. Unpack the selected binary distribution file with one of the following commands:
       </p>
 
       <source>
