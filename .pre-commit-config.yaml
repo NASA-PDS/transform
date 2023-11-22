@@ -1,0 +1,35 @@
+# Pre-Commit
+# ==========
+#
+# Pre-Commit (https://pre-commit.com/) is a framework for handling the hooks
+# for git to easily standardizez on linters, code-cleaners, security
+# scanners, etc.
+#
+# Currently for Java repositories, we support the following hooks:
+#
+# - Detect Secrets (https://nasa-ammos.github.io/slim/docs/guides/software-lifecycle/security/secrets-detection/)
+#
+# Future hooks could include: trailing whitespace alerts, executable shebangs,
+# debug statements left in code, Google code style adherence, etc.
+
+
+---
+
+repos:
+    -
+        repo: https://github.com/NASA-AMMOS/slim-detect-secrets
+        # using commit id for now, will change to tag when official version is released
+        rev: 91e097ad4559ae6ab785c883dc5ed989202c7fbe
+        hooks:
+          - id: detect-secrets
+            args:
+              - '--baseline'
+              - '.secrets.baseline'
+              - --exclude-files '\.secrets..*'
+              - --exclude-files '\.git.*'
+              - --exclude-files '\.pre-commit-config\.yaml'
+              - --exclude-files 'target'
+
+...
+
+# -*- mode: YAML; tab-width: 4 -*-
