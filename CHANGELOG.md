@@ -1,8 +1,16 @@
 # Changelog
 
-## [release/1.12.2](https://github.com/NASA-PDS/transform/tree/release/1.12.2) (2023-10-24)
+## [1.12.1](https://github.com/NASA-PDS/transform/tree/1.12.1) (2023-11-22)
 
-[Full Changelog](https://github.com/NASA-PDS/transform/compare/release/1.12.1...release/1.12.2)
+[Full Changelog](https://github.com/NASA-PDS/transform/compare/v1.12.2...1.12.1)
+
+**Defects:**
+
+- NoClassDefFoundError exception when transforming XML to PDS3 label [\#46](https://github.com/NASA-PDS/transform/issues/46) [[s.medium](https://github.com/NASA-PDS/transform/labels/s.medium)]
+
+## [v1.12.2](https://github.com/NASA-PDS/transform/tree/v1.12.2) (2023-10-24)
+
+[Full Changelog](https://github.com/NASA-PDS/transform/compare/release/1.12.1...v1.12.2)
 
 ## [release/1.12.1](https://github.com/NASA-PDS/transform/tree/release/1.12.1) (2023-10-24)
 
