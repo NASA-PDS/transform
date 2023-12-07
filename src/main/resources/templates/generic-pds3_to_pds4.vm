@@ -368,7 +368,7 @@
     #end
   </File_Area_Observational>
   #else
-    $log.severe("Could not find an object FOO: $ptrObjectMap.get($key)")
+    $log.severe("Could not find an object: $ptrObjectMap.get($key)")
   #end
 #end
 </Product_Observational>
