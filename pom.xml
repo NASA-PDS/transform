@@ -233,7 +233,7 @@ POSSIBILITY OF SUCH DAMAGE.
     <dependency>
       <groupId>gov.nasa.gsfc.heasarc</groupId>
       <artifactId>nom-tam-fits</artifactId>
-      <version>1.15.2</version>
+      <version>1.18.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.velocity</groupId>
