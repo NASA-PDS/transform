@@ -1,11 +1,12 @@
 # Changelog
 
-## [«unknown»](https://github.com/NASA-PDS/transform/tree/«unknown») (2024-03-07)
+## [«unknown»](https://github.com/NASA-PDS/transform/tree/«unknown») (2024-03-22)
 
 [Full Changelog](https://github.com/NASA-PDS/transform/compare/v1.12.2...«unknown»)
 
 **Defects:**
 
+- Transform failing with `java.lang.NoClassDefFoundError` on Windows [\#67](https://github.com/NASA-PDS/transform/issues/67) [[s.high](https://github.com/NASA-PDS/transform/labels/s.high)]
 - NoClassDefFoundError exception when transforming XML to PDS3 label [\#46](https://github.com/NASA-PDS/transform/issues/46) [[s.medium](https://github.com/NASA-PDS/transform/labels/s.medium)]
 
 ## [v1.12.2](https://github.com/NASA-PDS/transform/tree/v1.12.2) (2023-10-24)
