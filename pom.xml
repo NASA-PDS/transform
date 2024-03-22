@@ -109,6 +109,7 @@ POSSIBILITY OF SUCH DAMAGE.
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
+        <version>3.3.0</version>
         <configuration>
           <archive>
             <manifest>
@@ -122,6 +123,7 @@ POSSIBILITY OF SUCH DAMAGE.
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>buildnumber-maven-plugin</artifactId>
+        <version>3.1.0</version>
         <executions>
           <execution>
             <phase>validate</phase>
@@ -142,6 +144,7 @@ POSSIBILITY OF SUCH DAMAGE.
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
+        <version>3.7.1</version>
         <executions>
           <execution>
             <id>bin-release</id>
@@ -251,9 +254,9 @@ POSSIBILITY OF SUCH DAMAGE.
       <version>2.3.9</version>
     </dependency>
     <dependency>
-      <groupId>javax.xml.bind</groupId>
-      <artifactId>jaxb-api</artifactId>
-      <version>2.3.1</version>
+      <groupId>xalan</groupId>
+      <artifactId>serializer</artifactId>
+      <version>2.7.3</version>
     </dependency>
     <!-- See the JBoss repo for jai-core and jai-codec -->
     <dependency>
