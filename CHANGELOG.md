@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.13.1](https://github.com/NASA-PDS/transform/tree/v1.13.1) (2024-05-25)
+
+[Full Changelog](https://github.com/NASA-PDS/transform/compare/release/1.13.1...v1.13.1)
+
 ## [release/1.13.1](https://github.com/NASA-PDS/transform/tree/release/1.13.1) (2024-05-25)
 
 [Full Changelog](https://github.com/NASA-PDS/transform/compare/v1.13.0...release/1.13.1)
