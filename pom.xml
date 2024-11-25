@@ -224,7 +224,7 @@ POSSIBILITY OF SUCH DAMAGE.
     <dependency>
       <groupId>gov.nasa.pds</groupId>
       <artifactId>pds3-product-tools</artifactId>
-      <version>4.4.0</version>
+      <version>4.4.2</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
