@@ -103,5 +103,5 @@ jobs:
             name: Upload SLOC
             uses: actions/upload-artifact@v4
             with:
-              name: codeql-artifacts
+              name: sloc-count
               path: ${{ github.workspace }}/cloc.md
