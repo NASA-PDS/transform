@@ -301,7 +301,7 @@ POSSIBILITY OF SUCH DAMAGE.
     <dependency>
       <groupId>gov.nasa.pds</groupId>
       <artifactId>mi-label</artifactId>
-      <version>1.5.2</version>
+      <version>1.5.3</version>
       <exclusions>
 	<exclusion>
 	  <groupId>gov.nasa.pds</groupId>
